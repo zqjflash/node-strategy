@@ -118,7 +118,21 @@ UMD是AMD+CommonJS的组合,解决跨平台;
 
 ## No.6 JS作用域是什么?
 
-所谓作用域是指代码在运行时,各个变量、对象、函数的可访问性,作用域决定了你的代码在区域的可见性,.在js中时没有块级作用域,只有函数作用域.
+所谓作用域是指代码在运行时,各个变量、对象、函数的可访问性,作用域决定了你的代码在区域的可见性
+大多数语言里面都是块作用域,以{}进行限定,而js却是函数作用域,就是一个变量在全函数里有效,比如有个变量p1在函数最后一行定义,第一行也有效,但是值是undefined.
+
+变量提升示例:
+
+```js
+var globalVar = 'global var';
+function test() {
+    alert(globalVar); // undefined 因为globalVar在本函数内被重定义里,导致全局失效,这里使用函数内的变量值,可是此时还没定义
+    var globalVar = "overrided var"; // globalVar在本函数内被重定义
+    alert(globalVar); // overrided var
+}
+alert(globalVar); // global var 使用全局变量
+```
+
 
 ## No.7 常用js类定义的方法有哪些?
 
@@ -148,3 +162,87 @@ const Person = {
 const person = Object.create(Person);
 person.sayName();
 ```
+
+## No.8 js类继承的方法有哪些?
+
+主要包括:原型链法、属性复制法和构造器应用法.另外,由于每个对象可以是一个类,这些方法也可以用于对象类的继承.
+
+* 第一种:原型链法
+
+```js
+function Animal() {
+    this.name = 'animal';
+}
+Animal.prototype.sayName = function() {
+    alert(this.name);
+};
+function Person() {}
+Person.prototype = Animal.prototype; // Person继承自Animal
+Person.prototype.constructor = 'Person'; // 更新构造函数为Person
+```
+
+* 属性复制法
+
+```js
+function Animal() {
+    this.name = 'animal';
+}
+Animal.prototype.sayName = function() {
+    alert(this.name);
+};
+function Person() {}
+// 复制Animal的所有属性到Person
+for (var prop in Animal.prototype) {
+    Person.prototype[prop] = Animal.prototype[prop];
+}
+Person.prototype.constructor = 'Person'; // 更新构造函数为Person
+```
+
+* 构造器应用法
+
+```js
+function Animal() {
+    this.name = "animal";
+}
+Animal.prototype.sayName = function() {
+    alert(this.name);
+};
+function Person() {
+    Animal.call(this); // apply, call, bind方法都可以,只是有细微区别
+}
+```
+
+## No.9 js多重继承的实现方法是怎么样的?
+
+就是类继承里面的属性复制法来实现,因为当所有父类的prototype属性被复制后,子类自然拥有类似行为和属性.
+
+## No.10 js里面的this指的是什么?
+
+this指的是对象本身,而不是构造函数.
+
+```js
+function Person() {}
+Person.prototype.sayName = function() {
+    alert(this.name);
+}
+var person1 = new Person();
+person1.name = "xxx";
+person1.sayName(); // xxx
+```
+
+## No.11 caller、callee和arguments分别是什么?
+
+caller,callee之间的关系就像是employer和employee之间的关系,就是调用与被调用的关系,二者返回的都是函数对象引用,arguments是函数的所有参数列表,它是一个类数组的变量.
+
+```js
+function parent(param1, param2, param3) {
+    child(param1, param2, param3);
+}
+function child() {
+    console.log(arguments); // {"0": "xxx", "1": "yyy", "2": "zzz"}
+    console.log(arguments.callee); // [Function: child]
+    console.log(child.caller); // [Function: parent]
+}
+parent("xxx", "yyy", "zzz");
+```
+
