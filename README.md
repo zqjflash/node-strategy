@@ -18,12 +18,12 @@
 
 > 与前端 JS 不同, 后端是直面服务器的, 更加偏向内存方面.
 
-### [第一节 基础问题](/sections/zh-cn/common-1.md)
+### [第一节 基础问题](/zh-cn/common-1.md)
 
-### [第二节 ES6有哪些新特性](/sections/zh-cn/common-2.md)
+### [第二节 ES6有哪些新特性](/zh-cn/common-2.md)
 
-### [第三节 常见JS代码片段分析](/sections/zh-cn/common-3.md)
+### [第三节 常见JS代码片段分析](/zh-cn/common-3.md)
 
-### [第四节 JS高级进阶](/sections/zh-cn/common-4.md)
+### [第四节 JS高级进阶](/zh-cn/common-4.md)
 
 
