@@ -109,5 +109,42 @@ function out() {
 
 进阶扩展: 所有JS对象都是通过V8堆来分配的,存活时间较短的对象放在新生代,存活时间较长的对象放在老生代.内存回收策略上,新生代使用Scavenge算法进行回收,该算法实现中主要采用cheney算法.老生代使用标记-清除(Mark-Sweep)和标记-紧缩(Mark-Compact)来回收内存.
 
+## No.5 AMD、CMD、UMD、CommonJS四者的区别?
 
+AMD是RequireJS推出的,是异步加载模块,也就是提前执行依赖;
+CMD是seajs推崇的规范,依赖就近,用的时候再require;
+CommonJS加载的模块是同步的,它推崇一个单独文件就是一个模块;
+UMD是AMD+CommonJS的组合,解决跨平台;
 
+## No.6 JS作用域是什么?
+
+所谓作用域是指代码在运行时,各个变量、对象、函数的可访问性,作用域决定了你的代码在区域的可见性,.在js中时没有块级作用域,只有函数作用域.
+
+## No.7 常用js类定义的方法有哪些?
+
+主要有构造函数原型和对象创建两种方法.原型法是通用的老方法,对象创建是ES5推荐使用的方法,目前来看,原型法更普遍.
+* 使用构造函数原型定义类的代码实现:
+
+```js
+function Person() {
+    this.name = "xxx";
+}
+Person.prototype.sayName = function() {
+    alert(this.name);
+};
+const person = new Person();
+person.sayName();
+```
+
+* 对象创建的方式定义类的示例代码:
+
+```js
+const Person = {
+    name: "xxx",
+    sayName: function() {
+        alert(this.name);
+    }
+};
+const person = Object.create(Person);
+person.sayName();
+```
