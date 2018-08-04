@@ -57,5 +57,57 @@ console.log(test); // test的d属性值为dom
 console.log(test1); // test1的d属性值保持为div不变
 ```
 
+## No.4 JS中不同类型以及不同环境下变量的内存都是何时释放?
+
+* 引用类型: 在没有引用之后,通过V8的GC自动回收;
+* 值类型:如果处于闭包的情况下,要等闭包没有引用才会被GC回收;
+        非闭包的情况下等待v8的新生代(new space)切换的时候回收.
+* 浏览器环境:只有当页面关闭时,全局作用域下的变量才会被销毁(保守GC)
+* V8引擎:GC策略采用分代GC,新生代使用Scavenge算法进行回收,旧分代使用标记和精简GC.当堆超过阀值,启动GC.
+
+扩展1:下面代码是否会使V8内存爆掉?
+
+```js
+let arr = [];
+while (true) {
+    arr.push(1);
+}
+```
+执行最后的结果:内存爆掉,提示错误allocation failure GC in old space requested
+
+扩展2:数组里面push空元素结果是什么?
+
+```js
+let arr = [];
+while (true) {
+    arr.push();
+}
+```
+执行最后的结果:while(true)一直死循环下去,空元素不占用内存空间
+
+扩展3:如果push的是Buffer情况结果会如何?
+
+```js
+let arr = [];
+while (true) {
+    arr.push(new Buffer(1000));
+}
+```
+执行结果:最后系统的内存爆掉,因为Buffer申请的是堆外的内存空间
+
+扩展4:闭包引发的内存泄露,问题示例代码:
+
+```js
+function out() {
+    const bigData = new Buffer(100);
+    inner = function() {
+        void bigData;
+    }
+}
+```
+这个示例inner直接挂载在了root上,从而导致内存泄露(因为bigData不会释放)
+
+进阶扩展: 所有JS对象都是通过V8堆来分配的,存活时间较短的对象放在新生代,存活时间较长的对象放在老生代.内存回收策略上,新生代使用Scavenge算法进行回收,该算法实现中主要采用cheney算法.老生代使用标记-清除(Mark-Sweep)和标记-紧缩(Mark-Compact)来回收内存.
+
 
 
