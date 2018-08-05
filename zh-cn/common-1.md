@@ -289,7 +289,97 @@ var p = new Person('xxx');
 console.log(Object.getOwnPropertyNames(p));
 ```
 
+## No.14 如何实现防抖和节流呢?
+
+防抖实现思路:将目标方法包装在setTimeout里面,然后这个方法是一个事件回调函数,如果这个回调一直执行,那么这些动作就一直不执行.
+示例代码:
+
+```js
+function debounce(func, delay) {
+    var timeout;
+    return function(e) {
+        clearTimeout(timeout); // 这里就是保证回调一直执行,setTimeout里面的就不执行
+        var context = this.args = arguments;
+        timeout = setTimeout(function() {
+            func.apply(context, args);
+        }, delay); // 等到用户不在触发debounce,那么setTimeout就自然执行里面的方法
+    }
+}
+```
+
+节流实现思路:控制单位时间内执行的次数,每次需要保存上次执行的时间点与定时器.
+```js
+function throttle(fn, threshhold) {
+    var timeout;
+    var start = new Date; // 事件触发时间点
+    var threshhold = threshhold || 160; // 控制单位时间
+    return function() {
+        var context = this.args = arguments;
+        var curr = new Date() - 0; // 时间触发结束点
+        clearTimeout(timeout); // 总是干掉事件回调
+        if (curr - start >= threshhold) {
+            fn.apply(context, argus); // 只执行一部分方法,这些方法是在某个时间段内执行一次.
+            start = curr; // 以当次结束点作为下次的开始点
+        } else {
+            timeout = setTimeout(function() {
+                fn.apply(context, args);
+            }, threshold);
+        }
+    }
+}
+```
+
+## No.15 JS深拷贝与浅拷贝分别如何实现?
+
+深拷贝和浅拷贝只针对像Object、Array这样的复杂对象的.浅拷贝只拷贝一层对象的属性,而深拷贝则递归拷贝了所有层级.
+
+* 浅拷贝示例代码:
+
+```js
+var obj = {a: 1, arr: [2, 3]};
+var shallowObj = shallowCopy(obj);
+function shallowCopy(src) {
+    var dst = {};
+    for (var prop in src) {
+        if (src.hasOwnProperty(prop)) {
+            dst[prop] = src[prop];
+        }
+    }
+    return dst;
+}
+shallowObj.arr[1] = 5;
+obj.arr[1] // 5 因为浅拷贝会导致obj.arr和shallowObj.arr指向同一块内存地址
+```
+
+* 深拷贝示例代码:
+```js
+var obj = {a: 1, arr: [2, 3]};
+var deepObj = deepCopy(obj);
+function deepCopy(obj) {
+    // 定义一个对象,用来确定当前的参数是数组还是对象
+    var objArray = Array.isArray(obj) ? [] : {};
+    if (obj && typeof obj === "object") {
+        for (var key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                if (obj[key] && typeof obj[key] === "object") {
+                    console.log(obj[key]);
+                    objArray[key] = deepCopy(obj[key]);
+                } else {
+                    objArray[key] = obj[key];
+                }
+            }
+        }
+    }
+    return objArray;
+}
+deepObj.arr[1] = 5;
+obj.arr[1] // 3,递归复制到新对象,所以修改目标对象的值不影响原对象的值
+```
 
 
+# 参考
+
+### [函数防抖与节流](https://mp.weixin.qq.com/s/xMCna_VtoOev0K5uK1J0aQ)
+### [javascript中的深拷贝和浅拷贝](https://www.zhihu.com/question/23031215)
 
 

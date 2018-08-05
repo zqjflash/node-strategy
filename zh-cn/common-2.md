@@ -17,5 +17,12 @@
 let:变量只能声明一次,还有一个好处就是当我们写代码比较多的时候可以避免在不知道的情况下重复声明变量.
 var:变量可以多次声明.
 
+## No.4 defineProperty, hasOwnProperty, propertyIsEnumerable都是什么用的?
 
+* Object.defineProperty(obj, prop, descriptor); 用来给对象定义属性,其中descriptor包含对属性的设置,主要有value、writable, configurable, enumerable, set/get等.
+* hasOwnProperty用于检查某一属性是不是存在对象本身,继承来的父对象属性不算;
+* propertyIsEnumerable用来检测某一属性是否可遍历,也就是能不能用for...in循环来取到.
 
+# 参考
+
+### [ECMAScript 6入门 阮一峰](http://es6.ruanyifeng.com/)
