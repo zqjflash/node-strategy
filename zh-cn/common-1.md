@@ -376,6 +376,46 @@ deepObj.arr[1] = 5;
 obj.arr[1] // 3,递归复制到新对象,所以修改目标对象的值不影响原对象的值
 ```
 
+## No.16 js字符串相关的常用方法有哪些?
+
+indexOf/lastIndexOf/charAt, split/match/test, slice/substring/substr, toLowerCase/toUpperCase.
+
+## No.17 链式调用
+
+思路:利用类的原型方法返回实例对象,也可以使用静态方法实现.
+
+* 原型方法实现:
+```js
+function Person() {
+}
+Person.prototype.setName = function(name) {
+    this.name = name;
+    return this;
+};
+Person.prototype.getName = function() {
+    return this.name;
+};
+var pp = new Person();
+console.log(pp.setName("xxx").getName());
+```
+
+* 静态方法实现
+
+```js
+function Person(name) {
+    var _name = name;
+    this.setName = function(name) {
+        _name = name;
+        return this;
+    };
+    this.getName = function(callback) {
+        callback.call(this, _name);
+        return this;
+    };
+}
+var pp = new Person('yyy');
+pp.getName(console.log).setName("zzz").getName(console.log);
+```
 
 # 参考
 

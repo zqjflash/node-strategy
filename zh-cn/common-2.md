@@ -23,6 +23,38 @@ var:变量可以多次声明.
 * hasOwnProperty用于检查某一属性是不是存在对象本身,继承来的父对象属性不算;
 * propertyIsEnumerable用来检测某一属性是否可遍历,也就是能不能用for...in循环来取到.
 
+## No.5 ES6数组的新方法(map/reduce, forEach, filter)
+
+* map:创建一个新数组,其结果是该数组中的每个元素都调用一个提供的函数后返回的结果
+```js
+var array1 = [1, 4, 9, 16];
+const map1 = array1.map((x) => x * 2);
+console.log(map1); // [2, 8, 18, 32]
+```
+
+* reduce:累加器和数组中的每个元素(从左到右)应用一个函数,将其减少为单个值.
+```js
+const array1 = [1, 2, 3, 4];
+const reducer = (accumulator, currentValue) => accumulator + currentValue;
+console.log(array1.reduce(reducer)); // 1 + 2 + 3 + 4
+```
+
+* forEach:对数组的每个元素执行一次提供的函数
+
+```js
+const array1 = ['a', 'b', 'c'];
+array1.forEach((element) => {
+    console.log(element);
+});
+```
+
+* filter:创建一个新数组,其包含通过所提供函数过滤条件之后的结果元素
+```js
+const words = ['spray', 'limit' ,'elite', 'exuberant', 'destruction', 'present'];
+const result = words.filter(word => word.length > 6);
+console.log(result);
+```
+
 # 参考
 
 ### [ECMAScript 6入门 阮一峰](http://es6.ruanyifeng.com/)
