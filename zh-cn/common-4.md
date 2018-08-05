@@ -83,3 +83,41 @@ publisher.notify({name: 'xxx', age: 30}); // 发布一个对象到所有订阅�
 publisher.notify('2 subscribers will both perform process'); // 发布一个字符串到所有订阅者
 ```
 
+## No.2 函数柯里化?
+
+柯里化:是把接受多个参数的函数,变换成一个单一参数的函数,并且返回接受余下的参数而且返回结果的新函数的技术.
+基本的柯里化函数示例代码:
+
+```js
+var currying = function(fn) {
+  var args = [];
+  return function() {
+    if (arguments.length === 0) {
+      return fn.apply(this, args); // 没传参数时，调用这个函数
+    } else {
+      [].push.apply(args, arguments); // 传入了参数，把参数保存下来
+      return arguments.callee; // 返回这个函数的引用
+    }
+  }
+}
+var cost = (function() {
+    var money = 0;
+    return function() {
+        for (var i = 0; i < arguments.length; i++) {
+            money += arguments[i];
+        }
+        return money;
+    }
+})();
+var cost = currying(cost);
+cost(100); // 传入了参数,不真正求值
+cost(200); // 传入了参数,不真正求值
+cost(300); // 传入了参数,不真正求值
+console.log(cost()); // 求值并且输出600
+```
+
+
+# 参考
+
+### [JavaScript函数柯里化](https://zhuanlan.zhihu.com/p/31271179)
+
