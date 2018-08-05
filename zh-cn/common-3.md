@@ -112,6 +112,36 @@ Promise.resolve(1)
 * x为2,打印2
 * 不会执行最后一行catch,因为没有错误抛出
 
+## No.6 如何用闭包、作用域的角度分析以下代码?
+
+```js
+var value1 = 0;
+var value2 = 0;
+var value3 = 0;
+for (var i = 1; i <= 3; i++) {
+    var i2 = i;
+    (function() {
+        var i3 = i;
+        console.log(i);
+        setTimeout(function() {
+            value1 += i;
+            value2 += i2;
+            value3 += i3;
+        },1);
+    })();
+}
+setTimeout(function() {
+    console.log(value1, value2, value3);
+}, 100);
+```
+分析结果:
+* 匿名自执行函数与闭包的关系作用域与setTimeout的闭包引用i在for循环下对应的是4, 4, 4,执行三次的闭包,value1=4+4+4=12;
+* 闭包外部匿名函数的作用域与setTimeout的闭包引用i2在for循环下对应的是3, 3, 3,执行三次闭包value2=3+3+3=9;
+* 闭包内部匿名函数的作用域与setTimeout的闭包引用i3在for循环下对应1, 2, 3,不同闭包实例相加value3=1+2+3=6.
+
+
+
+
 # 参考
 
 ### [js浮点运算](https://blog.csdn.net/u013347241/article/details/79210840)

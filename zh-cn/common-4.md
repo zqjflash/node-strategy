@@ -116,8 +116,57 @@ cost(300); // 传入了参数,不真正求值
 console.log(cost()); // 求值并且输出600
 ```
 
+## No.3 移动端的touch click事件的理解以及点透问题处理
+
+当用户在点击屏幕的时候,系统会触发touch事件和click事件,touch事件优先处理,经过捕获处理,冒泡一系列流程处理完成后,才会去触发click事件.
+在touch事件里面,调用e.preventDefault()就可以阻止本次点击系统触发的click事件,即本次相关的click都不会执行.
+解决示例代码:
+```js
+dom.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+});
+```
+
+点透发生的理由:当手指触摸到屏幕的时候,系统生成两个事件,一个是touch,一个是click,touch先于click执行,click有延迟200~300ms
+解决示例代码:
+```js
+dom.addEventListener('touchend', function(e) {
+    e.preventDefault();
+});
+```
+
+## No.4 preventDefault()、stopPropagation()、return false之间的区别?
+
+每次调用return false时候,实际上做了三个事情:
+event.preventDefault();
+event.stopPropagation();
+停止回调函数执行并立即返回.
+
+preventDefault事件阻止父节点继续处理事件
+
+stopPropagation()停止事件冒泡
+
+## No.5 service worker如何实现离线缓存?
+
+SW介于服务器和网页之间的拦截器,能够拦截进出的HTTP请求,从而完全控制你的网站.
+
+主要的特点:
+* 在页面中注册安装成功后,运行于浏览器后台,不受页面刷新的影响;
+* 网站必须使用HTTPS
+* 可以控制打开的作用域范围下所有的页面请求
+* 单独的作用域范围,单独的运行环境和执行线程
+* 不能操作页面的DOM,但可以通过事件机制来处理
+* 事件驱动型服务线程
+
+执行流程:
+* 调用register()函数时,SW开始下载;
+* 在注册过程中,浏览器会下载、解析并执行SW;
+* 一旦SW成功执行,install事件就会激活;
+* 安装完成之后,SW便会激活,并控制在其范围内的一切.
 
 # 参考
 
 ### [JavaScript函数柯里化](https://zhuanlan.zhihu.com/p/31271179)
-
+### [移动端touch click事件的理解+点透](https://www.jianshu.com/p/dc3bceb10dbb)
+### [preventDefault、stopPropagation、return false之间的区别](https://www.cnblogs.com/dannyxie/p/5642727.html)
+### [讲讲PWA](https://segmentfault.com/a/1190000012353473)
