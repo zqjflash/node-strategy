@@ -164,6 +164,39 @@ SW介于服务器和网页之间的拦截器,能够拦截进出的HTTP请求,从
 * 一旦SW成功执行,install事件就会激活;
 * 安装完成之后,SW便会激活,并控制在其范围内的一切.
 
+## No.6 js寄生组合继承如何实现?
+
+核心:对父类原型的复制,所以不包含父类的构造函数,也就不会调用两次父类的构造函数造成浪费;
+
+```js
+function object(o) {
+    function F() {}
+    F.prototype = o;
+    return new F();
+}
+function inheritPrototype(subType, superType) {
+    var prototype = object(superType.prototype); // 创建了父类原型的浅拷贝
+    prototype.constructor = subType; // 修正原型的构造函数
+    subType.prototype = prototype; // 将子类的原型替换为这个原型
+}
+function SuperType(name) {
+    this.name = name;
+    this.colors = ["red", "blue", "green"];
+}
+SuperType.prototype.sayName = function() {
+    alert(this.name);
+};
+function SubType(name, age) {
+    SuperType.call(this, name);
+    this.age = age;
+}
+inheritPrototype(SubType, SuperType);
+SubType.prototype.sayAge = function() {
+    alert(this.age);
+};
+```
+
+
 # 参考
 
 ### [JavaScript函数柯里化](https://zhuanlan.zhihu.com/p/31271179)
