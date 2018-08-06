@@ -196,7 +196,6 @@ SubType.prototype.sayAge = function() {
 };
 ```
 
-
 # 参考
 
 ### [JavaScript函数柯里化](https://zhuanlan.zhihu.com/p/31271179)

@@ -32,3 +32,12 @@ Libuv 库负责 Node API 的执行,它将不同的任务分配给不同的线程
 有一个需要区分的地方:
 浏览器的主进程运行机制是:macroTask 和 microTask 交替执行的
 node 的主进程运行机制是,按顺序执行 6 个阶段主任务,每个阶段之间执行一批 microTask 任务队列
+
+## No.3 Node.js 有哪些核心的模块?
+
+* 全局对象:console、process等;
+* 常用工具:util
+* 事件机制:event,核心对象events.EventEmitter, error事件,以及基于event的stream和buffer.
+* 文件系统访问:fs
+* 网络模块:net/http
+
