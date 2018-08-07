@@ -64,3 +64,54 @@ EventEmitter是node中一个实现观察者模式的类,主要功能是监听和
 
 通过继承EventEmitter来使得一个具有node提供的基本的event方法,这样的对象可以称作emitter,而触发emit事件的cb则称作listener.
 
+## No.4 如何实现一个EventEmitter?
+
+主要分三步: 1) 定义一个类并实现call调用; 2) 继承EventEmitter; 3) 实例化调用
+
+```js
+const util = require("util");
+const EventEmitter = require("events").EventEmitter;
+function MyEmitter() {
+    EventEmitter.call(this); // 定义一个类并实现call调用;
+}
+util.inherits(MyEmitter, EventEmitter); // 继承EventEmitter;
+const em = new MyEmitter();
+em.on("hello", function(data) {
+    console.log("收到事件hello的数据:", data);
+});
+em.emit("hello", "EventEmitter传递消息真方便!");
+```
+
+## No.5 EventEmitter有哪些典型应用?
+
+* 模块间传递消息;
+* 回调函数内外传递消息;
+* 处理流数据,因为流是在EventEmitter基础上实现的;
+* 观察者模式发射触发机制相关应用
+
+使用emitter处理问题可以处理比较复杂的状态场景,比如TCP的复杂状态机,做多项异步操作的时候每一项都可能报错,这个时候.emit错误并且执行某些.once的操作可以快速定位到问题.
+
+## No.6 怎么捕获EventEmitter的错误事件?
+
+监听error事件即可,如果有多个EventEmitter,也可以用domain来统一处理错误事件.
+
+```js
+const domain = require("domain");
+const myDomain = domain.create();
+myDomain.on("error", function(err) {
+    console.log("domain接收到的错误事件", err);
+});
+myDomain.run(function() {
+    const emitter1 = new MyEmitter();
+    emitter.emit("error", "错误事件来自emitter1");
+    const emitter2 = new MyEmitter();
+    emitter.emit("error", "错误事件来自emitter2");
+});
+```
+
+## No.20 domain的原理是?为什么要弃用它?
+
+domain本质上是一个EventEmitter对象,捕获异步异常的基本思路是创建一个域,cb函数会在定义时继承上一层的域,报错通过当前域.emit("error", err)方法触发错误事件,将错误传递上去,从而使得异步错误可以被强制捕获.
+
+但是,domain的引入也带来了更多新的问题,比如依赖的模块无法继承你定义的domain,导致写的domain无法cover依赖模块报错,而且,很多人由于不了解Node.js的内存/异步流程等问题,在使用domain处理报错的时候,没有做到完善的处理并盲目的让代码继续走下去,这很可能导致项目完全无法维护.
+
