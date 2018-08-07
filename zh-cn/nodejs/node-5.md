@@ -56,3 +56,11 @@ console.log(5);
 ```
 执行结果:2->3->5->4->1
 
+## No.3 什么是EventEmitter?
+
+Events是node.js中一个非常重要的core模块,在node中有许多重要的core API都是依赖其建立的.比如Stream是基于 Events实现的,而fs,net,http 等模块都依赖Stream.
+
+EventEmitter是node中一个实现观察者模式的类,主要功能是监听和发射消息,用于处理多模块交互问题.
+
+通过继承EventEmitter来使得一个具有node提供的基本的event方法,这样的对象可以称作emitter,而触发emit事件的cb则称作listener.
+
