@@ -18,4 +18,41 @@ doSth.then(() => {
 ```
 注:Promise封装的代码肯定是同步的,然后then的执行是异步的.
 
+## No.2 setTimeout与Promise关系?
+
+看一个问题:setTimeout到10s之后再.then调用,那么hello是会在10s之后在打印吗?还是一开始就打印?
+
+分析以下这段代码:
+
+```js
+let doSth = new Promise((resolve, reject) => {
+    console.log("hello");
+    resolve();
+});
+setTimeout(() => {
+    doSth.then(()=> {
+        console.log('over');
+    });
+}, 10000);
+//先打印 hello,等待 10s 之后打印 over
+```
+
+继续查看下面这段代码:
+
+```js
+setTimeout(function() {
+    console.log(1);
+}, 0);
+new Promise(function executor(resolve) {
+    console.log(2);
+    for (var i = 0; i < 10000; i++) {
+        i == 9999 && resolve();
+    }
+    console.log(3);
+}).then(function() {
+    console.log(4);
+});
+console.log(5);
+```
+执行结果:2->3->5->4->1
 
