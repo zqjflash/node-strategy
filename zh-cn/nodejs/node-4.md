@@ -53,3 +53,53 @@ ES6继承与ES5继承的对比:
   * ES6继承中子类到构造函数到原型链指向父类到构造函数,ES5中使用到是构造函数复制,没有原型链指向;
   * ES6子类实例的构建,基于父类实例,ES5中不是.
 
+## No.3 如何递归获取某个文件夹下所有的文件名?
+
+* 方式一:使用fs和path模块来处理
+
+```js
+const fs = require('fs');
+const path = require('path');
+function traversal(dir) {
+    let res = [];
+    for (let item of fs.readdirSync(dir)) {
+        let filepath = path.join(dir, item);
+        try {
+            let fd = fs.openSync(filepath, 'r');
+            let flag = fs.fstatSync(fd).isDirectory();
+            fs.close(fd);
+            if (flag) {
+                res.push(...travelsal(filepath));
+            } else {
+                res.push(filepath);
+            }
+        } catch (err) {
+            if (err.code === 'ENOENT' && !!fs.readlinkSync(filepath)) {
+                res.push(filepath);
+            } else {
+                console.error('err', err);
+            }
+        }
+    }
+    return res.map((file) => path.basename(file));
+}
+console.log(traversal('.'));
+
+```
+
+* 方式二: 使用glob模块实现,相对就简便很多
+
+```js
+const glob = require("glob");
+glob("**/*.js", (err, files) => {
+    if (err) {
+        throw new Error(err);
+    }
+    files.map((filename) => {
+        console.log('Here you are:', filename);
+    });
+});
+```
+
+
+
