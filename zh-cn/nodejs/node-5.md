@@ -115,3 +115,27 @@ domain本质上是一个EventEmitter对象,捕获异步异常的基本思路是�
 
 但是,domain的引入也带来了更多新的问题,比如依赖的模块无法继承你定义的domain,导致写的domain无法cover依赖模块报错,而且,很多人由于不了解Node.js的内存/异步流程等问题,在使用domain处理报错的时候,没有做到完善的处理并盲目的让代码继续走下去,这很可能导致项目完全无法维护.
 
+## No.21 EventEmitter中的newListener事件有什么用处?
+
+newListener可以用来做事件机制的反射,特殊应用,事件管理等,当任何on事件添加到EventEmitter时,就会触发 newListener事件,基于这种模式,我们可以做很多自定义处理.
+
+```js
+const util = require("util");
+const EventEmitter = require("events").EventEmitter;
+function MyEmitter() {
+    EventEmitter.call(this); // 定义一个类并实现call调用;
+}
+util.inherits(MyEmitter, EventEmitter); // 继承EventEmitter;
+const emitter3 = new MyEmitter();
+emitter3.on("newListener", function(name, listener) {
+    console.log("新事件的名字:", name);
+    console.log("新事件的代码:", listener);
+    setTimeout(function() {
+        console.log("我是自定义延时处理机制");
+    }, 1000);
+});
+emitter3.on("hello", function() {
+    console.log("hello node");
+});
+```
+
