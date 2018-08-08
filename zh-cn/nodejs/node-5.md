@@ -316,3 +316,41 @@ iptables –A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-port 8080
 
 * Node监听端口调整在1024以上,避开80
 
+## No.18 有哪些方法可以让Node程序遇到错误后自动重启?
+
+* runit 进程管理工具,运行在linux、macos等;
+* forever简单的命令式Node.js的守护进程,能够启动、停止、重启,完全基于命令行;
+* nohub npm start& 转进程后台运行;
+* 使用crontab
+* 使用pm2
+
+这里重点描述一下pm2的主要特点:
+
+* 支持进程行为配置;
+* 支持集群模式,支持负载均衡,因为采用Node.js的cluster模块实现;
+* 支持source map,此项针对js,source map文件是js源文件的信息文件;
+* 支持热重启;
+* 支持部署工作流,pm2可以依据测试环境和线上环境自动部署到不同的服务器;
+* 支持监听重启,在文件更新等情况下实现进程自动重启;
+
+接下来进一步分析PM2整个进程管理,以一张图示来说明:
+
+![node-pm2-manager](/assets/node-pm2-manager.png)
+
+流程分析:
+
+* Client启动关联Daemon;
+* Daemon有start、stop、close、kill进程的方法,与God的事件发射器EventEmitter关联;
+* Satan ping进程是否活着或者关闭;
+* Satan通知God
+* God事件监听
+* Satan通过God
+* God事件监听
+* God监听进程方法有ping、notifyKillPM2、duplicateProcessId等;
+* God进程运行模式有两种:Cluster集群模式和fork模式;
+
+## No.19 并行与并发有什么区别?
+
+并行指的是同一时刻多个CPU同时执行任务;
+并发指的是同一个CPU同时有多个任务竞争执行
+Node.js通过事件循环来挨个抽取事件队列中的一个个Task执行,从而避免了传统的多线程情况下2个队列对应一个CPU的时候上下文切换以及资源争抢/同步的问题,所以获得了高并发的成就.
