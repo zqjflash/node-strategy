@@ -169,6 +169,7 @@ emitter.on('myEvent', () => {
 });
 emitter.emit('myEvent');
 ```
+
 // 执行结果会出现死循环,不断emit以及不断on处理
 
 * 再往下这段代码呢?
@@ -182,5 +183,136 @@ emitter.on('myEvent', function sth () {
 });
 emitter.emit('myEvent');
 ```
+
 // 执行结果一次 hi:虽然监听两次on,但实际上是同步执行之后再打印.
+
+## No.10 如何判断接口是否异步?是否只要有回调函数就是异步?
+
+每个写node的人都有一套自己的判断方式: 
+
+* 首先:先看文档说明;
+* 其次:通过代码段进行console.log打印;
+* 再次:看看是否有 IO 操作.
+
+单纯使用回调函数并不一定是异步,IO的操作才可能是异步,除此之外还有使用setTimeout等方式实现异步.
+
+## No.11 nextTick,setTimeout以及setImmediate三者有什么区别?
+
+Node.js的特点是事件循环,其中不同的事件会分配到不同的事件观察者身上,比如idle观察者,定时器观察者,I/O观察者等等,事件循环每次循环称为一次Tick,每次Tick按照先后顺序从事件观察者中取出事件进行处理.
+
+根据Node.js官方介绍,每次事件循环都包含了6个阶段,对应libuv源码中的实现,如下图:
+
+![node-event-queue](/assets/node-event-queue.png)
+
+* timers阶段:这个阶段执行timer(setTimeout、setInterval)的回调;
+* I/O callbacks阶段:执行一些系统调用错误,比如网络通信的错误回调;
+* idle,prepare阶段:仅 node 内部使用;
+* poll阶段:获取新的 I/O 事件,适当的条件下,node将阻塞在这里;
+* check 阶段:执行 setImmediate()的回调;
+* close callbacks阶段:执行socket的close事件回调.
+
+以一段示例代码分析三者的区别:
+
+```js
+setInterval(function () {
+    setTimeout(function () { 
+        console.log("setTimeout3");
+    }, 0);
+    setImmediate(function () { 
+        console.log("setImmediate4");
+    });
+    console.log("console1"); 
+    process.nextTick(function () {
+        console.log("nextTick2"); 
+    });
+}, 100);
+```
+
+// 代码的执行顺序:console1->nextTick2->setTimeout3->setImmediate4->console1->nextTick2 setImmediate4->setTimeout3
+优先级:nextTick->setImmediate/setTimeout(0)
+
+## No.12 有这样一种场景,你在线上使用koa搭建了一个网站,这个网站项目中有一个你同事写的接口A,而A接口中在特殊情况下会变成死循环,那么首先问题是,如果触发了死循环,会对网站造成什么影响?
+
+Node.js中执行js代码的过程是单线程的,只有当前代码都执行完,才会切入事件循环,然后从事件队列中pop出下一个回调函数开始执行代码,所以只要出现死循环,就阻塞整个js的执行流程了.
+
+## No.13 如何实现一个sleep函数?
+
+```js
+function sleep(ms) {
+    var start = Date.now();
+    var expire = start + ms;
+    while(Date.now() < expire) {
+    }
+    return;
+}
+```
+本质上就是利用while(true)阻塞主线程
+
+## No.14 如何实现一个异步的reduce?(注:不是异步完了之后同步reduce)
+
+实现原理:利用promise.then递归执行
+
+```js
+function reduce(arr, cb, initial=null) {
+    function iterator(res, vals, index) {
+        // res为动态数组的首个元素,vals为除首个元素之外的动态数组,index为传入的索引
+        if (vals.length == 1) {
+            return cb(res, vals[0], index);
+        }
+        return cb(res, vals[0], index).then((n) => iterator(n, vals.slice(1), index+1));
+    }
+    if (initial) {
+        return iterator(initial, arr, 1);
+    } else {
+        return iterator(arr[0], arr.slice(1), 0);
+    }
+}
+function cb(res, i, index) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(res + i);
+        }, 1000);
+    });
+}
+const result = reduce([1, 2, 3, 4, 5], cb);
+result.then((n) => {
+    console.log(n);
+});
+```
+
+## No.15 Node.js中的异步和同步怎么理解?
+
+Node.js是单线程,异步是通过一次次的循环事件队列来实现的,同步则是阻塞式的IO,这在高并发情况下,将会是很大的性能问题,同步一般只在基础框架的启动时使用,用来加载配置文件,初始化程序.
+
+Node.js异步简单划分为两种:硬异步和软异步;
+硬异步是指由于IO操作或者外部调用走libuv而需要异步的情况,当然也存在readFileSync、execSync等例外情况.
+软异步是指:通过setTimeout、nextTick、setImmediate等方式来实现的异步.
+
+## No.16 有哪些方法可以进行异步流程的控制?
+
+* 多层嵌套回调;
+* 为每个回调写单独函数,函数里边再回调;
+* 用第三方框架比方说async, q, promise等;
+* 用es7 async/await
+
+## No.17 怎样绑定Node程序到80端口?
+
+* sudo su切换到root账号,然后启动Node进程;
+* 使用apache/nginx做反向代理
+  * apache反向代理是通过开启httpd.conf文件来实现
+  * nginx反向代理在nginx.conf文件来实现
+
+  ```js
+  upstream domain {
+      server 10.10.10.10:80, server 10.25,25.10:80
+  }
+  server {
+      listen 80; server_name domain; location / {
+      proxy_pass http://domain; }
+  }
+  ```
+* 用操作系统的firewall iptables进行端口重定向;
+iptables –A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-port 8080
+
+* Node监听端口调整在1024以上,避开80
 
