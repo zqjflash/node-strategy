@@ -109,13 +109,13 @@ myDomain.run(function() {
 });
 ```
 
-## No.20 domain的原理是?为什么要弃用它?
+## No.7 domain的原理是?为什么要弃用它?
 
 domain本质上是一个EventEmitter对象,捕获异步异常的基本思路是创建一个域,cb函数会在定义时继承上一层的域,报错通过当前域.emit("error", err)方法触发错误事件,将错误传递上去,从而使得异步错误可以被强制捕获.
 
 但是,domain的引入也带来了更多新的问题,比如依赖的模块无法继承你定义的domain,导致写的domain无法cover依赖模块报错,而且,很多人由于不了解Node.js的内存/异步流程等问题,在使用domain处理报错的时候,没有做到完善的处理并盲目的让代码继续走下去,这很可能导致项目完全无法维护.
 
-## No.21 EventEmitter中的newListener事件有什么用处?
+## No.8 EventEmitter中的newListener事件有什么用处?
 
 newListener可以用来做事件机制的反射,特殊应用,事件管理等,当任何on事件添加到EventEmitter时,就会触发 newListener事件,基于这种模式,我们可以做很多自定义处理.
 
@@ -138,4 +138,49 @@ emitter3.on("hello", function() {
     console.log("hello node");
 });
 ```
+
+## No.9 EventEmitter的emit是同步还是异步?
+
+EventEmitter的emit其实是同步的,在官方文档中有说明,如果有多个callback添加到监视器,最终会按照添加的顺序执行
+
+* 接下来分析一段代码的执行结果是输出hi 1还是hi 2?
+
+```js
+const EventEmitter = require("events");
+let emitter = new EventEmitter();
+emitter.on('myEvent', () => {
+    console.log('hi 1');
+});
+emitter.on('myEvent', () => {
+    console.log('hi 2');
+});
+emitter.emit('myEvent');
+// 最终的输出结果是 hi 1 -> hi 2
+```
+
+* 下面这段代码会不会死循环?
+
+```js
+const EventEmitter = require('events');
+let emitter = new EventEmitter();
+emitter.on('myEvent', () => {
+    console.log('hi');
+    emitter.emit('myEvent');
+});
+emitter.emit('myEvent');
+```
+// 执行结果会出现死循环,不断emit以及不断on处理
+
+* 再往下这段代码呢?
+
+```js
+const EventEmitter = require('events'); 
+let emitter = new EventEmitter(); 
+emitter.on('myEvent', function sth () {
+    emitter.on('myEvent', sth);
+    console.log('hi');
+});
+emitter.emit('myEvent');
+```
+// 执行结果一次 hi:虽然监听两次on,但实际上是同步执行之后再打印.
 
