@@ -16,9 +16,7 @@
 
 > 所有文章都是提问的模式,没有给出对错判断,只是抛出引子.
 
-### [第一篇](/zh-cn/lighting-talk/lesson1.md)
-
-
+### [第一篇: 一个程序员的成长之路](/zh-cn/lighting-talk/lesson1.md)
 
 ## 第一章 JS 基础
 
@@ -58,4 +56,6 @@
 
 ### [第十一节 高阶用法](/zh-cn/nodejs/node-11.md)
 
+## 第三章 前端常用算法
 
+### [第一节 前端工作中遇到的数据结构和算法](/zh-cn/algorithm/algorithm-1.md)
