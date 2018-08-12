@@ -272,6 +272,58 @@ for (var i = 0; i < n; i++) {
 |  桶排序   | O(n+k)      | O(n+k)     | O(n的平方) | O(n+k)     | Out-place | 稳定    |
 |  基数排序  | O(n*k)      | O(n*k)    | O(n*k)    | O(n*k)     | Out-place  | 稳定   | 
 
+## No.10 冒泡排序的基本思路是什么?
+
+第一步:比较相邻的元素,如果第一个比第二个大,就交换他们两个;
+第二步:对每一对相邻元素做同样的工作,从开始第一对到结尾的最后一对,在这一点,最后的元素应该会是最大的树;
+第三步:针对所有的元素重复以上的步骤,除了最后一个;
+第四步:持续每次对越来越少的元素重复上面的步骤,直到没有任何一对数字需要比较.
+
+```js
+for (var i = 0; i < 5; i++) {
+	for (var j = 0; j < 5 - (i-1); j++) {
+		//...
+	}
+}
+```
+
+## No.11 选择排序的基本思路是什么?
+
+第一步:首先在未排序序列中找到最小(大)元素,存放到排序序列的起始位置;
+第二步:再从剩余未排序元素中继续寻找最小(大)元素;
+第三步:放到已排序序列的末尾.
+
+```js
+for (var i = 0; i < n - 1; i++) {
+	for (j = i + 1; j < n; j++) {
+		// ...
+	}
+}
+```
+
+## No.12 快速排序的基本思路是什么?
+
+第一步:选取一个数作为基准(理论上可以随便选取);
+第二步:分区,比基准值小的放左边,大的放右边,基准值放在两个分区之间;
+第三步:进行左边分区递归,以及右边分区递归.
+
+```js
+const quicksort = arr = > {
+	const pivotIndex = Math.floor(arr.length / 2);
+	const pivot = arr.splice(pivotIndex, 1)[0];
+	const left = [];
+	const right = [];
+	arr.forEach((item, idx) => {
+		if (arr[idx] < pivot) {
+			left.push(arr[idx]);
+		} else {
+			right.push(arr[idx]);
+		}
+	});
+};
+```
+
+
 # 参考
 
 ![前端工作中遇到的数据结构和算法](https://cloud.tencent.com/developer/article/1005459)
