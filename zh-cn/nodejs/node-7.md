@@ -27,3 +27,30 @@ Stream是基于事件EventEmitter的数据管理模式,由各种不同的抽象�
 | Transform | 与Duplex相似,操作被写入数据, 然后读出结果 | 重新_transform和_flush |
 
 注: Transform机制和Duplex一样,都是双向流,区别是Transform只需要实现一个函数 _transform(chunk,encoding,callback);而Duplex需要分别实现_read(size)函数和_write(chunk,encoding,callback)函数.
+
+## No.5 如何实现一个Writable Stream?
+
+主要思路:
+
+* 创建一个构造函数,使用Writable进行call调用;
+* 构造函数继承Writable类;
+* 构造函数原型实现_write(chunk,encoding,callback)函数
+
+```js
+const Writable = require("stream").Writable;
+const util = require("util");
+function MyWritable(options) {
+    Writable.call(this, options);
+}
+util.inherits(MyWritable, Writable); // 继承自Writable
+// 重写_write方法
+MyWritable.prototype._write = function(chunk, encoding, callback) {
+    console.log("被写入的数据是:", chunk.toString()); // 此处可对写入的数据进行处理
+    callback();
+};
+process.stdin.pipe(new MyWritable()); // stdin作为输入源, MyWritable作为输出源
+```
+
+## No.6 Buffer一般用于处理什么数据?其长度能否动态变化?
+
+Buffer是Node.js中用于处理二进制数据的类,其中与IO相关的操作(网络/文件等)均基于Buffer.Buffer类的实例非常类似整数数组,但其大小是固定不变的,并且其内存在V8堆栈外分配原始内存空间.Buffer类的实例创建之后,其所占用的内存大小就不能再进行调整.
