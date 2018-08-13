@@ -145,3 +145,43 @@ print(‘hello world’);
 ```js
 let log = console.log.bind(console);
 ```
+
+## No.13 如何同步的获取用户的输入?
+
+获取用户的输入其实就是读取Node.js进程中的输入流(即process.stdin这个stream)的数据.
+而要同步读取,则是不用异步的read接口,而是用同步的readSync接口去读取stdin的数据即可实现.
+看一段实现的示例代码:
+
+```js
+var fs = require("fs");
+var buf = new Buffer(256); // 申请一块buffer内存空间
+module.exports = function() {
+    // 获取当前输入流的fd
+    var fd = ('win32' === process.platform) ? process.stdin.fd : fs.openSync('/dev/stdin', 'rs');
+    try {
+        bytesRead = fs.readSync(fd, buf, 0, BUFSIZE); // 同步读取输入流
+    }
+    // ...
+    var content = buf.toString(null, 0, bytesRead - 1); // 进行流的拼接
+};
+
+```
+
+## No.14 Readline 是如何实现的?
+
+readline模块提供了一个用于从Readable的stream(例如process.stdin)中一次读取一行的接口.当然你也可以用来读取文件或者net,http的stream,比如:
+
+```js
+const readline = require("readline");
+const fs = require("fs");
+const rl = readline.createInterface({
+    input: fs.createReadStream('sample.txt')
+});
+rl.on('line', (line) => {
+    console.log(`Line from file: ${line}`);
+});
+```
+
+实现上,readline在读取TTY的数据时,是通过input.on('keypress', onkeypress)时发现用户按下了回车键来判断是新的line的,而读取一般的stream时,则是通过缓存数据然后用正则.test来判断是否为new line的.
+
+如果在编写脚本时,不习惯异步获取输入,而是要同步获取用户的输入可以使用scanf模块.
