@@ -318,7 +318,37 @@ for (var i = 1; i < len; i++) {
 }
 ```
 
-## No.13 快速排序的基本思路是什么?
+## No.13 归并排序的基本思路是什么?
+
+采用了“分治”和“递归”的思想——将数组分成两部分然后递归处理.
+归并排序,顾名思义,就是将已经排序好的子序列合并成一个序列,这个过程也成为“二路归并”.
+如下图示:
+
+![node-merge-sort](/assets/node-merge-sort.png)
+
+伪代码实现如下:
+
+```js
+function merge(leftArr, rightArr) {
+	const result = [];
+	while(leftArr.length > 0 && rightArr.length > 0) {
+		// 取出最小值,放到结果集中
+		if (leftArr[0] < rightArr[0]) {
+			result.push(leftArr.shift());
+		} else {
+			result.push(rightArr.shift());
+		}
+	}
+	// 合并左右数组,也称为“二路归并”
+}
+function mergeSort(array) {
+	// 设定递归结束的标志
+	// 将数组分成两部分
+	// 递归调用并合并merge
+}
+```
+
+## No.14 快速排序的基本思路是什么?
 
 第一步:选取一个数作为基准(理论上可以随便选取);
 第二步:分区,比基准值小的放左边,大的放右边,基准值放在两个分区之间;
@@ -326,7 +356,7 @@ for (var i = 1; i < len; i++) {
 
 ```js
 const quicksort = arr = > {
-	const pivotIndex = Math.floor(arr.length / 2);
+	const pivotIndex = Math.floor(arr.length / 2); // 选取基准位置,尽量考虑随机性
 	const pivot = arr.splice(pivotIndex, 1)[0];
 	const left = [];
 	const right = [];
@@ -337,6 +367,7 @@ const quicksort = arr = > {
 			right.push(arr[idx]);
 		}
 	});
+	return quickSort(left).concat([pivot], quickSort(right)); // 连接左数组、基数组和右数组
 };
 ```
 
