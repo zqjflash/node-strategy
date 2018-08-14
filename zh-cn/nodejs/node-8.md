@@ -147,6 +147,128 @@ function socketCloseListener() {
 
 典型的情况是用户使用浏览器,请求的时间有点长,然后用户简单的按了一下F5刷新页面.这个操作会让浏览器取消之前的请求,然后导致服务端throw了一个socket hang up.
 
+## No.13 hosts文件是什么?什么叫DNS本地解析?
+
+hosts文件是个没有扩展名的系统文件,其作用就是将网址域名与其对应的IP地址建立一个关联“数据库”,当用户在浏览器中输入一个需要登录的网址时,系统会首先自动从hosts文件中寻找对应的IP地址.
+
+当我们访问一个域名时,实际上需要的是访问对应的IP地址,这时候,获取IP地址的方式,先是读取浏览器缓存,如果未命中->接着读取本地hosts文件,如果还是未命中->则向DNS服务器发送请求获取.在向DNS服务器获取IP地址之前的行为,叫做DNS本地解析.
+
+## No.14 DNS模块中.lookup与.resolve的区别?
+
+DNS服务主要基于UDP,Node.js实现的接口有两个方法:
+
+.lookup:通过系统自带的DNS缓存(如/etc/hosts)
+.lookup(hostname[,options], cb)
+
+.resolve:通过系统配置的DNS服务器指定的记录(rrtype指定)
+.resolve(hostname[,rrtype], cb)
+
+当你要解析一个域名的ip时,通过.lookup查询直接调用getaddrinfo来获取地址,速度很快,但是如果本地的hosts文件被修改了,.lookup就会拿hosts文件中的地方,而.resolve依旧是外部正常的地址.
+
+由于.lookup是同步的,所以如果由于什么不可控的原因导致getaddrinfo缓存或者阻塞是会影响整个Node.js进程的.
+
+## No.15 http请求响应的工作流程是什么样的呢?
+
+1. 客户端连接web服务器,与80端口建立一个tcp套接字;
+2. 发送http请求通过tcp套接字,客户端向服务器发送一个文本的请求报文(请求行、请求头、空行、请求体)4部分组成;
+3. 服务端接受请求并返回http响应体(状态行,响应头部,空行,响应数据);
+4. 释放TCP连接:web服务器主动关闭tcp套接字,释放tcp连接,客户端被动关闭tcp套接字,释放tcp连接.
+
+## No.16 https的加密流程是什么?
+
+1. 证书签发(发送公钥、申请者信息等);
+2. 协商算法(客户端产生随机数,发送SSL/TLS等信息,服务端产生随机数,回复SSL/TLS等信息);
+3. 验证算法(用户浏览器信任证书);
+4. 构建主密钥(客户端在CA公钥证书里面取公钥加密成随机数发送给服务端);
+  * 客户端:使用三次随机数生成master secret
+  * 服务端:使用三次随机数生成master secret
+5. 构建会话密钥:客户端和服务端分别并行使用master secret构建会话密钥;
+6. 对称加密交互:客户端使用ms加密信息,服务端使用ms解密.
+
+## No.17 WS请求/响应的报文与http有什么特别之处?
+
+请求报文差异:
+
+```js
+Upgrade: websocket
+Connection: Upgrade
+```
+
+响应报文差异:
+
+```js
+HTTP/1.1 101 Switching Protocols 状态101表示切换协议成功
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Accept: HSmrcsdfsdfsdfsdfd=
+```
+
+WS最常用的几个函数是:
+
+* onopen: 用于建立连接后的回调;
+* onmessage: 接收到服务端消息的回调;
+* onclose: 关闭回调;
+* send('xxx'): 发送数据.
+
+## No.18 从浏览器访问之后全流程都包含哪些?
+
+1. 从浏览器接收url到开启网络请求线程,进程与线程之间的关系;
+2. 开启网络线程到发布一个完整的http请求:dns查询、tcp/ip请求、五层因特网协议栈;
+3. 从服务器接收到请求,再到对应后台接收到请求:负载均衡、安全拦截、后台内部处理;
+4. 后台和前台的http交互(http头部、响应码、报文结构、cookie、静态资源的cookie优化、编解码、gzip压缩);
+5. http的缓存(http缓存头部、etag、cache-control);
+6. 浏览器接收到http数据包后,进行解析流程,包括解析html(词法分析然后解析成dom树)->解析css生成规则树->合并成render树->然后layout->painting渲染->复合图层的合成->GPU绘制->外链资源的处理->loaded和domcontentloaded;
+7. css的可视化格式模型(元素的渲染规则、包含块、控制框、BFC、IFC);
+8. JS引擎解析过程(js的解释阶段、预处理阶段、执行阶段生成执行上下文、VO、作用域链、回收机制);
+9. 跨域、web安全、hybrid模式;
+
+## No.19 Node.js中如何实现http请求的同步处理?
+
+解决方案:主要是通过net来实现,先通过net创建服务器,然后将请求保存在一个队列当中,最后从队列中慢慢的处理请求,就能够实现http的同步请求了.
+
+示例代码:
+
+```js
+let watingQueue = []; // 保存请求的队列,每个元素都是一个socket
+let curtSocket = null; // 当前处理的请求
+let httpServer = http.createServer(function(req, res) {
+    // 延迟1秒钟回复
+    res.on("finish", function() {
+        curtSocket = null;
+        // 一个请求结束了,处理下一个请求
+        dealRequest();
+    });
+});
+// 建立一个tcp的服务器(http协议是建立在tcp协议上)
+net.createServer(function(socket) {
+    // 将请求压入队列
+    enqueueSocket(socket);
+    // 处理请求(如果现在正在处理请求,不做任何处理)
+    dealRequest();
+}).listen();
+function dealRequest() {
+    curtSocket = watingQueue.shift();
+    httpServer.emit("connection", curtSocket);
+}
+```
+
+## No.20 什么是RPC?
+
+RPC远程过程调用协议,它是一种通过网络从远程计算机程序上请求服务,而不需要了解底层网络技术的协议.RPC协议假定某些传输协议的存在,如TCP或UDP,为通信程序之间携带信息数据,在OSI网络通信模型中,RPC跨域了传输层和应用层.
+
+常见的RPC方式:
+
+* Thrift:是一种接口描述语言和二进制通讯协议,它被用来定义和创建跨语言的服务.它被当作一个远程过程调用(RPC)框架来使用;
+
+* HTTP: 使用HTTP协议来进行RPC调用也很常见的,相比TCP连接,通过HTTP的方式性能会差一些,但是在使用以及调试上会简单一些.近期比较有名的框架是gRPC,基于protocol buffers 3.0协议的.
+
+* MQ: 使用消息队列来进行RPC调用,比较适合业务解耦/广播/限流等场景.
+
+## No.21 什么是zlip?
+
+在网络传输过程中,如果网速稳定的情况下,对数据进行压缩,压缩比率越大,那么传输的效率就越高,等同于速度越快,zlip模块提供了Gzip/GunZip,Deflate/Inflate和DeflateRaw/InflateRaw等压缩方法的类,这些类都属于可读写的Stream实例.
+
+
 # 参考
 
 ## [Node.js网络通信模块浅析](https://segmentfault.com/a/1190000008908077)
