@@ -120,6 +120,9 @@ TIME_WAIT是连接的某一方(可能是服务端也可能是客户端)主动断
 
 出现大量的TIME_WAIT比较常见的情况是,并发量大,服务器在短时间断开了大量连接.对应HTTP server的情况可能是没开启keepAlive.如果有开keepAlive,一般是等待客户端自己主动断开,那么TIME_WAIT就只存在客户端,而服务端则是CLOSE_WAIT的状态,如果服务端出现大量CLOSE_WAIT,意味着当前服务端建立的连接大面积的被断开,可能是目标服务集群重启之类.
 
+## No.11 ECONNRESET是什么错误?如何复现这个错误?
+
+Node.js提供的HttpServer默认设置了超时时间为2分钟,当一个请求的处理时间超过2分钟,HttpServer会自动将该请求的socket关闭掉,于是客户端便收到了ECONNRESET的错误信息.
 
 # 参考
 
