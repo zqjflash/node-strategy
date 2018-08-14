@@ -124,6 +124,29 @@ TIME_WAIT是连接的某一方(可能是服务端也可能是客户端)主动断
 
 Node.js提供的HttpServer默认设置了超时时间为2分钟,当一个请求的处理时间超过2分钟,HttpServer会自动将该请求的socket关闭掉,于是客户端便收到了ECONNRESET的错误信息.
 
+## No.12 socket hang up是什么意思?可能在什么情况下出现?
+
+hang up是挂断的意思,socket hang up也可以理解为socket被挂断.在Node.js中当你要response一个请求的时候,发现这个socket已经被“挂断”,就会报socket hang up错误.
+
+看一下lib/_http_client.js源码片段:
+
+```js
+function socketCloseListener() {
+    var socket = this;
+    var req = socket._httpMessage;
+    // ...
+    if (req.res && req.res.readable) {
+        // ...
+    } else if (!req.res && !req.socket._hadError) {
+        req.emit("error", createHangUpError()); // socket hang up
+        req.socket._hadError = true;
+    }
+    // ...
+}
+```
+
+典型的情况是用户使用浏览器,请求的时间有点长,然后用户简单的按了一下F5刷新页面.这个操作会让浏览器取消之前的请求,然后导致服务端throw了一个socket hang up.
+
 # 参考
 
 ## [Node.js网络通信模块浅析](https://segmentfault.com/a/1190000008908077)
