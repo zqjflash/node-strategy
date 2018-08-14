@@ -18,6 +18,8 @@
 
 ### [第一篇: 一个程序员的成长之路](/zh-cn/lighting-talk/lesson1.md)
 
+### [第二篇: 软件开发流程的认知](/zh-cn/lighting-talk/lesson2.md)
+
 ## 第一章 JS 基础
 
 > 与前端 JS 不同, 后端是直面服务器的, 更加偏向内存方面.
