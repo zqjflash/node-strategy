@@ -274,30 +274,51 @@ for (var i = 0; i < n; i++) {
 
 ## No.10 冒泡排序的基本思路是什么?
 
-第一步:比较相邻的元素,如果第一个比第二个大,就交换他们两个;
-第二步:对每一对相邻元素做同样的工作,从开始第一对到结尾的最后一对,在这一点,最后的元素应该会是最大的树;
-第三步:针对所有的元素重复以上的步骤,除了最后一个;
-第四步:持续每次对越来越少的元素重复上面的步骤,直到没有任何一对数字需要比较.
+第一步: 两两比较顺序,如果顺序错误则交换位置
 
 ```js
-for (var i = 0; i < 5; i++) {
-	for (var j = 0; j < 5 - (i-1); j++) {
-		//...
+function bubbleSort(arr) {
+	var i = arr.length - 1;
+	var j;
+	for(; i >= 0; i--) {
+		for (j = i - 1; j >= 0; j--) {
+			if (arr[j] > arr[j+1]) {
+				arr[j] = [arr[j+1], arr[j+1]=arr[j]][0];
+			}
+		}
 	}
+	return arr;
 }
 ```
 
 ## No.11 选择排序的基本思路是什么?
 
-第一步:首先在未排序序列中找到最小(大)元素,存放到排序序列的起始位置;
-第二步:再从剩余未排序元素中继续寻找最小(大)元素;
-第三步:放到已排序序列的末尾.
+第一步:在未排序的序列中找到最大(小)的元素与第1个元素交换;
+第二步:在剩余未排序元素中继续寻找最大(小)的元素与第2个元素交换;
+第三步:以此类推,直到排序完毕.
 
 ```js
-for (var i = 0; i < n - 1; i++) {
-	for (j = i + 1; j < n; j++) {
-		// ...
+function selectionSort(arr) {
+	var i = arr.length - 1;
+	var j;
+	var buffer;
+	var special; // 最大或最小值的位置
+	// 采用倒序,提高查找性能
+	for (; i >= 0; i--) {
+		special = i;
+		buffer = arr[i];
+		for (j = i - 1; j >= 0; j--) {
+			// 正序与倒序取决于这里的判断,max or min
+			if (buffer < arr[j]) {
+				// 当前的最值位置
+				special = j;
+				buffer = arr[j];
+			}
+		}
+		// 最值与当前位置的值交换位置
+		arr[special] = [arr[i], arr[i]=buffer][0];
 	}
+	return arr;
 }
 ```
 
@@ -375,3 +396,5 @@ const quicksort = arr = > {
 # 参考
 
 ## [前端工作中遇到的数据结构和算法](https://cloud.tencent.com/developer/article/1005459)
+
+## [JS算法数据结构精华集](https://github.com/lightningtgc/JavaScript-Algorithms)
