@@ -52,3 +52,30 @@ app.on('error', (err, ctx) => {
 3. 使用Promise来封装异步,并通过Promise的错误处理来handle错误;
 4. 在大型项目中,追溯错误是比较麻烦的,可以通过使用verror这样的方式对Error一层层封装,并在每一层将错误的信息一层层的包上,最后拿到的Error直接可以从message中获取用于定位问题的关键信息.
 
+## No.3 unhandledRejection是什么?
+
+当Promise被reject且没有绑定监听处理时,就会触发该事件,该事件对排查和追踪没有处理reject行为的Promise很有用.
+
+该事件的回调函数接收以下参数:
+
+* reason <Error> | <any> : 该Promise被reject的对象(通常为Error对象)
+* p: 被reject的Promise本身
+
+```js
+process.on('unhandledRejection', (reason, p) => {
+    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+});
+somePromise.then((res) => {
+    return reportToUser(JSON.pasre(res)); // parse故意写成pasre,Promise没有处理catch
+});
+```
+
+以下代码也会触发unhandledRejection事件:
+
+```js
+function SomeResource() {
+    this.loaded = Promise.reject(new Error('Resource not yet loaded!'));
+}
+var resource = new SomeResource(); // 没有.catch或.then处理
+```
+
