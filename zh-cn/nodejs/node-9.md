@@ -1,0 +1,66 @@
+# 第九节 OS
+
+## No.1 怎样让一个js文件变得像linux命令一样可执行?
+
+* 在对应的xxx.js文件头部加入#!/usr/bin/env node
+* chmod命令把js文件改为可执行即可,chmod +x xxx.js
+* 进入文件目录,命令行输入xxx文件名,就是相当于运行node xxx.js
+
+## No.2 什么是TTY?如何判断是否处于TTY环境?
+
+"tty"原意是指"teletype"即打字机,"pty"则是"pseudo-teletype"即伪打字机,在Unix中,/dev/tty*是指任何表现的像打字机的设备,例如终端(terminal).
+你可以通过w命令查看当前登录的用户情况,你会发现每登录了一个窗口就会有一个新的tty.
+
+在Node.js中你可以通过stdio的isTTY来判断当前进程是否处于TTY(如终端)的环境.
+
+```js
+$ node -p -e "Boolean(process.stdout.isTTY)"
+true
+$ node -p -e "Boolean(process.stdout.isTTY)" | cat
+false
+```
+
+## No.3 Node.js常用的CLI方法有哪些?
+
+主要有以下4种使用方式:
+
+* node [options][v8 options][script.js | -e "script"][arguments]
+* node debug [script.js | -e "script" | :]...
+* node --v8-options
+* 无参数直接启动REPL环境
+
+## No.4 不同操作系统的换行符(EOL)有什么区别?
+
+通常由line feed(LF, \n)和carriage return(CR, \r)组成,常见的情况:
+
+|  符号  | 系统 |
+| ------ | ------ |
+| LF(\n) | 在Unix或Unix相容系统(GNU/Linux,AIX,Xenix,Mac OSX,...)、BeOS、Amiga、RISC OS |
+| CR+LF(\r\n) | MS-DOC、微软视窗操作系统(Microsoft Windows)、大部分非unix的系统 |
+| CR(\r) | Apple II家族,Mac OS至版本9 |
+
+如果不了解EOL跨系统的兼容情况,那么在处理文件的行分割/行统计等情况时可能会被坑.
+
+## No.5 服务器负载是什么概念?如何查看负载?
+
+负载是衡量服务器运行状态的一个重要概念,通过负载情况,我们可以了解服务器的运行状态是清闲,良好,繁忙还是即将crash.
+通常我们要查看的负载是CPU负载
+
+命令行上可以通过uptime,top命令,Node.js中可以通过os.loadavg()来获取当前系统的负载情况:
+
+```js
+load average: 0.09, 0.05, 0.01
+```
+
+其中分别是最近1分钟,5分钟,15分钟内系统CPU的平均负载,当CPU的一个核工作饱和的时候负载为1,有几核CPU那么饱和负载就是几.
+在Node.js中单个进程的CPU负载查看可以使用pidusage模块;
+
+```js
+var pidusage = require("pidusage");
+setInterval(function() {
+    pidusage(process.pid, function(err, status) {
+        console.log(status);
+    });
+},1000);
+```
+除了CPU负载,对于服务端还需要了解网络负载,磁盘负载等.
