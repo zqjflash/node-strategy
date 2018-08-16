@@ -79,3 +79,25 @@ function SomeResource() {
 var resource = new SomeResource(); // 没有.catch或.then处理
 ```
 
+## No.4 uncaughtException有什么作用?
+
+当异常没有被捕获,而一路冒泡到Event Loop时就会触发process对象上的uncaughtException事件,默认情况下,Node.js对于此类异常会直接将其堆栈跟踪信息输出给stderr并结束进程.而为uncaughtException事件添加监听可以覆盖该默认行为,不会直接结束进程.
+
+```js
+process.on('uncaughtException', (err) => {
+    console.log(`Caught exception: ${err}`);
+});
+setTimeout(() => {
+    console.log('This will still run.');
+}, 500);
+nonexistentFunc(); // 故意造成异常,但没有捕获它
+console.log('This will not run.');
+```
+
+__需要合理地使用uncaughtException__
+
+* uncaughtException的初衷是可以让你拿到错误之后做一些回收处理,再执行process.exit,所以使用它其实算是一种非常规手段,应尽量避免使用它来处理错误.
+
+* 如果在.on指定的监听回调中报错不会被捕获,Node.js的进程会直接终止并返回一个非零的退出码,最后输出相应的堆栈信息.否则,会出现无限递归.
+
+* 所以在uncaughtException事件之后执行普通的恢复操作并不安全,官方建议是另外在专门准备一个monitor进程来做健康检查,并通过monitor来管理恢复情况,并在必要时重启.
