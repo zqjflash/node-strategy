@@ -70,3 +70,6 @@
 
 ### [第一节 测试相关法则](/zh-cn/test/test.md)
 
+## 第六章 存储
+
+### [第一节 数据库存储](/zh-cn/storage/storage.md)
