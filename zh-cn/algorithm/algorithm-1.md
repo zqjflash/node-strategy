@@ -408,3 +408,5 @@ const quicksort = arr = > {
 ## [前端工作中遇到的数据结构和算法](https://cloud.tencent.com/developer/article/1005459)
 
 ## [JS算法数据结构精华集](https://github.com/lightningtgc/JavaScript-Algorithms)
+
+## [JavaScript算法与数据结构](https://github.com/trekhleb/javascript-algorithms/blob/master/README.zh-CN.md)

@@ -62,6 +62,8 @@
 
 ### [第一节 前端工作中遇到的数据结构和算法](/zh-cn/algorithm/algorithm-1.md)
 
+### [第二节 数学](/zh-cn/algorithm/algorithm-2.md)
+
 ## 第四章 错误处理/调试
 
 ### [第一节 错误处理/调试](/zh-cn/error/error.md)
