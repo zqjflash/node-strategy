@@ -176,6 +176,22 @@ const save = function() {
 
 Erlang说的let it crash.是指不必过分担心位置的错误而做极其细致的防御性编程,而是将发生错误的process进行汇报处理,并尝试修复服务.
 
+## No.8 如何调试Node.js程序?
+
+* 使用console.log
+* 使用node-inspector
+* 使用built-in debugger(类似vscode的debug)
+
+## No.9 IOS与android远程调试的差异在哪里?
+
+主要差异在协议格式上:
+
+ios调试协议使用自己的RPC规范,数据格式只接受bplist格式,就是类xml格式;
+android调试协议使用ADB和webSocket,数据格式接受JSON格式;
+
+另外,由于IOS的内核是闭源,导致我们很难对webkit内核进行修改.
+
+
 # 参考
 
 ## [如何分析 Node.js 中的内存泄漏](https://zhuanlan.zhihu.com/p/25736931?group_id=825001468703674368)
