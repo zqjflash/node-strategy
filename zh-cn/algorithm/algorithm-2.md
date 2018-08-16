@@ -34,3 +34,27 @@ factorial(2);
 ```
 
 注:需要注意JS针对大数的阶乘,需要考虑使用String或数组的方式来实现,否则会出现精度下降;
+
+## No.3 斐波那契数
+
+线性推导数列: F(1)=F(2)=1,F(n)=F(n-1)+F(n-2) (n≥3)
+
+```js
+function fibonacci(n) {
+    const fibSequence = [1];
+    let currentValue = 1;
+    let previousValue = 0;
+    if (n === 1) {
+        return fibSequence;
+    }
+    let iterationsCounter = n - 1;
+    while (iterationsCounter) {
+        currentValue += previousValue;
+        previousValue = currentValue - previousValue;
+        fibSequence.push(currentValue);
+        iterationsCounter -= 1;
+    }
+    return fibSequence;
+}
+fibonacci(5); // [1, 1, 2, 3, 5]
+```
