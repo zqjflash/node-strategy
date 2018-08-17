@@ -97,3 +97,13 @@
     background-color: #666;
 }
 ```
+
+## No.2 H5有哪些比较实用的新功能?
+
+* File API支持本地文件操作;
+* Canvas/SVG支持绘图;
+* 拖拽功能支持;
+* 本地存储支持;
+* 表单多属性验证支持,如(pattern, maxlength等)
+* 原生音频视频支持等;
+
