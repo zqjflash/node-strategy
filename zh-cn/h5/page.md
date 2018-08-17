@@ -34,3 +34,25 @@
 }
 ```
 
+  2. 流体布局
+
+```
+.wrapper {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    background-color: #000;
+}
+.wrapper .inner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    width: 300px;
+    height: 300px;
+    background-color: #666;
+}
+```
+
