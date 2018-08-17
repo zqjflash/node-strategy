@@ -58,6 +58,8 @@
 
 ### [第十一节 高阶用法](/zh-cn/nodejs/node-11.md)
 
+### [第十二节 文件](/zh-cn/nodejs/node-12.md)
+
 ## 第三章 前端常用算法
 
 ### [第一节 前端工作中遇到的数据结构和算法](/zh-cn/algorithm/algorithm-1.md)
