@@ -11,8 +11,8 @@
 ```
 
 * 其次就是设定CSS样式
-
-  1. 使用Flex布局实现
+  
+1. 使用Flex布局实现
 
 ```
 .wrapper {
@@ -34,7 +34,7 @@
 }
 ```
 
-  2. 流体布局
+2. 流体布局
 
 ```
 .wrapper {
@@ -56,4 +56,44 @@
 }
 ```
 
+3. transform平移
 
+```
+.wrapper {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    background-color: #000;
+}
+.wrapper .inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    background-color: #666;
+}
+```
+
+4. 已知宽高绝对定位
+
+```
+.wrapper {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    background-color: #000;
+}
+.wrapper .inner {
+    position: absolute;
+    margin-top: 50%;
+    margin-left: 50%;
+    top: -150px;
+    left: -150px;
+    width: 300px;
+    height: 300px;
+    background-color: #666;
+}
+```
