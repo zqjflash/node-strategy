@@ -403,6 +403,11 @@ const quicksort = arr = > {
 };
 ```
 
+## No.15 百万数据进行查询与排序
+
+常用的百万数据查询算法:快速排序,归并排序,堆排序.
+
+
 # 参考
 
 ## [前端工作中遇到的数据结构和算法](https://cloud.tencent.com/developer/article/1005459)

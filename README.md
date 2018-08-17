@@ -66,6 +66,8 @@
 
 ### [第二节 数学](/zh-cn/algorithm/algorithm-2.md)
 
+### [第六节 排序](/zh-cn/algorithm/algorithm-6.md)
+
 ## 第四章 错误处理/调试
 
 ### [第一节 错误处理/调试](/zh-cn/error/error.md)
