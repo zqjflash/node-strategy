@@ -107,3 +107,22 @@
 * 表单多属性验证支持,如(pattern, maxlength等)
 * 原生音频视频支持等;
 
+## No.3 Sass与Less的区别?
+
+1. 处理方式不同
+
+Sass是基于ruby的,是在服务端处理的;
+Less是需要引入less.js来处理less代码;
+
+2. 变量符不同
+
+Sass采用$符号,less是@符号
+
+3. 输出设置
+
+Sass提供4种输出选项:nested(嵌套),compact(紧凑),compressed(压缩),expanded(扩展)
+Less没有
+
+4. 逻辑语法
+
+Sass支持条件或流程控制语句,可以使用if else, for循环,而less没有.
