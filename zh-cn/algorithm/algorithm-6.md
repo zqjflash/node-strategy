@@ -10,9 +10,9 @@
 
 堆排序的几个公式:
 
-Parent(i) = floor((i-1)/2) // i的父节点下标
-Left(i) = 2i + 1 // i的左子节点下标
-Right(i) = 2(i + 1) // i的右子节点下标
+* Parent(i) = floor((i-1)/2) // i的父节点下标
+* Left(i) = 2i + 1 // i的左子节点下标
+* Right(i) = 2(i + 1) // i的右子节点下标
 
 ```js
 function heapSort(array) {

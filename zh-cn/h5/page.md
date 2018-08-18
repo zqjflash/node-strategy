@@ -126,3 +126,71 @@ Less没有
 4. 逻辑语法
 
 Sass支持条件或流程控制语句,可以使用if else, for循环,而less没有.
+
+## No.4 如何进行响应式布局
+
+1. 使用css3 media screen
+
+* 宽度匹配内联写法:
+
+```js
+@media screen and (max-width:400px) {...}
+```
+
+* 宽度匹配外链写法:
+
+```js
+<link rel="stylesheet" media="screen and (max-width:400px)" href="xxx.css" />
+```
+
+2. 支持移动端的viewport
+
+```js
+<media name="viewport" content="width-device-width, initial-scale=1.0" />
+```
+
+3. 宽度使用百分比,字号大小使用rem
+
+* 响应式布局需要注意的事项
+
+  * 布局结构不要使用绝对宽度,而要使用百分比;
+  * 字体使用em或rem,不要使用px或pt;
+
+4. 图片的响应式处理
+
+```js
+img {max-width: 100%; max-height: 100%}
+```
+
+## No.4 浮动布局的优缺点是什么?
+
+* 优点:采用float布局,如果宽度太小,后面的元素会自动滚动到下方,不会出现滚动条
+* 缺点:浮动元素是脱离文档流,处理不好,会出现高度塌陷等问题.
+
+目前很多时候采用混搭:很多结构可以用display:inline-block或者position:absolute替代.
+
+## No.5 什么是BFC?
+
+BFC中文就是块级作用域,一个HTML元素要创建BFC,需要满足下列任意一个或多个条件即可:
+
+* float的值不是none;
+* position的值不是static或者relative;
+* display的值为inline-block、table-cell、flex、table-caption或者inline-flex;
+* overflow的值不是visible
+
+常见创建BFC的方法如下:
+
+* display: table; // 可能引发响应性问题
+* overflow: scroll; // 可能产生多余滚动条
+* float: left; // 将把元素移至左侧,并被其他元素环绕
+* overflow: hidden; // 将裁切溢出的元素
+
+## No.6 多个html页面如何共享数据?
+
+* 使用jsonp;
+* 同域下可以使用cookie, 可以记录用户访问网站的喜好等;
+* 同域下也可以也可以使用localStorage或sessionStorage;
+* 在范围域内也可以是用Service Worker
+* 使用postMessage;
+* 使用中转页面传递;
+* 使用隐藏的表单post方式.
