@@ -407,6 +407,26 @@ const quicksort = arr = > {
 
 常用的百万数据查询算法:快速排序,归并排序,堆排序.
 
+## No.16 如何实现一个Virtual DOM算法
+
+1. 用JavaScript对象结构表示DOM树的结构,然后用这个树构建一个真正的DOM树,插到文档中;
+
+```js
+function Element(tagName, props, children) {
+	this.tagName = tagName;
+	this.props = props;
+	this.children = children;
+}
+```
+
+2. 当状态变更的时候,重新构造一棵新的对象树,然后用新的树和旧的树进行比较,记录两棵树差异;
+
+* 使用深度优先遍历,记录差异;
+* 使用patches对象来记录每个节点差异的对象;
+* 定义集中差异的类型;
+* 列表的对比算法,通过动态规划求解,时间复杂度为O(M*N);
+
+3. 把2所记录的差异应用到步骤1所构建的真正的DOM树上,视图就更新了.根据不同类型的差异对当前节点进行DOM操作.
 
 # 参考
 
