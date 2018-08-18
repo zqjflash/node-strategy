@@ -80,6 +80,8 @@
 
 ### [第一节 数据库存储](/zh-cn/storage/storage.md)
 
+### [第二节 缓存](/zh-cn/storage/storage-2.md)
+
 ## 第七章 服务器
 
 ### [第一节 服务器常见配置](/zh-cn/server/server.md)
