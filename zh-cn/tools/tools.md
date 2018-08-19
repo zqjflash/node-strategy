@@ -43,3 +43,69 @@ yarn是同时执行所有任务,提高了性能;
 * 自动重定向:基于一定的次数,不会造成死循环;
 * 禁用一种或多种网络:比如2G或3G.
 
+## No.6 webpack的核心概念loader和chunk分别表示什么意思?
+
+* loader:能转换各类资源,并处理成对应模块的加载器,loader间可以串行使用;
+* chunk:code splitting后的产物,也就是按需加载的分块,装载了不同的module;
+plugin:webpack的插件实体,在webpack中你经常可以看到compilation.plugin("xxx", callback),这些事件在打包时由webpack来触发.
+
+## No.7 webpack编译和构建流程关键节点有什么?
+
+* compile开始编译;
+* make从入口点分析模块及其依赖的模块,创建这些模块对象;
+* build-module构建模块;
+* after-compile编译模块;
+* seal封装构建结果;
+* emit把各个chunk输出到结果文件;
+* after-emit完成输出.
+
+## No.8 webpack4.0的配置流程是怎样的
+
+```js
+module.exports = {
+    entry: './src/index.js', // 入口文件
+    output: { // webpack如何输出
+        path: path.resolve(__dirname, "dist"), // 定位,输出文件的目标路径
+        filename: "[name].js"
+    },
+    module: { // 模块的相关配置
+        rules: [ // 根据文件的后缀提供一个loader解析规则
+        ],
+        resolve: { // 解析模块的可选项
+        },
+        plugins: { // 插件的引用、压缩、分离美化
+        }
+    },
+    devServer: { // 服务于webpack-dev-server内部封装了一个express
+    }
+};
+```
+
+## No.9 Gulp工具的优势以及常用插件有哪些?
+
+PC端项目,我们推荐使用Gulp,Gulp基于Node.js中的stream工作流,效率更好,语法更自然,不需要编写复杂的配置文件.
+
+* gulp-sass(sass编译)
+
+示例代码:
+
+```js
+var sass = require("gulp-sass");
+gulp.src("./sass/**/*.scss")
+    .pipe(sass({
+        outputStyle: "compressed"
+    }))
+    .pipe(gulp.dest("./dist/css"));
+gulp.watch("./sass/**/*.scss", ["sass"]);
+```
+
+* gulp-minify-css(压缩css一行)
+* gulp-uglify(压缩js代码)
+
+```js
+var uglify = require("gulp-uglify");
+gulp.src("./js/*.js")
+    .pipe(gulpif(condition, uglify(), concat("all.js"))) // condition为true执行uglify()
+
+* gulp-sequence:顺序执行
+```
