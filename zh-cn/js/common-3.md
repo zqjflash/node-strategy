@@ -166,6 +166,123 @@ console.log(new Date, i);
 
 执行结果是:5,5,5,5,5,5
 
+3.如果期望代码的输出变成5->0,1,2,3,4
+
+* 一种做法:
+
+```js
+// 采用闭包
+for (var i = 0; i < 5; i++) {
+    (function(j) {
+        setTimeout(function() {
+            console.log(new Date, i);
+        },1000);
+    })(i);
+}
+console.log(new Date, i);
+```
+
+* 另一种做法:采用参数传递时按值传递的特征
+
+```js
+// 采用参数传递时按值传递的特征
+var output = function(i) {
+    setTimeout(function() {
+        console.log(new Date, i);
+    }, 1000);
+}
+for (var i = 0; i < 5; i++) {
+    output(i);
+}
+console.log(new Date, i);
+```
+
+* 第三种方法:使用ES6块级作用域,不过最后一行代码执行会报错,只能算对一半
+
+```js
+for (let i = 0; i < 5; i++) {
+    setTimeout(function() {
+        console.log(new Date, i);
+    }, 1000);
+}
+console.log(new Date, i);
+```
+
+4. 期望代码的输出变成0->1->2->3->4->5,且要求原有的代码块中循环和两处console.log不变.
+
+* 第一种方法:
+
+```js
+// 0~4的输出结果
+for (var i = 0; i < 5; i++) {
+    (function(j) {
+        setTimeout(function() {
+            console.log(new Date, j);
+        }, 1000 * j);
+    })(i);
+}
+setTimeout(function() {
+    console.log(new Date, i);
+}, 1000 * i);
+```
+
+* 第二种方法:基于Promise解决方案
+
+```js
+const tasks = [];
+for (var i = 0; i < 5; i++) {
+    ((j) => {
+       tasks.push(new Promise((resolve) => {
+           setTimeout(() => {
+               console.log(new Date, j);
+               resolve();
+           }, 1000 * j);
+       }));
+    })(i);
+}
+Promise.all(tasks).then(() => {
+    setTimeout(() => {
+        console.log(new Date, i);
+    }, 1000);
+});
+```
+
+* 第三种方法:ES6的代码写法
+
+```js
+const tasks = [];
+const output = (i) => new Promise((resolve) => {
+    setTimeout(() => {
+        console.log(new Date, i);
+        resolve();
+    }, 1000 * i);
+});
+for (var i = 0; i < 5; i++) {
+    tasks.push(output(i));
+}
+Promise.all(tasks).then(() => {
+    setTimeout(() => {
+        console.log(new Date, i);
+    }, 1000);
+});
+```
+
+* 第四种:使用ES7 async/await特性来优化代码
+
+```js
+const sleep = (timeountMS) => new Promise((resolve) => {
+    setTimeout(resolve, timeountMS);
+});
+(async () => {
+    for (var i = 0; i < 5; i++) {
+        await sleep(1000);
+        console.log(new Date, i);
+    }
+    await sleep(1000);
+    console.log(new Date, i);
+})();
+```
+
 # 参考
 
 ### [js浮点运算](https://blog.csdn.net/u013347241/article/details/79210840)
