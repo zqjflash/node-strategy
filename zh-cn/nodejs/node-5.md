@@ -295,6 +295,13 @@ Node.js异步简单划分为两种:硬异步和软异步;
 * 用第三方框架比方说async, q, promise等;
 * 用es7 async/await
 
+避免回调地狱的方式:
+
+* 模块化将回调函数转换为独立的函数;
+* 使用流程控制库,如async,q等;
+* 使用Promise或yield和Generators;
+* 使用async/await;
+
 ## No.17 怎样绑定Node程序到80端口?
 
 * sudo su切换到root账号,然后启动Node进程;
