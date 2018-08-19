@@ -100,4 +100,8 @@
 
 ## 第十一章 构建与代码工具
 
-### [第一节 构建与代码工具](zh-cn/tools/tools.md)
+### [第一节 构建与代码工具](/zh-cn/tools/tools.md)
+
+## 第十二章 前端性能监控与告警
+
+### [第一节 性能监控](/zh-cn/monitor/performance.md)
