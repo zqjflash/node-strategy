@@ -108,6 +108,10 @@ const p = spawn('node', ['b.js'], {
 
 在spawn的第三个参数中,可以设置detached属性,如果该属性为true,则会调用setsid方法.
 
+## No.11 什么时候应该在后台进程中使用消息服务?怎么处理工作线程的任务,怎么给work安排任务?
+
+消息队列适用于后台数据传输服务,比如发送邮件和数据图像处理.消息队列有很多解决方案,比如RabbitMQ和kafka.
+
 # 参考
 
 ## [Node.js充分利用CPU以及稳定性](https://segmentfault.com/a/1190000007343993)

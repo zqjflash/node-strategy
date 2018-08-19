@@ -139,8 +139,32 @@ setTimeout(function() {
 * 闭包外部匿名函数的作用域与setTimeout的闭包引用i2在for循环下对应的是3, 3, 3,执行三次闭包value2=3+3+3=9;
 * 闭包内部匿名函数的作用域与setTimeout的闭包引用i3在for循环下对应1, 2, 3,不同闭包实例相加value3=1+2+3=6.
 
+## No.7 JS同步和异步代码的区别、变量作用域、闭包的理解
 
+1. 以下代码的执行结果是什么?
 
+```js
+for (var i = 0; i < 5; i++) {
+    setTimeout(function() {
+        console.log(new Date, i);
+    }, 1000);
+}
+console.log(new Date, i);
+```
+执行结果:5,5,5,5,5,5
+
+2. 用肩头函数表示其前后的两次输出之间有1秒的时间间隔
+
+```js
+for (var i = 0; i < 5; i++) {
+    setTimeout(() => {
+        console.log(new Date, i);
+    }, 1000);
+}
+console.log(new Date, i);
+```
+
+执行结果是:5,5,5,5,5,5
 
 # 参考
 

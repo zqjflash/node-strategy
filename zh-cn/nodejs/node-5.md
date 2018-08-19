@@ -361,3 +361,14 @@ iptables –A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-port 8080
 并行指的是同一时刻多个CPU同时执行任务;
 并发指的是同一个CPU同时有多个任务竞争执行
 Node.js通过事件循环来挨个抽取事件队列中的一个个Task执行,从而避免了传统的多线程情况下2个队列对应一个CPU的时候上下文切换以及资源争抢/同步的问题,所以获得了高并发的成就.
+
+## No.20 async、await vs promise优点:
+
+* async、await代码简洁;
+* 对于错误处理,async、await可以同时处理同步和异步错误;
+* promise在条件语句上会造成嵌套层级过多,可读性差;
+* 中间值过滤问题;
+* Promise链返回的错误栈没有给出错误发生位置的线索;
+* 调试不能在箭头函数的返回处设置断点;
+
+

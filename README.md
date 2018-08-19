@@ -98,4 +98,6 @@
 
 ### [第一节 安全](/zh-cn/security/security.md)
 
+## 第十一章 构建与代码工具
 
+### [第一节 构建与代码工具](zh-cn/tools/tools.md)
