@@ -237,6 +237,32 @@ static defaultProps = {
 };
 ```
 
+## No.14 React与Vue的区别?
+
+1. 监听数据变化的实现原理不同
+
+React默认通过比较引用的方式,vue通过getter/setter以及一些函数劫持;
+
+2. 数据流的不同
+
+React数据流: Parent-(Props)->child-(state)->DOM
+Vue2.x数据流: Parent-(Props)->child-(v-modle)->DOM
+
+3. 组件通信的区别
+
+直接看图:
+
+![react-vs-vue](/assets/react-vs-vue.png)
+
+4. 模版渲染方式不同
+
+表层:模版语法不同,React是通过JSX渲染模版,Vue是通过扩展HTML预发进行渲染;
+深层:模版原理不同,React通过原生JS实现,Vue通过指令来实现;
+
+5. Vuex和Redux的区别
+
+在Redux中,我们每个组件都需要显示的用connect把需要的props和dispatch连接起来,Redux只能进行dispatch,并不能直接调用reducer进行修改.
+Vuex既可以dispatch action也可以commit updates
 
 # 参考
 
