@@ -134,6 +134,109 @@ const nextProps = {
 props.list === nextProps.list; // false
 ```
 
+## No.7 如何给route组件赋值key?
+
+通常情况下我们是没法传props给route组件的,解决方案是createElement方法.
+
+```js
+class App extends Component {
+    static createElement = (Component, ownProps) => {
+        // ...
+        return <Component key={userId} {...ownProps} />
+    };
+    render() {
+        return (
+            <Provider store={store}>
+                <Router createElement={App.createElement} ...>
+                </Router>
+            </Provider>
+        )
+    };
+}
+```
+
+## No.8 如何看待React与Preact的差异?
+
+1. 虚拟DOM树结构不一样,在preact中,children在props中永远是数组,但react中可能是字符串、数字、null、undefined、数组、单个虚拟DOM;
+2. ref机制也有差异,preact有些时候this.refs.xxx为undefined;
+3. Children.map实现也不同,preact是对原来的虚拟DOM进行复制,并修改或添加上一个新的key值;
+4. 事件系统也有差异,react的事件系统是基于冒泡的,preact是简单绑定元素节点上;
+5. diff算法差异:preact没有考虑到children出现相同key的情况.
+
+## No.9 React生命周期是什么样的?
+
+1. 可选的static方法;
+2. constructor构造函数;
+3. getChildContext获取子元素内容;
+4. componentWillMount模块渲染前;
+5. componentDidMount模块渲染后;
+6. componentWillReceiveProps组件从父组件接收新的props之前;
+7. shouldComponentUpdate判断模块需不需要重新渲染;
+8. componentWillUpdate组件开始重新渲染之前调用;
+9. componentDidUpdate模块渲染结束;
+10. componentWillunmount模块将从DOM中清除,做一些清理任务;
+11. 点击回调或者事件处理器如onClickSubmit()或onChangeDescription();
+12. render里的getter方法;
+13. 可选的render方法
+14. render()方法
+
+## No.9 组件的state和setState的作用是什么?
+
+React.js的state就是用来存储组件可变化的显示形态;
+setState方法由父类Component所提供,当我们调用这个函数的时候,React.js会更新组件的状态state,并且重新调用render方法.
+setState不会马上修改state,而是采用合并消息以后再统一重新渲染组件.
+
+## No.10 组件的props作用是什么?
+
+props作用是让React.js组件具有一定的"可配置"性,每个组件都可以接受一个props参数,它是一个对象,包含了所有你对这个组件的配置.
+
+React.js组件使用defaultProps默认配置来实现,示例代码:
+
+```js
+class LikeButton extends Component {
+    static defaultProps = {
+        xxx: xxx
+    };
+    // ...
+}
+```
+
+## No.11 state与props有什么区别?
+
+* state的主要作用是用于组件保存、控制、修改自身的可变状态;
+* props的主要作用是让使用该组件的父组件可以传入参数来配置该组件;
+
+记住一个简单的规则:尽量少地用state,尽量多地用props.
+
+## No.12 更新阶段的组件生命周期是什么样的?
+
+更新阶段组件的生命周期如下:
+
+1. shouldComponentUpdate(nextProps, nextState): 通过这个方法控制组件是否重新渲染;
+2. componentWillReceiveProps(nextProps): 组件从父组件接收到新的props之前调用;
+3. componentWillUpdate(): 组件开始重新渲染之前调用;
+4. componentDidUpdate(): 组件重新渲染并且把更改变更到真实的DOM以后调用.
+
+## No.13 PropTypes和组件参数的验证是怎样的?
+
+1. 首先,安装一个React提供的第三方库prop-types;
+
+2. 其次,配置参数规则
+
+```js
+static propTypes = {
+    comment: PropTypes.object.isRequired
+};
+```
+
+3. 再次,设置参数默认值
+
+```js
+static defaultProps = {
+    comment: {}
+};
+```
+
 
 # 参考
 
