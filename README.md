@@ -20,6 +20,8 @@
 
 ### [第二篇: 软件开发流程的认知](/zh-cn/lighting-talk/lesson2.md)
 
+### [第三篇: 前端web测试、上报、监控体系构建](/zh-cn/lighting-talk/lesson3.md)
+
 ## 第一章 JS 基础
 
 > 与前端 JS 不同, 后端是直面服务器的, 更加偏向内存方面.
