@@ -32,7 +32,7 @@
   * 用户行为: 对用户操作的数据,进行统计,分析,指引产品优化方向;
   * 监控:实时监控失败率,进行报警,包括邮件、短信提醒;
 
-## 1. 首页上报 页面初始化性能体验
+## 一. 首页上报 页面初始化性能体验
 
 > 目前的测速上报体系依赖于浏览器"performance"属性,绝大部分浏览器都支持;
 
@@ -40,7 +40,7 @@
 
 关于performance的各个接口描述就不在这里列举了,可以去查看阮大大的博客[Performance API](http://javascript.ruanyifeng.com/bom/performance.html)
 
-## 2. 几个比较重要的统计阶段
+### 1. 几个比较重要的统计阶段
 
 * 页面加载完成的时间,这几乎代表了用户等待页面可用的时间
 
@@ -103,3 +103,111 @@ unloadEvent = unloadEventEnd - unloadEventStart;
 ```js
 connect = connectEnd - connectStart;
 ```
+
+### 2. 业务埋点:放在模版中或通过构建工具植入到代码
+
+* 第一个script不受css阻塞,记录开始时间
+
+```js
+<head>
+    ...
+    <!-- 开始计时 -->
+    <script>var T = {start: Date.now()};</script>
+    ...
+</head>
+```
+
+* 第二个头部结束的时候,常规此时除了内联样式之外的CSS应该已经加载完成
+
+```js
+<head>
+...
+<!-- header css加载结束-->
+<script>T.header=Date.now();</script>
+</head>
+```
+
+* 第三body dom加载完成
+
+```js
+<body>
+...
+<!--dom body加载完成-->
+<script>T.body=Date.now();</script>
+</body>
+```
+
+* 第四,JS主逻辑开启
+
+```js
+<script src="main.js"></script>
+<script>T.mainStart=Date.now();</script>
+```
+
+* 第五,JS渲染结束
+
+```js
+<script>xxxxx</script>
+<script>xxxxx</script>
+<script>xxxxx</script>
+<script>T.mainEnd=Date.now();</script>
+```
+
+注:这里面需要区分直出和非直出,原则上,有一些CGI接口是异步获取的,因此mainEnd可能无法作为页面全部都渲染完成的结束时间.但是,如果是react,vue等框架开发,在非web work场景下,首先JS是按顺序加载执行的,webkit内JS代码本身是单线程执行,这样至少已经render一次,此时用户也基本看到页面样式
+
+当然,不同的团队可能制定的标准语义值有差异
+
+```js
+domEnd: 20,
+cssEnd: 21,
+jsEnd: 22,
+firstScreen: 23,
+dataEnd: 24,
+allEnd: 25
+```
+
+### 3. 需要注意的事项
+
+* 非同步执行的页面渲染,需要注意如下:
+
+  * 页面存在iframe的情况下也需要判断加载时间;
+  * 异步渲染的情况下应在异步获取数据插入之后再计算首屏;
+  * css重要背景图片可以通过JS请求图片url来统计(浏览器不会重复加载)
+  * 没有图片则以统计JS执行时间为首屏,即认为文字出现时间
+
+* 浏览器白屏时间: 可以理解为dom加载完成记作白屏结束.
+
+* 总下载时间: 默认可以统计onload时间,这样可以统计同步加载的资源全部加载完的耗时.
+
+## 二. 测试,返回码上报
+
+### 1. 关注接口上报的统计维度
+
+比如:appid,platform,domain,cgi,type,code,time,apn等;
+为了不浪费code和type,请务必规范业务的返回码.协议规范是统计数据有意义的基础.
+
+### 2. 组织上报的数据
+
+更好的规范,才能发挥数据上报,更有价值的反馈和统计.
+
+```js
+let CONFIG = {
+    appid: getAppId(),
+    platform: getPlatform(),
+    domain: "xxx.com",
+    apn: "4G"
+    //...
+}
+```
+
+### 3. 上报的频率控制
+
+默认delay一个合理值,如果希望立即上报,那么delay设为0.
+
+```
+setTimeout(doReport, delay);
+```
+
+## 三. 错误上报
+
+需要跟踪页面实时上报的错误,涉及JS错误以及主动上报.核心就是包装了window.onerror这个事件,进行error stack和message的包装,进行上报,因此使用的时候,自己就不要重写window.onerror,可以使用try catch进行异常捕获.
