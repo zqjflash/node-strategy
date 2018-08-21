@@ -58,3 +58,41 @@ function fibonacci(n) {
 }
 fibonacci(5); // [1, 1, 2, 3, 5]
 ```
+
+## No.4 素数检测
+
+> 素数，指在大于1的自然数中，除了1和该数自身外，无法被其他自然数整除的数
+
+```js
+function trialDivision(number) {
+    // 检查数字是否为整数
+    if (number % 1 !== 0) {
+        return false;
+    }
+    // 如果number小于1，则根据定义它不是素数
+    if (number <= 1) {
+        return false;
+    }
+    // 从2到3的所有数字都是素数
+    if (number <= 3) {
+        return true;
+    }
+    // 如果数字被2整除,根据定义也不符合
+    if (number % 2 === 0) {
+        return false;
+    }
+    // 如果当前数字被自身平方根+2之后整除,说明也不是素数
+    const dividerLimit = Math.sqrt(number);
+    for (let divider = 3; divider <= dividerLimit; divider += 2) {
+        if (number % divider === 0) {
+            return false;
+        }
+    }
+    return true;
+}
+trialDivision(6);
+trialDivision(5);
+```
+
+
+
