@@ -354,24 +354,26 @@ obj.arr[1] // 5 因为浅拷贝会导致obj.arr和shallowObj.arr指向同一块�
 * 深拷贝示例代码:
 ```js
 var obj = {a: 1, arr: [2, 3]};
-var deepObj = deepCopy(obj);
-function deepCopy(obj) {
-    // 定义一个对象,用来确定当前的参数是数组还是对象
-    var objArray = Array.isArray(obj) ? [] : {};
-    if (obj && typeof obj === "object") {
-        for (var key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                if (obj[key] && typeof obj[key] === "object") {
-                    console.log(obj[key]);
-                    objArray[key] = deepCopy(obj[key]);
-                } else {
-                    objArray[key] = obj[key];
-                }
-            }
+Object.cloneObj=function (targetObj,sourceObj) {
+    var names=Object.getOwnPropertyNames(sourceObj);
+    for(var i=0;i<names.length;i++){
+        var desc=Object.getOwnPropertyDescriptor(sourceObj,names[i]);
+        if(typeof(desc.value)==="object" && desc.value){
+            var obj={};
+            Object.defineProperty(targetObj,names[i],{
+                enumerable:desc.enumerable,
+                configurable:desc.configurable,
+                writable:desc.writable,
+                value:obj
+            });
+            Object.cloneObj(desc.value,obj);
+        }else{
+            Object.defineProperty(targetObj,names[i],desc);
         }
     }
-    return objArray;
-}
+    return targetObj;
+};
+var deepObj = Object.cloneObj({}, obj);
 deepObj.arr[1] = 5;
 obj.arr[1] // 3,递归复制到新对象,所以修改目标对象的值不影响原对象的值
 ```

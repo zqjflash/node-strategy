@@ -22,6 +22,8 @@
 
 ### [第三篇: 前端web测试、上报、监控体系构建](/zh-cn/lighting-talk/lesson3.md)
 
+### [第四篇: 如何造一个类RN轮子](/zh-cn/lighting-talk/lesson4.md)
+
 ## 第一章 JS 基础
 
 > 与前端 JS 不同, 后端是直面服务器的, 更加偏向内存方面.
