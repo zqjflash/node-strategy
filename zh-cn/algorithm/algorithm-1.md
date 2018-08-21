@@ -428,6 +428,9 @@ function Element(tagName, props, children) {
 
 3. 把2所记录的差异应用到步骤1所构建的真正的DOM树上,视图就更新了.根据不同类型的差异对当前节点进行DOM操作.
 
+更详细的解析请点击[如何实现一个Virtual DOM算法](https://github.com/livoras/blog/issues/13)
+
+
 # 参考
 
 ## [前端工作中遇到的数据结构和算法](https://cloud.tencent.com/developer/article/1005459)
