@@ -51,13 +51,12 @@ plugin:webpack的插件实体,在webpack中你经常可以看到compilation.plug
 
 ## No.7 webpack编译和构建流程关键节点有什么?
 
-* compile开始编译;
-* make从入口点分析模块及其依赖的模块,创建这些模块对象;
-* build-module构建模块;
-* after-compile编译模块;
-* seal封装构建结果;
-* emit把各个chunk输出到结果文件;
-* after-emit完成输出.
+* 解析webpack配置参数,合并从shell传入和webpack.config.js文件里配置的参数,生产最后的配置结果;
+* 注册所有配置的插件,好让插件监听webpack构建生成周期的事件节点,以作出对应的反应;
+* 从配置的entry入口文件开始解析文件构建AST语法树,找出每个文件所依赖的文件,递归下去;
+* 在解析文件递归的过程中根据文件类型和loader配置找出合适的loader用来对文件进行转换;
+* 递归完后得到每个文件的最终结果,根据entry配置生成代码块chunk;
+* 输出所有chunk到文件系统;
 
 ## No.8 webpack4.0的配置流程是怎样的
 
@@ -109,3 +108,12 @@ gulp.src("./js/*.js")
 
 * gulp-sequence:顺序执行
 ```
+
+## No.10 babel把ES6转成ES5的原理是什么?
+
+1. 它就是个编译器,输入语言是ES6+,编译目标语言是ES5;
+2. babel官方工作原理如下:
+
+  * 解析: 将代码字符串解析成抽象语法树;
+  * 变换: 对抽象语法树进行变换操作;
+  * 再建: 根据变换后的抽象语法树再生成代码字符串.

@@ -165,6 +165,12 @@ for (let i of s) {
 }
 ```
 
+## No.14 ES6模块与CommonJS模块的差异
+
+1. CommonJS模块输出的是一个值的拷贝,ES6模块输出的是一个值的引用;
+2. CommonJS模块是运行时加载,ES6模块是编译时输出接口;
+3. ES6输入的模块变量,只是一个符号链接,所以这个变量是只读的,对它进行重新赋值就会报错.
+
 # 参考
 
 ### [ECMAScript 6入门 阮一峰](http://es6.ruanyifeng.com/)
