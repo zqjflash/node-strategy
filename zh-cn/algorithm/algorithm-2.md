@@ -94,5 +94,27 @@ trialDivision(6);
 trialDivision(5);
 ```
 
+## No.5 欧几里得算法 - 计算最大公约数 (GCD)
+
+> 该算法的思想是基于辗转相除法的原理,辗转相除法是用来计算两个整数的最大公约数.假设两个整数为a和b,他们的公约数可以表示为gcd(a, b).如果gcd(a,b) = c;则必然a = mc和b = nc, a除以b得商和余数,余数r可以表示为r=a-bk,k这里是系数,因为c为a和b的最大公约数,所以c也一定是r的最大公约数,因为r = mc - nck = (m-nk)c;
+
+因此gcd(a, b) = gcd(b, r),相当于把较大的一个整数用一个较小的余数替换,不断的迭代,直到余数为0,则找到最大公约数.
+
+举例两个整数为1071和462:
+
+第一步: 1071 / 462 = 2 * 462 + 147;
+第二步: 462 / 147 = 3 * 147 + 21;
+第三步: 147 / 21 = 7 * 21 + 0;
+
+此时余数为零,则21为两个数的最大公约数.
+
+```js
+function euclideanAlgorithm(originalA, originalB) {
+    const a = Math.abs(originalA);
+    const b = Math.abs(originalB);
+    return (b === 0) ? a : euclideanAlgorithm(b, a % b);
+}
+euclideanAlgorithm(1071, 462); // 21
+```
 
 
