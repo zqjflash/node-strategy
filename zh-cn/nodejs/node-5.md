@@ -18,7 +18,18 @@ doSth.then(() => {
 ```
 注:Promise封装的代码肯定是同步的,然后then的执行是异步的.
 
-## No.2 setTimeout与Promise关系?
+## No.2 Promise如何模拟终止?
+
+1. 当新对象保持"pending"状态时,原Promise链将会中止执行;
+2. return new Promise(() => {}); // 返回"pending"状态的Promise对象;
+3. 从如何停掉Promise链说起(Promise内存泄露问题)
+
+## No.3 Promise放在try catch里面有什么结果?
+
+1. Promise对象的错误具有冒泡性能,会一直向后传递,直到被捕获为止,也就是说,错误总会被下一个catch语句捕获;
+2. 当Promise链中抛出一个错误时,错误信息沿着链路向后传递,直至被捕获.
+
+## No.4 setTimeout与Promise关系?
 
 看一个问题:setTimeout到10s之后再.then调用,那么hello是会在10s之后在打印吗?还是一开始就打印?
 
@@ -56,7 +67,7 @@ console.log(5);
 ```
 执行结果:2->3->5->4->1
 
-## No.3 什么是EventEmitter?
+## No.5 什么是EventEmitter?
 
 Events是node.js中一个非常重要的core模块,在node中有许多重要的core API都是依赖其建立的.比如Stream是基于 Events实现的,而fs,net,http 等模块都依赖Stream.
 
@@ -64,7 +75,7 @@ EventEmitter是node中一个实现观察者模式的类,主要功能是监听和
 
 通过继承EventEmitter来使得一个具有node提供的基本的event方法,这样的对象可以称作emitter,而触发emit事件的cb则称作listener.
 
-## No.4 如何实现一个EventEmitter?
+## No.6 如何实现一个EventEmitter?
 
 主要分三步: 1) 定义一个类并实现call调用; 2) 继承EventEmitter; 3) 实例化调用
 
@@ -82,7 +93,7 @@ em.on("hello", function(data) {
 em.emit("hello", "EventEmitter传递消息真方便!");
 ```
 
-## No.5 EventEmitter有哪些典型应用?
+## No.7 EventEmitter有哪些典型应用?
 
 * 模块间传递消息;
 * 回调函数内外传递消息;
@@ -91,7 +102,7 @@ em.emit("hello", "EventEmitter传递消息真方便!");
 
 使用emitter处理问题可以处理比较复杂的状态场景,比如TCP的复杂状态机,做多项异步操作的时候每一项都可能报错,这个时候.emit错误并且执行某些.once的操作可以快速定位到问题.
 
-## No.6 怎么捕获EventEmitter的错误事件?
+## No.8 怎么捕获EventEmitter的错误事件?
 
 监听error事件即可,如果有多个EventEmitter,也可以用domain来统一处理错误事件.
 
@@ -109,13 +120,13 @@ myDomain.run(function() {
 });
 ```
 
-## No.7 domain的原理是?为什么要弃用它?
+## No.9 domain的原理是?为什么要弃用它?
 
 domain本质上是一个EventEmitter对象,捕获异步异常的基本思路是创建一个域,cb函数会在定义时继承上一层的域,报错通过当前域.emit("error", err)方法触发错误事件,将错误传递上去,从而使得异步错误可以被强制捕获.
 
 但是,domain的引入也带来了更多新的问题,比如依赖的模块无法继承你定义的domain,导致写的domain无法cover依赖模块报错,而且,很多人由于不了解Node.js的内存/异步流程等问题,在使用domain处理报错的时候,没有做到完善的处理并盲目的让代码继续走下去,这很可能导致项目完全无法维护.
 
-## No.8 EventEmitter中的newListener事件有什么用处?
+## No.10 EventEmitter中的newListener事件有什么用处?
 
 newListener可以用来做事件机制的反射,特殊应用,事件管理等,当任何on事件添加到EventEmitter时,就会触发 newListener事件,基于这种模式,我们可以做很多自定义处理.
 
@@ -139,7 +150,7 @@ emitter3.on("hello", function() {
 });
 ```
 
-## No.9 EventEmitter的emit是同步还是异步?
+## No.11 EventEmitter的emit是同步还是异步?
 
 EventEmitter的emit其实是同步的,在官方文档中有说明,如果有多个callback添加到监视器,最终会按照添加的顺序执行
 
@@ -186,7 +197,7 @@ emitter.emit('myEvent');
 
 // 执行结果一次 hi:虽然监听两次on,但实际上是同步执行之后再打印.
 
-## No.10 如何判断接口是否异步?是否只要有回调函数就是异步?
+## No.12 如何判断接口是否异步?是否只要有回调函数就是异步?
 
 每个写node的人都有一套自己的判断方式: 
 
@@ -196,7 +207,7 @@ emitter.emit('myEvent');
 
 单纯使用回调函数并不一定是异步,IO的操作才可能是异步,除此之外还有使用setTimeout等方式实现异步.
 
-## No.11 nextTick,setTimeout以及setImmediate三者有什么区别?
+## No.13 nextTick,setTimeout以及setImmediate三者有什么区别?
 
 Node.js的特点是事件循环,其中不同的事件会分配到不同的事件观察者身上,比如idle观察者,定时器观察者,I/O观察者等等,事件循环每次循环称为一次Tick,每次Tick按照先后顺序从事件观察者中取出事件进行处理.
 
@@ -231,11 +242,11 @@ setInterval(function () {
 // 代码的执行顺序:console1->nextTick2->setTimeout3->setImmediate4->console1->nextTick2 setImmediate4->setTimeout3
 优先级:nextTick->setImmediate/setTimeout(0)
 
-## No.12 有这样一种场景,你在线上使用koa搭建了一个网站,这个网站项目中有一个你同事写的接口A,而A接口中在特殊情况下会变成死循环,那么首先问题是,如果触发了死循环,会对网站造成什么影响?
+## No.14 有这样一种场景,你在线上使用koa搭建了一个网站,这个网站项目中有一个你同事写的接口A,而A接口中在特殊情况下会变成死循环,那么首先问题是,如果触发了死循环,会对网站造成什么影响?
 
 Node.js中执行js代码的过程是单线程的,只有当前代码都执行完,才会切入事件循环,然后从事件队列中pop出下一个回调函数开始执行代码,所以只要出现死循环,就阻塞整个js的执行流程了.
 
-## No.13 如何实现一个sleep函数?
+## No.15 如何实现一个sleep函数?
 
 ```js
 function sleep(ms) {
@@ -248,7 +259,7 @@ function sleep(ms) {
 ```
 本质上就是利用while(true)阻塞主线程
 
-## No.14 如何实现一个异步的reduce?(注:不是异步完了之后同步reduce)
+## No.16 如何实现一个异步的reduce?(注:不是异步完了之后同步reduce)
 
 实现原理:利用promise.then递归执行
 
@@ -280,7 +291,7 @@ result.then((n) => {
 });
 ```
 
-## No.15 Node.js中的异步和同步怎么理解?
+## No.17 Node.js中的异步和同步怎么理解?
 
 Node.js是单线程,异步是通过一次次的循环事件队列来实现的,同步则是阻塞式的IO,这在高并发情况下,将会是很大的性能问题,同步一般只在基础框架的启动时使用,用来加载配置文件,初始化程序.
 
@@ -288,7 +299,7 @@ Node.js异步简单划分为两种:硬异步和软异步;
 硬异步是指由于IO操作或者外部调用走libuv而需要异步的情况,当然也存在readFileSync、execSync等例外情况.
 软异步是指:通过setTimeout、nextTick、setImmediate等方式来实现的异步.
 
-## No.16 有哪些方法可以进行异步流程的控制?
+## No.18 有哪些方法可以进行异步流程的控制?
 
 * 多层嵌套回调;
 * 为每个回调写单独函数,函数里边再回调;
@@ -302,7 +313,7 @@ Node.js异步简单划分为两种:硬异步和软异步;
 * 使用Promise或yield和Generators;
 * 使用async/await;
 
-## No.17 怎样绑定Node程序到80端口?
+## No.19 怎样绑定Node程序到80端口?
 
 * sudo su切换到root账号,然后启动Node进程;
 * 使用apache/nginx做反向代理
@@ -323,7 +334,7 @@ iptables –A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-port 8080
 
 * Node监听端口调整在1024以上,避开80
 
-## No.18 有哪些方法可以让Node程序遇到错误后自动重启?
+## No.20 有哪些方法可以让Node程序遇到错误后自动重启?
 
 * runit 进程管理工具,运行在linux、macos等;
 * forever简单的命令式Node.js的守护进程,能够启动、停止、重启,完全基于命令行;
@@ -356,13 +367,13 @@ iptables –A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-port 8080
 * God监听进程方法有ping、notifyKillPM2、duplicateProcessId等;
 * God进程运行模式有两种:Cluster集群模式和fork模式;
 
-## No.19 并行与并发有什么区别?
+## No.21 并行与并发有什么区别?
 
 并行指的是同一时刻多个CPU同时执行任务;
 并发指的是同一个CPU同时有多个任务竞争执行
 Node.js通过事件循环来挨个抽取事件队列中的一个个Task执行,从而避免了传统的多线程情况下2个队列对应一个CPU的时候上下文切换以及资源争抢/同步的问题,所以获得了高并发的成就.
 
-## No.20 async、await vs promise优点:
+## No.22 async、await vs promise优点:
 
 * async、await代码简洁;
 * 对于错误处理,async、await可以同时处理同步和异步错误;

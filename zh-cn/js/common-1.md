@@ -419,6 +419,14 @@ var pp = new Person('yyy');
 pp.getName(console.log).setName("zzz").getName(console.log);
 ```
 
+## No.18 JS自定义事件的实现方式有哪些?
+
+> 原生提供3个方法实现自定义事件
+
+1. createEvent:设置事件类型,是html事件还是鼠标事件;
+2. initEvent: 初始化事件,事件名称,是否允许冒泡,是否阻止自定义事件;
+3. dispatchEvent: 触发事件.
+
 # 参考
 
 ### [函数防抖与节流](https://mp.weixin.qq.com/s/xMCna_VtoOev0K5uK1J0aQ)

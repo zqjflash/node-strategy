@@ -58,6 +58,11 @@ HttpOnly: 可以防止cross-site scripting访问;
 幂等性: 指一次或多次请求某一个资源应该具有同样的副作用;
 POST是新建(create)资源,非幂等性,同一个请求如果重复POST会新建多个资源.PUT是Update/Replace,幂等,同一个PUT请求重复操作会得到同样的结果.
 
+缓存性: Get请求能缓存,Post不能;
+传输差异: Post通过request body来传输,Get请求都包含在URL;
+传输大小: get传输会受URL的长度限制,POST则不影响;
+
+
 ## No.6 什么是跨域请求?如何允许跨域?
 
 出于安全考虑,默认情况下使用XMLHttpRequest和Fetch发起HTTP请求必须遵守同源策略,即只能向相同host请求(host=hostname:port).向不同host的请求被称作跨域请求(cross-origin HTTP request).可以通过设置CORS headers即Access-Control-Allow-系列来允许跨域,以nginx.conf配置为例:
