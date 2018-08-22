@@ -196,6 +196,43 @@ SubType.prototype.sayAge = function() {
 };
 ```
 
+## No.6 如何实现一个EventBus?
+
+```js
+class EventBus {
+    constructor() {
+        this.eventList = new Map();
+    }
+    $emit(evName, ...args) {
+        let fn = this.eventList.get(evName);
+        if(!fn) {
+            console.error(`'${evName}' is undefined`);
+            return;
+        }
+        this.eventList.get(evName).apply(this, args);
+    }
+    $on(evName, fn) {
+        // 防止相同事件重复监听
+        if(this.eventList.get(evName)) {
+            console.error(`duplicated event name : '${evName}'`);
+            return;
+        }
+        this.eventList.set(evName, fn);
+        return {
+            remove: () => {
+                this.eventList.delete(evName); // 提供delete事件
+            }
+        };
+    }
+}
+var eventBus = new EventBus();
+eventBus.$on("receive", function(params) {
+    console.log(`${params}`);
+});
+eventBus.$emit("receive", "test"); // 打印出test
+```
+
+
 # 参考
 
 ### [JavaScript函数柯里化](https://zhuanlan.zhihu.com/p/31271179)
