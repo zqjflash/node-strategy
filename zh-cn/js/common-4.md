@@ -86,35 +86,86 @@ publisher.notify('2 subscribers will both perform process'); // 发布一个字�
 ## No.2 函数柯里化?
 
 柯里化:是把接受多个参数的函数,变换成一个单一参数的函数,并且返回接受余下的参数而且返回结果的新函数的技术.
-基本的柯里化函数示例代码:
+柯里化有3个常见的作用:
+
+* 参数复用
+* 提前返回
+* 延迟计算/运行;
+
+1. 参数复用-基本的柯里化函数示例代码:
+
+```js
+var currying = function(fn) {
+  var args = [].slice.call(arguments, 1); // args指的是传入的参数
+  return function() {
+    var newArgs = args.concat([].slice.call(arguments)); // 传入的参数与已有的参数整合,便于处理
+    return fn.apply(null, newArgs); // 这些参数由fn来处理
+  }
+};
+var count = 0;
+var cost = currying(function() {
+    var allArgs = [].slice.call(arguments); // 获取所有函数的参数
+    for (var i = 0; i < allArgs.length; i++) {
+        count += allArgs[i];
+    }
+    return count;
+},10);
+cost(100);
+console.log(cost(100)); // 求值并且输出220
+```
+
+这里的参数10在每次调用的时候都复用上
+
+2. 提前返回-基本示例代码:
+
+```js
+var addEvent = (function() {
+    if (window.addEventListener) {
+        return function(el, sType, fn, capture) {
+            el.addEventListener(sType, function(e) {
+                fn.call(el, e);
+            }, (capture));
+        };
+    } else if (window.attachEvent) {
+        return function(el, sType, fn, capture) {
+            el.attachEvent("on" + sType, function(e) {
+                fn.call(el, e);
+            });
+        };
+    }
+})();
+```
+
+这段代码初始化addEvent执行时实现了部分应用,无须每次添加事件重新走一遍判断逻辑
+
+3. 延迟计算,基于参数复用的例子加以改进:
 
 ```js
 var currying = function(fn) {
   var args = [];
   return function() {
-    if (arguments.length === 0) {
-      return fn.apply(this, args); // 没传参数时，调用这个函数
-    } else {
-      [].push.apply(args, arguments); // 传入了参数，把参数保存下来
-      return arguments.callee; // 返回这个函数的引用
-    }
+      if (arguments.length === 0) {
+        return fn.apply(null, args); // 这些参数由fn来处理
+      } else {
+        // args = args.concat([].slice.call(arguments)); // 传入的参数与已有的参数整合,便于处理
+        args = args.concat([...arguments]); // ES6写法
+      }
   }
-}
-var cost = (function() {
-    var money = 0;
-    return function() {
-        for (var i = 0; i < arguments.length; i++) {
-            money += arguments[i];
-        }
-        return money;
+};
+var count = 0;
+var cost = currying(function() {
+    var allArgs = [].slice.call(arguments); // 获取所有函数的参数
+    for (var i = 0; i < allArgs.length; i++) {
+        count += allArgs[i];
     }
-})();
-var cost = currying(cost);
-cost(100); // 传入了参数,不真正求值
-cost(200); // 传入了参数,不真正求值
-cost(300); // 传入了参数,不真正求值
-console.log(cost()); // 求值并且输出600
+});
+cost(100);
+cost(200);
+cost(); // 这里才最终计算
+console.log(count); // 求值并且输出300
 ```
+
+
 
 ## No.3 移动端的touch click事件的理解以及点透问题处理
 
