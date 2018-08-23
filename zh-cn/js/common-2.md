@@ -19,9 +19,25 @@ let:变量只能声明一次,还有一个好处就是当我们写代码比较多
 var:变量可以多次声明.存在变量提升
 const:定义只读的常量,一旦声明,常量的值就不能改变,只声明不赋值就会报错.
 
-## No.4 defineProperty, hasOwnProperty, propertyIsEnumerable都是什么用的?
+## No.4 ES6对象的扩展有哪些?
 
-* Object.defineProperty(obj, prop, descriptor); 用来给对象定义属性,三个参数:
+1. assign方法有什么作用?
+
+定义: 用于对象的合并,将源对象的所有可枚举属性复制到目标对象.
+第一个参数是目标对象,如果目标对象与源对象有同名属性,则后面的属性覆盖前面的属性.
+属性名为Symbol值的,也会被assign进来.
+示例代码:
+
+```js
+const target = {a: 1, b: 1};
+const source1 = {b: 2, c: 2};
+const source2 = {c: 3, [Symbol('c')]: 'd'};
+Object.assign(target, source1, source2);
+```
+
+2. defineProperty, hasOwnProperty, propertyIsEnumerable都是什么用的?
+
+  * Object.defineProperty(obj, prop, descriptor); 用来给对象定义属性,三个参数:
 
 obj:必需,要在其上添加或修改属性的对象.这可能是一个本机JavaScript对象或DOM对象或内置对象;
 prop:必需,一个包含属性的名称的字符串;
@@ -39,8 +55,8 @@ someOne.name = "yyy";
 console.log(someOne.name); // xxx
 ```
 
-* hasOwnProperty用于检查某一属性是不是存在对象本身,继承来的父对象属性不算;
-* propertyIsEnumerable用来检测某一属性是否可遍历,也就是能不能用for...in循环来取到.
+  * hasOwnProperty用于检查某一属性是不是存在对象本身,继承来的父对象属性不算;
+  * propertyIsEnumerable用来检测某一属性是否可遍历,也就是能不能用for...in循环来取到.
 
 ## No.5 ES6数组的新方法(map/reduce, forEach, filter)
 
