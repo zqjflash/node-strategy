@@ -264,6 +264,28 @@ Vue2.x数据流: Parent-(Props)->child-(v-modle)->DOM
 在Redux中,我们每个组件都需要显示的用connect把需要的props和dispatch连接起来,Redux只能进行dispatch,并不能直接调用reducer进行修改.
 Vuex既可以dispatch action也可以commit updates
 
+## No.15 dangerouslySetHTML和style属性的作用是什么?
+
+出于安全考虑的原因(XSS攻击),在React.js当中所有的表达式插入的内容都会被自动转移.如果在页面中要把一个富文本的标签结构渲染在页面,就需要使用dangerouslySetHTML属性,示例代码如下:
+
+```js
+render () {
+    return (
+        <div className="editor-wrapper" dangerouslySetInnerHTML={{__html: this.state.content}} />
+    );
+}
+```
+
+style接受一个对象,这个对象里面是这个元素的CSS属性键值对,原来的CSS属性中带-的元素都必须去掉,改用驼峰命名.
+示例代码如下:
+
+```js
+<div style={{fontSize: '12px', color: '#ff0000'}}>hello world</div>
+```
+
+实际运用中,我们可以用props或者state中的数据生成样式对象再传给元素,然后用setState就可以修改样式,非常灵活.
+
+
 # 参考
 
 ## [React.js小书](http://huziketang.mangojuice.top/books/react/)
