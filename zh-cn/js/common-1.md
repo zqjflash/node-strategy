@@ -427,6 +427,46 @@ pp.getName(console.log).setName("zzz").getName(console.log);
 2. initEvent: 初始化事件,事件名称,是否允许冒泡,是否阻止自定义事件;
 3. dispatchEvent: 触发事件.
 
+## No.19 原生实现一个ajax
+
+```js
+/**
+ * @param url 请求地址
+ * @param method 请求方法 get/post
+ * @param headers 请求头
+ * @param data 请求数据
+ */
+function ajax({ url, method, headers, data}) {
+    return new Promise((resolve, reject) => {
+        headers = headers || 'application/x-www-form-urlencoded; charset=UTF-8'
+        let request = new XMLHttpRequest(); // 实例化xhr对象
+        request.open(method, url, true);
+        request.setRequestHeader('Content-type', headers);
+        request.onload = function(progressEvent) {
+            let response = progressEvent.currentTarget;
+            let {status, statusText, responseText, responseUrl} = response; // 解构读取
+            console.log(status);
+            if(status > 199 && status < 400) {
+                resolve(responseText);
+            } else {
+                reject(statusText);
+            }
+        }
+        request.onerror = function(error) {
+            reject(error);
+        }
+        request.send(data);
+    });
+}
+ajax("http://m.baidu.com/", "post", null, {"test": 1}).catch((error) => {
+    console.log(222);
+})
+.then((value) => {
+    console.log(value);
+});
+```
+
+
 # 参考
 
 ### [函数防抖与节流](https://mp.weixin.qq.com/s/xMCna_VtoOev0K5uK1J0aQ)
