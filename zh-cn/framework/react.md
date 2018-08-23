@@ -320,6 +320,32 @@ ReactDOM.render(
 );
 ```
 
+## No.17 什么是高阶组件?
+
+高阶组件就是一个函数,传给它一个组件,它返回一个新的组件.
+作用就是为了组件之间的代码复用,组件可能有着某些相同的逻辑,把这些逻辑抽离出来,放到高阶组件中进行复用.高阶组件内部的包装组件和被包装组件之间通过props传递数据.
+
+```js
+const NewComponent = higherOrderComponent(OldComponent);
+```
+
+简单的高阶组件示例:
+
+```js
+import React, {Component} from 'react';
+export default (WrappedComponent) => {
+    class NewComponent extends Component {
+        // 可以做很多自定义逻辑
+        render () {
+            return <WrappedComponent />
+        }
+    }
+    return NewComponent;
+}
+```
+
+高阶组件的设计模式就是装饰者模式,通过组合的方式达到很高的灵活程度.
+
 
 # 参考
 
