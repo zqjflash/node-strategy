@@ -285,6 +285,41 @@ style接受一个对象,这个对象里面是这个元素的CSS属性键值对,�
 
 实际运用中,我们可以用props或者state中的数据生成样式对象再传给元素,然后用setState就可以修改样式,非常灵活.
 
+## No.16 props.children和容器类组件是什么关系?
+
+使用自定义组件的时候,可以在其中嵌套JSX结构,嵌套的结构在组件内部都可以通过props.children获取到,这种组件的编写方式在编写容器类型的组件当中非常有用.
+
+容器类组件示例代码:
+
+```js
+class Layout extends Component {
+    render() {
+        return (
+            <div className="two-cols-layout">
+                <div className="sidebar">
+                    {this.props.children[0]}
+                </div>
+                <div className="main">
+                    {this.props.children[1]}
+                </div>
+            </div>
+        );
+    }
+}
+```
+
+嵌套Layout组件示例代码:
+
+```js
+ReactDOM.render(
+    <Layout>
+        <div>sidebar</div>
+        <div>main content</div>
+    </Layout>,
+    document.getElementById("root")
+);
+```
+
 
 # 参考
 
