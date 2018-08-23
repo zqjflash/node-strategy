@@ -117,4 +117,44 @@ function euclideanAlgorithm(originalA, originalB) {
 euclideanAlgorithm(1071, 462); // 21
 ```
 
+## No.6 最小公倍数 (LCM)
+
+定义:两个或多个[整数]公有的倍数叫做它们的公倍数,其中除0以外最小的一个公倍数就叫做这个几个整数的最小公倍数.
+公式: 最小公倍数 = 两个整数的乘积 / 最大公约数
+如:27和15的最大公倍数为135
+
+使用辗转相除法推导:
+
+* 第一阶段:先求27和15的最大公约数
+
+```js
+  27 / 15 = 1 * 15 + 12;
+  15 / 12 = 1 * 12 + 3;
+  12 / 3 = 4 * 3 + 0;
+```
+
+得出最大公约数为3.
+
+* 第二阶段:求最小公倍数
+
+```js
+(27 * 15) / 3 = 135
+```
+
+示例代码:
+
+```js
+function euclideanAlgorithm(originalA, originalB) {
+    const a = Math.abs(originalA);
+    const b = Math.abs(originalB);
+    return (b === 0) ? a : euclideanAlgorithm(b, a % b);
+}
+function leastCommonMultiple(a, b) {
+    return ((a === 0) || (b === 0)) ? 0 : Math.abs(a * b) / euclideanAlgorithm(a, b);
+}
+leastCommonMultiple(27, 15); // 5
+```
+
+
+
 
