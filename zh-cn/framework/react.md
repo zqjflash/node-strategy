@@ -35,7 +35,7 @@ react通过key来发现tree2的第二个元素不是原先tree1的第二个元�
 
 ## No.2 React refs有什么作用?
 
-ref属性能够让我们获取已经挂载的元素DOM节点,可以给某个JSX元素加上ref属性,记住一个原则:能不用ref就不用,特别是要避免用ref来做React本来就可以帮助你做到的页面自动更新的操作和事件监听.
+可以给某个JSX元素加上ref属性,通过ref属性能够让我们获取已经挂载的元素DOM节点,记住一个原则:能不用ref就不用,特别是要避免用ref来做React本来就可以帮助你做到的页面自动更新的操作和事件监听.
 
 下面是几个适合使用refs的情况:
 
@@ -80,38 +80,104 @@ const node = this.myRef.current;
 
 ## No.3 Redux的三个部分Action、Reducer、及Store分别的作用是什么?
 
-* Action
+Redux的设计思想:
 
-在Redux中,action主要用来传递操作State信息,以JS Object的形式存在,一般是创建函数来生产action.
-
-```js
-function addFile(name) {
-    return {type: 'ADD_FILE', name: name};
-}
-```
-
-* Reducer
-
-初始化state和switch case
-实际上可以将一个个大的reducer拆分成一个个小的reducer.
-
-* combineReducers()
-
-调用一系列reducer,并根据对应的key来筛选出state中的一部分数据给相应的reducer.这样也意味着每一个小的reducer将只能处理state的一部分数据.
+* 将Web应用看成是一个状态机,视图与状态是一一对应;
+* 所有的状态保存在一个对象里面.
 
 * Store是什么?
 
-用来专门生产这种state和dispatch的集合,这样别的App也可以用这种模式
+保存数据的地方,可以看成是一个容器,整个应用只能有一个Store,Redux提供createStore这个函数来生成Store.
 
 示例代码:
 
 ```js
-function createStore(state, stateChanger) {
+import {createStore} from 'redux';
+const store = createStore(fn);
+function fn(state, stateChanger) {
     const getState = () => state;
     const dispatch = (action) => stateChanger(state, action);
     return {getState, dispatch};
 }
 ```
+
+* State是什么?
+
+Store对象包含所有数据.如果想得到某个时刻的数据,就要对Store生成快照.这种时刻的数据集合就叫做State.
+当前时刻的State,可以通过store.getState()拿到.
+
+```js
+import {createStore} from 'redux';
+const store = createStore(fn);
+const state = store.getState();
+```
+
+Redux规定,一个State对应一个View.只要State相同,View就相同.
+
+* Action
+
+Action由View发出的通知,表示State应该要发生变化了;Action是一个对象.其中的type属性是必须的,表示Action的名称.
+
+```js
+const action = {
+    type: 'ADD_TODO',
+    payload: 'Learn Redux'
+}
+```
+
+Action表示当前发生的事情,改变State的唯一办法,就是使用Action.它会运送数据到Store;
+
+* Reducer
+
+Store收到Action以后,必须给出一个新的State,这样View才会发生变化.这种State的计算过程就叫做Reducer.
+Reducer是一个函数,它接受Action和当前State作为参数,返回一个新的State.
+
+```js
+const reducer = function (state, action) {
+    // ...
+    return new_state;
+}
+```
+
+* combineReducers()
+
+combineReducers做的就是产生一个整体的Reducer函数,该函数根据State的key去执行相应的子Reducer,并将返回结果合并成一个大的State对象.
+
+下面是一个combineReducers的简单实现:
+
+```js
+const combineReducers = reducers => {
+    return (state = {}, action) => {
+        return Object.keys(reducers).reduce(
+            (nextState, key) => {
+                nextState[key] = reducers[key](state[key], action);
+                return nextState;
+            },
+            {}
+        );
+    };
+}
+```
+
+## No.4 Flux是什么?
+
+Flux将应用分成四个部分:
+
+* View: 视图层;
+* Action(动作): 视图层发出的消息(比如mouseClick);
+* Dispatcher(派发器): 用来接收Actions、执行回调函数;
+* Store(数据层): 用来存放应用的状态,一旦发生变动,就提醒Views要更新页面.
+
+Flux的最大特点是数据的“单向流动”.看一张图示:
+
+![flux](/assets/flux.png)
+
+1. 用户访问View;
+2. View发出用户的Action;
+3. Dispatcher收到Action,要求Store进行相应的更新;
+4. Store更新后,发出一个"change"事件;
+5. View收到"change"事件后,更新页面;
+
 
 ## No.4 Component与PureComponent的差异?
 
