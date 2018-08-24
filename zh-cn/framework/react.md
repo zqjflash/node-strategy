@@ -2,8 +2,7 @@
 
 ## No.1 React Keys的作用
 
-key可以帮助React标志哪个列表项发生变化,添加或删除,应该给列表项元素内一个稳定的标识;
-最好的方法是使用字符串唯一标识其兄弟列表项,大多方法是将数据的ID作为Key:
+* key可以帮助React标志哪个列表项发生变化,添加或删除,应该给列表项元素内一个稳定的标识;大多数使用数据的ID作为key:
 
 ```js
 const todoItems = todos.map((todo) => {
@@ -12,7 +11,27 @@ const todoItems = todos.map((todo) => {
     </li>
 });
 ```
+
 我们不推荐使用索引来作为key,因为当列表项顺序发生改变,渲染将会较慢
+
+* 在渲染diff-dom时,将会极大的降低时间复杂度.
+
+```js
+// tree1
+<ul>
+    <li key="1">1</li>
+    <li key="2">2</li>
+</ul>
+
+// tree2
+<ul>
+    <li key="1">1</li>
+    <li key="3">3</li>
+    <li key="2">2</li>
+</ul>
+```
+
+react通过key来发现tree2的第二个元素不是原先tree1的第二个元素,原先的第二个元素被挪到下面去了,因此在操作的时候就会直接指向insert操作,来减少dom操作的性能开销.
 
 ## No.2 React refs有什么作用?
 
