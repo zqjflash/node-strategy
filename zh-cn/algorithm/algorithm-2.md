@@ -155,6 +155,35 @@ function leastCommonMultiple(a, b) {
 leastCommonMultiple(27, 15); // 5
 ```
 
+## No.7 素数筛 - 查找所有素数达到任何给定限制
 
+原理: 素数一定是奇数,素数的倍数一定不是奇数;
 
+实现思路:
 
+* 首先进行奇偶数分离,其中2比较特殊,虽然是偶数,但也属于奇数;
+
+* 循环奇数数组,判断是否为素数,符合条件的记录下来;
+
+```js
+function sieveOfEratosthenes(maxNumber) {
+    const isPrime = new Array(maxNumber + 1).fill(true);
+    isPrime[0] = false;
+    isPrime[1] = false;
+
+    const primes = [];
+    for (let number = 2; number <= maxNumber; number += 1) {
+        if (isPrime[number] === true) {
+            primes.push(number);
+        }
+        let nextNumber = number * number; // 排除下一个非素数
+        console.log(nextNumber);
+        while (nextNumber <= maxNumber) {
+            isPrime[nextNumber] = false; // 排除掉
+            nextNumber += number; // 下一个非素数继续往后位移
+        }
+    }
+    return primes;
+}
+sieveOfEratosthenes(10); // [2, 3, 5, 7]
+```
