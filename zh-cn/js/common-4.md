@@ -44,7 +44,9 @@ pp.callMethod('sayName'); // 代理调用Person的方法sayName()
 pp.callMethod('sayAge'); // 代理调用Person的方法sayAge()
 ```
 
-* 观察者:就是事件模式,比如按钮的onclick这样的应用
+* 发布订阅模式
+
+> 订阅者需要注册到发布者,发布者发布消息时,依次向订阅者发布消息.
 
 // 创建发布者
 ```js
@@ -82,6 +84,24 @@ publisher.addListener(new Subscriber());
 publisher.notify({name: 'xxx', age: 30}); // 发布一个对象到所有订阅者
 publisher.notify('2 subscribers will both perform process'); // 发布一个字符串到所有订阅者
 ```
+
+* 事件监听器模式
+
+事件监听过程如下:
+
+1. 事件源通常会有很多事件类型,比如点击类型,加载类型,关闭类型等,此时,事件源就会添加这些个事件对应的事件监听器;
+2. 事件监听器的作用就是:当事件源的某个事件被触发时,就会调用这个事件对应的事件监听器的处理事件的方法.
+
+在JS中,这样的模式很常见:
+
+```js
+var button = document.getElementById("button"); // 事件源:button按钮标签
+button.addEventListener("click", function(event) {
+
+}); // 事件: click事件对应的button对象
+// 事件监听器: 匿名的回调函数
+```
+
 
 ## No.2 函数柯里化?
 
