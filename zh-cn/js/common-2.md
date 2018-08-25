@@ -187,6 +187,44 @@ for (let i of s) {
 2. CommonJS模块是运行时加载,ES6模块是编译时输出接口;
 3. ES6输入的模块变量,只是一个符号链接,所以这个变量是只读的,对它进行重新赋值就会报错.
 
+## No.15 Object.keys()和Object.getOwnPropertyNames()的区别是什么?
+
+* Object.keys()用于获取对象自身所有的可枚举的属性值,但不包括原型中的属性,然后返回一个由属性名组成的数组.
+
+```js
+// 遍历对象
+function Person(name, age) {
+    this.name = name;
+    this.age = age;
+}
+Person.prototype.demo = function() {}; // 原型属性
+var person = new Person('zqjflash', 30);
+// 不可枚举的方法
+Object.defineProperty(person, "methodA", {
+    enumerable: false,
+    value: function() {}
+});
+Object.keys(person); // ["name", "age"]
+```
+
+* Object.getOwnPropertyNames()返回对象的所有自身属性的属性名(包括不可枚举的属性)组成的数组,但不会获取原型链上的属性.
+
+```js
+// 遍历对象
+function Person(name, age) {
+    this.name = name;
+    this.age = age;
+}
+Person.prototype.demo = function() {}; // 原型属性
+var person = new Person('zqjflash', 30);
+// 不可枚举的方法
+Object.defineProperty(person, "methodA", {
+    enumerable: false,
+    value: function() {}
+});
+Object.getOwnPropertyNames(person); // ["name", "age", "methodA"]
+```
+
 # 参考
 
 ### [ECMAScript 6入门 阮一峰](http://es6.ruanyifeng.com/)
