@@ -34,7 +34,7 @@ master-slave模型,master进程不处理业务逻辑,业务逻辑分发到slave�
 ## 二、设计一个Node进程管理
 
 暂且先称呼node天眼(node-eye)
-首先需要设计一个底层框架(可以是C++、Java、go)等,同时也需要实现基于JCE协议、ICE协议实现进程IPC;
+首先需要设计一个底层框架Node-PM2(可以是C++、Java、go)等,同时也需要实现基于JCE协议、ICE协议实现进程IPC;
 然后需要设计一个进入引擎来打通框架与进程管理.
 
 ![node-architecture](/assets/node-architecture.png)
@@ -43,6 +43,11 @@ master-slave模型,master进程不处理业务逻辑,业务逻辑分发到slave�
 
 ![node-topology](/assets/node-topology.png)
 
+我们发现node-eye的作用很关键,给每个业务服务包装了一层,我暂且先把它定位成适配器的作用,让Node.js实现的业务代码可以很好的运行在Node-PM2框架上.
+
+* node-eye内部的交互拓扑图
+
+![node-eye-topology](/assets/node-eye-topology.png)
 
 
 
