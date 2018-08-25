@@ -17,4 +17,17 @@ Unix Domain Socket也提供面向流和面向数据包两种API接口,类似于T
 
 ![unix-domain-socket](/assets/unix-domain-socket.png)
 
+2. Node.js的事件驱动+多进程模型
+
+Node.js是靠事件驱动(nginx方式),而不是多进程多线程(apache方式)来实现大量并发请求处理的.多进程多线程模型局限性在于内存资源的消耗、上下文切换的时间消耗,伸缩性不足.而基于事件驱动的服务模型存在两个问题: CPU利用率和进程的健壮性.
+
+* CPU利用率&进程的健壮性
+
+Node.js是单线程的,所有处理都在单线程上进行,影响模型性能的点在于CPU的运算能力,但它不受多进程或多进程模式中资源上限的影响,有更好的伸缩性.CPU多核时代到来后,单进程的Node.js应用无法实现CPU利用率的最大化,所以使用多进程、master-slave模型来尽可能地让CPU利用起来.
+
+在Node v0.8前开发者是用child_process模块来搭建多进程模型,该模块要开发者自己负责多进程的网络端口监听、负载均衡、状态共享等细节问题.但Node v0.8之后引入了cluster模块,用来解决多核CPU的利用率问题.
+
+![node-master-slave](/assets/node-master-slave.png)
+
+
 
