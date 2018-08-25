@@ -56,11 +56,27 @@ master-slave模型,master进程不处理业务逻辑,业务逻辑分发到slave�
 * notify: 负责给机器节点进程上报使用,上报的信息可以在运维管理平台上看到;
 * report: 负责给机器节点进程上报服务版本信息和服务心跳.
 
-## Node进程管理模块如何设计呢?
+## 三、Node进程管理模块如何设计呢?
 
 借鉴PM2的思想,做了一下模块拆分:
 
-![node-logic-modul](/assets/node-logic-module.png)
+![node-logic-module](/assets/node-logic-module.png)
+
+bin文件夹中的是执行入口.在Node.js服务的启动脚本(start.sh)中,(假设TMA为应用名,Video为服务名称)
+
+```js
+nohub /usr/local/app/TMA.Video/bin/node /usr/local/app/TMA.Video/bin/node-eye/bin/node-eye /usr/local/app/TMA.Video/bin/src/
+```
+
+可以看出TMA使用node-eye来启动业务服务.
+
+## 四、核心代码设计
+
+开发中,敬请期待...
+
+
+
+
 
 
 
