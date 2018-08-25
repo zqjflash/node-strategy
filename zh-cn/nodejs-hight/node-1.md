@@ -39,8 +39,9 @@ master-slave模型,master进程不处理业务逻辑,业务逻辑分发到slave�
 
 ![node-architecture](/assets/node-architecture.png)
 
-基于主框架下,设计Node.js天眼的架构拓扑图
+基于主框架下,考虑设计Node.js天眼的架构拓扑图
 
+![node-topology](/assets/node-topology.png)
 
 
 
