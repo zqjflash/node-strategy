@@ -187,3 +187,47 @@ function sieveOfEratosthenes(maxNumber) {
 }
 sieveOfEratosthenes(10); // [2, 3, 5, 7]
 ```
+
+## No.8 判断2次方数 - 检查数字是否为2的幂 (原生和按位算法)
+
+> 将2的幂次方写成二进制形式后,很容易就会发现有一个特点:二进制中只有一个1,并且1后面跟了n个0,因此问题可以转化为判断1后面是否跟了n个0就可以.
+
+公式:
+
+```js
+(number & number - 1) == 0
+```
+
+2的幂次方换算二进制为10...0这样的形式.与上自己-1的位数,得到结果为0.
+
+* 二进制按位与实现代码:
+
+```js
+function isPowerOfTwoBitwise(number) {
+    if (number < 1) {
+        return false;
+    }
+    return (number & (number - 1)) === 0;
+}
+isPowerOfTwoBitwise(8); // true
+```
+
+* 原生实现代码:
+
+```js
+function isPowerOfTwo(number) {
+    if (number < 1) {
+        return false;
+    }
+    let dividedNumber = number;
+    while (dividedNumber !== 1) {
+        if (dividedNumber % 2 !== 0) {
+            return false;
+        }
+        dividedNumber /= 2;
+    }
+    return true;
+}
+isPowerOfTwo(8);
+```
+
