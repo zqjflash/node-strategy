@@ -65,23 +65,21 @@ master-slave模型,master进程不处理业务逻辑,业务逻辑分发到slave�
 bin文件夹中的是执行入口.在Node.js服务的启动脚本(start.sh)中,(假设TMA为应用名,Video为服务名称)
 
 ```js
-nohub /usr/local/app/TMA.Video/bin/node /usr/local/app/TMA.Video/bin/node-eye/bin/node-eye /usr/local/app/TMA.Video/bin/src/
+nohup /usr/local/app/TMA.Video/bin/node 
+/usr/local/app/TMA.Video/bin/node-eye 
+/usr/local/app/TMA.Video/bin/src/ -c /usr/local/app/TMA.Video/conf/TMA.Video.config.conf  2>&1
 ```
 
 可以看出TMA使用node-eye来启动业务服务.
 
 ## 四、核心代码设计
 
-开发中,敬请期待...
+### 4.1 入口/bin/node-eye如何设计?
 
+### 4.2 CLI.js都需要哪些核心逻辑?
 
+### 4.3 CLI.js中如何通过God.js模块来管理进程?
 
+### 4.4 God模块如何使用ProcessContainer来管理业务进程?
 
-
-
-
-
-
-
-
-
+逐步完善中,敬请期待...
