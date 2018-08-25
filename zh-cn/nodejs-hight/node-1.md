@@ -31,7 +31,7 @@ Node.js是单线程的,所有处理都在单线程上进行,影响模型性能�
 
 master-slave模型,master进程不处理业务逻辑,业务逻辑分发到slave进程(即子进程)来进行处理,master进程只负责消息分发和对子进程的操作(子进程的创建、销毁、重新拉起等).在服务可靠性方面,多个工作进程提升了服务的稳定性,不会因一个进程出现问题而导致服务不可用.
 
-## 二、设计一个Node进程管理
+## 二、如何设计一个Node进程管理
 
 暂且先称呼node天眼(node-eye)
 首先需要设计一个底层框架Node-PM2(可以是C++、Java、go)等,同时也需要实现基于JCE协议、ICE协议实现进程IPC;
@@ -48,6 +48,24 @@ master-slave模型,master进程不处理业务逻辑,业务逻辑分发到slave�
 * node-eye内部的交互拓扑图
 
 ![node-eye-topology](/assets/node-eye-topology.png)
+
+主要模块功能:
+
+* God模块: 负责进程操作;
+* msg: 负责机器节点进程传达到业务服务中;
+* notify: 负责给机器节点进程上报使用,上报的信息可以在运维管理平台上看到;
+* report: 负责给机器节点进程上报服务版本信息和服务心跳.
+
+## Node进程管理模块如何设计呢?
+
+借鉴PM2的思想,做了一下模块拆分:
+
+![node-logic-modul](/assets/node-logic-module.png)
+
+
+
+
+
 
 
 
