@@ -29,5 +29,5 @@ Node.js是单线程的,所有处理都在单线程上进行,影响模型性能�
 
 ![node-master-slave](/assets/node-master-slave.png)
 
-
+master-slave模型,master进程不处理业务逻辑,业务逻辑分发到slave进程(即子进程)来进行处理,master进程只负责消息分发和对子进程的操作(子进程的创建、销毁、重新拉起等).在服务可靠性方面,多个工作进程提升了服务的稳定性,不会因一个进程出现问题而导致服务不可用.
 
