@@ -79,9 +79,45 @@ nohup /usr/local/app/TMA.Video/bin/node
 
 可以看出TMA使用node-eye来启动业务服务.
 
-## 四、核心代码设计
+## 四、核心代码逻辑设计
 
 ### 4.1 入口/bin/node-eye如何设计?
+
+```js
+/**
+ * 解析配置文件:启动脚本中的-c后面跟随的文件
+ * 其中可以指定worker进程数量
+ */
+const parseConfig = function(script, file) {
+    // ...
+    // 在配置文件中读取client.asyncthread的数值
+    // 在配置文件中读取server.instances的数值,优先级更高
+    // ...
+};
+
+/**
+ * 使用commander来解析命令行参数
+ */
+commander.version(pkg.version)...
+
+/**
+ * 在start.sh的启动命令中,对启动文件的解析
+ * 如果第二个参数是文件,则直接指定为启动文件
+ * 如果第二个参数是文件夹,通过package.json执行文件入口
+ */
+if (scriptStat.isFile() && path.extname(commander.args[0]).toLowerCase() ===".js") {
+    entryPoint = path.resolve(commander.args[0]);
+} else if (scriptStat.isDirectory()) {
+    // 在package.json中查找nodeEye.main
+    // 在package.json查找scripts.start
+    // 在package.json中查找main
+}
+
+/**
+ * 真正的执行入口
+ */
+CLI.start(entryPoint, commander);
+```
 
 ### 4.2 CLI.js都需要哪些核心逻辑?
 
