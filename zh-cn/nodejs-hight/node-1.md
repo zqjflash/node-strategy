@@ -121,8 +121,68 @@ CLI.start(entryPoint, commander);
 
 ### 4.2 CLI.js都需要哪些核心逻辑?
 
+```js
+/**
+ * 初始化Node-PM2组件
+ */
+const initComponent = (args, opts) => {
+    reportVersion(); // 上报服务版本
+    report.keepAlive(); // 上报心跳
+    // 初始化Admin进程服务,用于下发和接收命令
+    // 初始化上报服务
+}
+/**
+ * 启动入口
+ */
+exports.start = (script, opts) => {
+    // 获取worker进程的设置参数
+    // 根据读取配置文件来设置常量
+    // 初始化日志
+    // 将所有启动日志打印至node-eye.log中
+    // 读取package.json中依赖的模块
+    /**
+     * CPU初始化之后,获取机器的CPU信息
+     */
+    bindEvents(); // 绑定cluster事件,这里的事件监听主要用于日志打印和上报使用,并对接Node运营平台
+    God.prepare(args); // 初始化集群
+    initComponent(args, opts); // 初始化组件
+    startWorker(opts); // 启动worker进程.实际上由God模块来启动
+    notify.report.info("restart"); // 上报
+};
+```
+
 ### 4.3 CLI.js中如何通过God.js模块来管理进程?
 
+```js
+const setCluster = (args, execArgv) => {
+    // 设置执行worker进程的执行文件
+    const setting = {
+        exec: path.resolve(path.dirname(module.filename), "ProcessContainer.js") // 设置执行worker进程的执行文件
+    };
+    // 监听worker进程的退出,并尝试再启动一个worker进程
+    // 在10s内连续重启2次还失败则杀死全部进程,在Node运营管理平台显示进程重启异常
+    // 监听worker进程的通信消息,worker进程的通信仍然是通过cluster事件来实现的
+    // 通知所有子进程,不同的worker进程进行通信
+    // worker进程给master进程上报心跳
+    /**
+     * 设置对僵死进程的监控
+     */
+    // Linux 提供了这样一个参数min_free_kbytes，用来确定系统开始回收内存的阀值，控制系统的空闲内存。值越高，内核越早开始回收内存，空闲内存越高。设定这个参数时请小心，因为该值过低和过高都有问题。
+    // min_free_kbytes 太低可防止系统重新利用内存。这可导致系统挂起并让 OOM 杀死多个进程。
+    // 但将这个参数值设定太高（占系统总内存的 5-10%）会让您的系统很快会内存不足。Linux 的设计是使用所有可用 RAM 缓存文件系统数据。
+    // 设定高 min_free_kbytes 值的结果是在该系统中花费太多时间重新利用内存。
+    // 通知master进程对应的僵死进程
+};
+```
+
 ### 4.4 God模块如何使用ProcessContainer来管理业务进程?
+
+在上面的God模块中,fork出来的worker进程并不是直接运行业务代码的入口文件,而是通过ProcessContainer.js来对业务代码的执行入口文件做进一步的封装.包括:日志打印、给master进程上报心跳,给Node运营平台下发命令,上报网络情况和流量情况到Node运营平台(暂且称特性监控)
+
+ProgressContainer.js最后调用方法:
+
+```js
+require('module')._load(exec_script, null, true); // 执行业务代码的入口文件
+```
 
 逐步完善中,敬请期待...
