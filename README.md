@@ -108,6 +108,8 @@
 
 ### [第一节 React框架](/zh-cn/framework/react.md)
 
+### [第二节 框架的状态管理](zh-cn/framework/state.md)
+
 ## 第十一章 安全
 
 ### [第一节 安全](/zh-cn/security/security.md)
