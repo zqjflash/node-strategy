@@ -231,3 +231,26 @@ function isPowerOfTwo(number) {
 isPowerOfTwo(8);
 ```
 
+## No.9 杨辉三角形
+
+1. 在杨辉三角中,每个数是它左上方和右上方的数之和;
+2. 每行数字左右对称,由1开始逐渐变大;
+3. 第n行的数字有n+1项;
+4. 第n行数字和为2的(n-1)次方;
+5. (a+b)的n次方展开式中的各项系数依次对应杨辉三角的第(n+1)行中的每一项;
+6. 第n行的第m个数和第n-m个数相等,即C(n, m) = C(n, n-m),这是组合数性质.
+
+实现代码:
+
+```js
+function pascalTriangle(lineNumber) {
+    const currentLine = [1];
+    const currentLineSize = lineNumber + 1;
+    for (let numIndex = 1; numIndex < currentLineSize; numIndex += 1) {
+        console.log(currentLine[numIndex - 1]);
+        currentLine[numIndex] = currentLine[numIndex - 1] * (lineNumber - numIndex + 1) / numIndex;
+    }
+    return currentLine;
+}
+pascalTriangle(3); // [1, 3, 3, 1]
+```
