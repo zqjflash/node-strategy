@@ -48,3 +48,91 @@ request({
 3. 通过代理服务器访问被和谐的目标站点
 
 互联网上有许多开发的代理服务器,客户机在访问受限时,可通过不受限的代理服务器访问目标站点.通俗说,我们使用的翻墙浏览器就是利用代理服务器.
+
+## No.4 Node.js如何实现负载均衡?
+
+> 当一台服务器的单位时间内的访问量越大时,服务器压力就越大,达到超过自身承受能力时,服务器就会崩溃.为了避免服务器崩溃,让用户有更好的体验,我们通过负载均衡的方式来分担服务器压力.
+
+从架构上来说,Node.js一般都是搭配Nginx来实现负载均衡,从服务进程角度来说,Node.js自带Cluster也可以实现负载均衡,类似PM2进程管理工具也可以实现.
+
+Nginx的负载均衡是用反向代理的原理来实现的.
+
+常见的几种负载均衡方式:
+
+1. 轮询(默认):每个请求按时间顺序逐一分配到不同的后端服务器,如果后端服务器down掉,自动剔除;
+
+```js
+upstream backserver {
+    server 192.168.0.14;
+    server 192.168.0.15;
+}
+```
+
+2. 权重(weight):指定轮询机率,weight和访问比率成正比,用于后段服务器性能不均的情况,权重越高,被访问的概率越大
+
+```js
+upstream backserver {
+    server 192.168.0.14 weight=3;
+    server 192.168.0.15 weight=7;
+}
+```
+
+3. 访问ip的hash结果分配:解决session的问题
+
+```js
+upstream backserver {
+    ip_hash;
+    server 192.168.0.14:88;
+    server 192.168.0.15:80;
+}
+```
+
+4. 短作业优先(fair): 按后端服务器的响应时间来分配请求,响应时间短的优先分配;
+
+```js
+upstream backserver {
+    server server1;
+    server server2;
+    fair;
+}
+```
+
+5. url_hash: 按访问url的hash结果来分配请求,使每个url定向到同一个后端服务器,后端服务器有缓存时比较有效.
+
+```js
+upstream backserver {
+    server squid1: 3128;
+    server squid2: 3128;
+    hash $request_uri;
+    hash_method crc32;
+}
+```
+
+整个配置文件示例:
+
+```js
+worker_processes 4;
+events {
+    # 最大并发数
+    worker_connections = 1024;
+}
+http {
+    # 待选服务器列表
+    upstream myproject {
+        # ip_hash指令,将同一用户引入同一服务器
+        ip_hash;
+        server 125.219.42.4 fail_timeout=60s;
+        server 172.31.2.183;
+    }
+    server {
+        # 监听端口
+        listen 80;
+        # 根目录下
+        location / {
+            # 选择哪个服务器列表
+            proxy_pass http://myproject;
+        }
+    }
+}
+```
+
