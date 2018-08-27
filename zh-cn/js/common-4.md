@@ -305,7 +305,7 @@ eventBus.$emit("receive", "test"); // 打印出test
 
 ## JS的API设计原则都需要考虑哪些方面?
 
-* 接口的流畅性
+* 一、接口的流畅性
 
   1. 简化接口的易用性
 
@@ -341,7 +341,57 @@ eventBus.$emit("receive", "test"); // 打印出test
   el.color("red").background("blue").fontSize("12px");
   ```
 
+* 二、接口命名的一致性
 
+> 尽量地保持代码风格和命名风格, setColor、setBackground、setFontSize、set....
+
+* 三、参数的处理
+
+  1. 参数的类型
+
+  ```js
+  // 判断参数的类型提高程序的稳定性
+  function setColor(color) {
+      if (typeof color !== "string") {
+          return;
+      }
+  }
+  ```
+
+  2. 使用json方式传参
+
+  ```js
+  function fn(json) {
+      // 为必须的参数设置默认值
+      var default = extend({
+          param: 'default',
+          param1: 'default'
+          ...
+      },json);
+  }
+  ```
+
+* 四、可扩展性
+
+  1. 接口职责要保持单一性;
+  2. this、apply、call、bind的灵活运用;
+  
+  ```js
+  function sayHello() {
+      alert(this.a);
+  }
+  obj.a = 1;
+  sayHello.call||apply(obj); // 1
+  ```
+
+* 五、对错误的处理
+
+  * 1. 预见错误:可以用类型检测typeof或者try...catch.
+  * 2. 抛出错误,try...catch(ex) {console.warn(ex);}
+
+* 六、可预见性:尽可能的考虑完善的边界条件,提升接口的健壮性
+
+* 七、注释和文档的可读性
 
 # 参考
 
