@@ -386,8 +386,8 @@ eventBus.$emit("receive", "test"); // 打印出test
 
 * 五、对错误的处理
 
-  * 1. 预见错误:可以用类型检测typeof或者try...catch.
-  * 2. 抛出错误,try...catch(ex) {console.warn(ex);}
+  1. 预见错误:可以用类型检测typeof或者try...catch.
+  2. 抛出错误,try...catch(ex) {console.warn(ex);}
 
 * 六、可预见性:尽可能的考虑完善的边界条件,提升接口的健壮性
 
