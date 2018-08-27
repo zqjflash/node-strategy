@@ -303,7 +303,7 @@ eventBus.$on("receive", function(params) {
 eventBus.$emit("receive", "test"); // 打印出test
 ```
 
-## JS的API设计原则都需要考虑哪些方面?
+## No.7 JS的API设计原则都需要考虑哪些方面?
 
 * 一、接口的流畅性
 
