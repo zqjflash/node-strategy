@@ -267,7 +267,7 @@ SubType.prototype.sayAge = function() {
 };
 ```
 
-## No.6 如何实现一个EventBus?
+## No.7 如何实现一个EventBus?
 
 ```js
 class EventBus {
@@ -303,7 +303,7 @@ eventBus.$on("receive", function(params) {
 eventBus.$emit("receive", "test"); // 打印出test
 ```
 
-## No.7 JS的API设计原则都需要考虑哪些方面?
+## No.8 JS的API设计原则都需要考虑哪些方面?
 
 * 一、接口的流畅性
 
