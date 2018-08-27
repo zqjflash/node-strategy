@@ -303,6 +303,45 @@ eventBus.$on("receive", function(params) {
 eventBus.$emit("receive", "test"); // 打印出test
 ```
 
+## JS的API设计原则都需要考虑哪些方面?
+
+* 接口的流畅性
+
+  1. 简化接口的易用性
+
+  ```js
+  function a(selector, color) {
+      document.querySelectorAll(selector)[0].style.color = color;
+  }
+  a("#test", "red");
+  ```
+
+  2. 可阅读性
+
+  ```js
+  // 相对于上面的a函数,letSomeElementChangeColor语义化更强
+  function letSomeElementChangeColor(selector, color) {
+      document.querySelectorAll(selector, color);
+  }
+  ```
+
+  3. 减少记忆成本
+
+  ```js
+  // 在意义不做大的变化前提下,缩减函数名称.使得它易读、易记、易用
+  function setColor(selector, color) {
+      ...
+  }
+  ```
+
+  4. 可延伸性
+
+  ```js
+  // 链式写法,多参处理
+  el.color("red").background("blue").fontSize("12px");
+  ```
+
+
 
 # 参考
 
