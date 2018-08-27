@@ -275,3 +275,39 @@ function pascalTriangleRecursive(lineNumber) {
 }
 pascalTriangleRecursive(3);
 ```
+
+## No.10 整数拆分
+
+> 在数论中,正整数n的分区(也称为整数分区)是将n写为正整数之和的一种方式,
+
+```js
+function integerPartition(number) {
+    // 初始化一个二维数组,默认填充null
+    const partitionMatrix = Array(number + 1).fill(null).map(() => {
+        return Array(number + 1).fill(null);
+    });
+
+    // 设置二维数组横轴的值
+    for (let numberIndex = 1; numberIndex <= number; numberIndex += 1) {
+        partitionMatrix[0][numberIndex] = 0;
+    }
+    // 设置二维数组竖轴的值
+    for (let summandIndex = 0; summandIndex <= number; summandIndex += 1) {
+        partitionMatrix[summandIndex][0] = 1;
+    }
+
+    for (let summandIndex = 1; summandIndex <= number; summandIndex += 1) {
+        for (let numberIndex = 1; numberIndex <= number; numberIndex += 1) {
+            if (summandIndex > numberIndex) {
+                partitionMatrix[summandIndex][numberIndex] = partitionMatrix[summandIndex - 1][numberIndex];
+            } else {
+                const combosWithoutSummand = partitionMatrix[summandIndex - 1][numberIndex];
+                const combosWithSummand = partitionMatrix[summandIndex][numberIndex - summandIndex];
+                partitionMatrix[summandIndex][numberIndex] = combosWithoutSummand + combosWithSummand;
+            }
+        }
+    }
+    return partitionMatrix[number][number];
+}
+integerPartition(2); // 2 0+2|1+1两种组合方式
+```
