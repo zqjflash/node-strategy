@@ -158,7 +158,65 @@ const save = function() {
 * 少量测试以后的内存快照;
 * 多次测试以后的内存快照;
 
-## No.7 什么是防御性编程?与其相对的let it crash又是什么?
+## No.7 JS闭包引起的内存泄漏有什么排查方式?
+
+> 在V8中,闭包对象是当前作用域中的所有内部函数作用域共享的,并且这个当前作用域的闭包对象除了包含一条指向上一层作用域闭包对象的引用外,其余的存储变量引用一定是当前作用域中的所有内部函数作用域中使用到的变量.
+
+* 通过一个内存泄露示例来演示问题:
+
+```js
+var theThing = null;
+var replaceThing = function() {
+    let 泄漏变量 = theThing;
+    let unused = function() {
+        if (泄漏变量) {
+            console.log("Hi");
+        }
+    };
+    // 不断修改引用
+    theThing = {
+        longStr: new Array(1000000).join("*"),
+        someMethod: function() {
+            console.log("a");
+        }
+    };
+    global.gc();
+    // 每次输出的值会越来越大
+    console.log(process.memoryUsage().heapUsed);
+};
+setInterval(replaceThing, 100);
+```
+
+泄漏问题分析: 在replaceThing定义的函数作用域中,由于unused表达式定义的函数使用到了泄漏变量,因此,泄漏变量被replaceThing函数作用域的闭包对象持有了,从而导致theThing对象中的someMethod函数隐式地持有了泄漏变量的引用.
+
+这样就造成了theThing->someMethod->泄漏变量->上一次theThing->...的循环引用.因此产生了内存泄漏
+
+常见的解决方式有两种:
+
+* 一种是手动在每次调用完成后把泄漏变量=null;
+* 另一种切掉unused函数和泄漏变量间的闭包引用,这样someMethod和replaceThing定义的函数作用域生成的闭包对象就不会有泄漏变量了.也就没有内存泄漏.
+
+```js
+// 方法一
+...
+泄漏变量=null;
+global.gc();
+console.log(process.memoryUsage().heapUsed); // 每次输出的值会保持不变
+```
+
+```js
+// 方法二
+...
+let unused = function(泄露变量) {
+    if (泄漏变量) {
+        console.log("Hi");
+    }
+}
+...
+```
+
+
+## No.8 什么是防御性编程?与其相对的let it crash又是什么?
 
 防御性编程是一种细致、谨慎的编程方法.尽可能的通过代码对设想进行检查,防止错误代码产生错误的行为.
 
@@ -176,13 +234,13 @@ const save = function() {
 
 Erlang说的let it crash.是指不必过分担心位置的错误而做极其细致的防御性编程,而是将发生错误的process进行汇报处理,并尝试修复服务.
 
-## No.8 如何调试Node.js程序?
+## No.9 如何调试Node.js程序?
 
 * 使用console.log
 * 使用node-inspector
 * 使用built-in debugger(类似vscode的debug)
 
-## No.9 IOS与android远程调试的差异在哪里?
+## No.10 IOS与android远程调试的差异在哪里?
 
 主要差异在协议格式上:
 
@@ -191,7 +249,7 @@ android调试协议使用ADB和webSocket,数据格式接受JSON格式;
 
 另外,由于IOS的内核是闭源,导致我们很难对webkit内核进行修改.
 
-## No.10 运算错误与程序员错误的区别?
+## No.11 运算错误与程序员错误的区别?
 
 运算错误是和系统相关的问题,例如请求超时或者硬件故障;
 程序员错误:比如变量undefined、异常边界未处理等;
