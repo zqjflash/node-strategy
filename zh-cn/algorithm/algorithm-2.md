@@ -311,3 +311,50 @@ function integerPartition(number) {
 }
 integerPartition(2); // 2 0+2|1+1两种组合方式
 ```
+
+## No.11 割圆术 - 基于N-gons的近似π计算
+
+所谓“割圆术”,是用圆内接正多边形的面积去无限逼近圆面积并以此求取圆周率的方法.
+“圆周率=圆周长/圆直径 = 圆周长/2*圆半径;
+
+```js
+const circleRadius = 1;
+/**
+ * @param {number} sideLength
+ * @param {number} splitCounter
+ * @param {number}
+ */
+function getNGonSideLength(sideLength, splitCounter) {
+    if (splitCounter <= 0) {
+        return sideLength;
+    }
+    const halfSide = sideLength / 2; // 方形一边长的一半
+    const perpendicular = Math.sqrt((circleRadius ** 2) - (halfSide ** 2)); // **运算符表示求幂运算, 求另一直角边的长度
+    const excessRadius = circleRadius - perpendicular; // 半径 - 直角边
+    const splitSideLength = Math.sqrt((excessRadius ** 2) +(halfSide ** 2));
+    return getNGonSideLength(splitSideLength, splitCounter - 1);
+}
+/**
+ * @param {number} splitCount
+ * @return {number}
+ */
+function getNGonSideCount(splitCount) {
+    // 从六边形开始内接圆
+    const hexagonSidesCount = 6;
+    // 6, 12, 24, 48...
+    return hexagonSidesCount * (splitCount ? 2 ** splitCount : 1);
+}
+/**
+ * 计算圆周率值
+ * @param {number} splitCount
+ * @return {number}
+ */
+function liuhui(splitCount = 1) {
+    const nGonSideLength = getNGonSideLength(circleRadius, splitCount - 1);
+    const nGonSideCount = getNGonSideCount(splitCount - 1);
+    const nGonPerimeter = nGonSideLength * nGonSideCount; // 内部多边形的周长
+    const approximateCircleArea = (nGonPerimeter / 2) * circleRadius;
+    return approximateCircleArea / (circleRadius ** 2); // 计算圆周率
+}
+liuhui(10); 
+```
