@@ -356,5 +356,5 @@ function liuhui(splitCount = 1) {
     const approximateCircleArea = (nGonPerimeter / 2) * circleRadius;
     return approximateCircleArea / (circleRadius ** 2); // 计算圆周率
 }
-liuhui(10); 
+liuhui(10);
 ```
