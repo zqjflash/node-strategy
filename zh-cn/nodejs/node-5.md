@@ -382,4 +382,41 @@ Node.js通过事件循环来挨个抽取事件队列中的一个个Task执行,�
 * Promise链返回的错误栈没有给出错误发生位置的线索;
 * 调试不能在箭头函数的返回处设置断点;
 
+使用async/await如何避免回调地狱的写法:
+
+```js
+async function asyncAwaitIsYourNewBestFriend() {
+    const api = new Api();
+    const user = await api.getUser();
+    const friends = await api.getFriends(user.id);
+    const photo = await api.getPhoto(user.id);
+    console.log('asyncAwaitIsYourNewBestFriend', {user, friends, photo});
+}
+```
+
+使用async/await如何实现并行操作:
+
+```js
+async function asyncAwaitLoopsParallel() {
+    const api = new Api();
+    const user = await api.getUser();
+    const friends = await api.getFriends(user.id);
+    const friendPromises = friends.map(friend => api.getFriends(friend.id));
+    const moreFriends = await Promise.all(friendPromises);
+    console.log("asyncAwaitLoopsParallel", moreFriends);
+}
+```
+
+使用async/await如何实现异步错误捕获:
+
+```js
+async function asyncAwaitTryCatch() {
+    try {
+        const api = new Api();
+        await api.throwError();
+    } catch(err) {
+        console.error(err);
+    }
+}
+```
 
