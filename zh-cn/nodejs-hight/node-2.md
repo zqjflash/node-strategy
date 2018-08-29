@@ -41,6 +41,25 @@ node-eyes index.js [options]
   * 传递子进程node的启动参数; $ node-eyes index.js --node-args="--debug=9001"
   * 定义子进程数量: $ node-eyes index.js -i 8
 
+## 1.3 入口点
+
+node-eyes启动时传入的第二个参数用来指定服务脚本执行的入口点文件,其中:
+
+* 可以直接传入脚本文件用于执行,如: index.js
+* 也可以传入脚本文件所在的目录,如: ./
+
+当传入的为目录时,入口点根据如下顺序进行确认:
+
+1. 目录中存在package.json文件,则:
+
+  1. 查找nodeEyes.main;
+  2. 查找script.start(此配置需要以node开头才可识别)
+  3. 查找main
+
+2. 查找目录中是否存在: server.js、app.js、start.js、index.js
+
+只要其中的一项匹配则作为入口点文件来执行,就不再往下匹配.
+
 ## 二、核心代码逻辑设计
 
 ### 2.1 入口/bin/node-eyes如何设计?
