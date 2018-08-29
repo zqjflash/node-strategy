@@ -77,6 +77,16 @@ node-eyes启动时传入的第二个参数用来指定服务脚本执行的入�
 
 * --node-args: 设置子进程所需的启动参数,例如:$ node-eyes index.js --node-args="--debug=9001 --trace-deprecation"等同于 $ node --debug=9001 --trace-deprecation index.js
 
+* --run-as-user,--run-as-group: 指定子进程运行的用户(组), 可通过此对服务脚本进行降权执行,如未配置权限等同于node-eyes启动用户(组)
+
+* --max-memory-restart: 指定服务所能使用到的最大内存,如果达到最大限制,将会抛出异常并退出.同时这类异常也会纳入整体的异常进行处理.
+
+* --graceful-shutdown: 正常情况下,node-eyes在停止服务时会通过worker.disconnect()通知服务,让服务释放资源并退出.在这里可以设置超时时间,如果服务在给定的时间后仍然没有退出,node-eyes则会强制kill掉进程.超时时间默认为8秒.如果node-eyes是由TMANode启动的,自动读取配置文件的deactivating-timeout
+
+* --exception-max,--exception-time: 如果服务出现异常退出,并在一段时间内(--exception-time)异常退出的次数没有超过最大值(--exception-max).node-eyes将会自动拉起新的服务,否则node-eyes与服务也将异常退出.经验值设置:--exception-time默认值为10s,--exception-max默认值为2次.
+
+* --keepalive-time: 如果node-eyes在一段时间(--keepalive-time)内未收到子进程发送的心跳,则判定此子进程为僵尸进程(zombie process),将会直接kill,并作为异常进行处理.默认值为5s.
+
 ## 二、核心代码逻辑设计
 
 ### 2.1 入口/bin/node-eyes如何设计?
