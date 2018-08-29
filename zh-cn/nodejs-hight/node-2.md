@@ -73,6 +73,10 @@ node-eyes启动时传入的第二个参数用来指定服务脚本执行的入�
 
 * --http-address: 设定服务脚本执行所需的ip:port,在脚本中可以使用环境变量HTTP_IP、HTTP_PORT进行获取,如果是由TMA平台启动的服务,这里的值为动态分配的ip和port.
 
+* --script-args: 设置服务脚本执行所需传入的参数,如: $ node-eyes index.js --script-args="--use='https'" 等同于 $ node index.js --use="https"
+
+* --node-args: 设置子进程所需的启动参数,例如:$ node-eyes index.js --node-args="--debug=9001 --trace-deprecation"等同于 $ node --debug=9001 --trace-deprecation index.js
+
 ## 二、核心代码逻辑设计
 
 ### 2.1 入口/bin/node-eyes如何设计?
