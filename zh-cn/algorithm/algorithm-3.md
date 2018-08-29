@@ -23,3 +23,35 @@ const setA = [1,2,3,4,5,6,7,8,9,10];
 const setB = ["男", "女"];
 cartesianProduct(setA, setB); // [[1,"男"],[1,"女"],...]
 ```
+
+## No.2 幂集 - 该集合的所有子集
+
+> 原集合中所有的子集(包括全集和空集)构成的集族.
+
+```js
+/**
+ * @param {*[]} orriginalSet 原始幂集的元素
+ * @param {*[][]} allSubsets 到目前形成的所有子集
+ * @param {*[]} currentSubSet 当前的子集
+ * @param {number} startAt 最初的位置
+ */
+function btPowerSetRecursive(originalSet, allSubsets=[[]], currentSubSet = [], startAt = 0) {
+    // 为了避免重复,每次形成一个子集,
+    for (let position = startAt; position < originalSet.length; position += 1) {
+        // 构造当前元素的子集
+        currentSubSet.push(originalSet[position]);
+        // 记录已经存在的有效子集
+        allSubsets.push([...currentSubSet]);
+        // 继续递归
+        btPowerSetRecursive(originalSet, allSubsets, currentSubSet, position + 1);
+        // 排除最后一个元素的子集
+        currentSubSet.pop();
+    }
+    // 返回所有子集
+    return allSubsets;
+}
+function btPowerSet(originalSet) {
+    return btPowerSetRecursive(originalSet);
+}
+btPowerSet(["a", "b", "c"]); // [[], ["a"], ["a", "b"], ["a", "b", "c"], ["a", "c"], ["b"], ["b", "c"], ["c"]]
+```
