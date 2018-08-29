@@ -70,6 +70,8 @@
 
 ### [第一节 如何造一个类PM2的进程管理工具](/zh-cn/nodejs-hight/node-1.md)
 
+### [第二节 node-eyes进程管理工具核心设计](/zh-cn/nodejs-hight/node-2.md)
+
 ## 第四章 前端常用算法
 
 ### [第一节 前端工作中遇到的数据结构和算法](/zh-cn/algorithm/algorithm-1.md)
