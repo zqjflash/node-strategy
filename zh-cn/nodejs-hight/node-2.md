@@ -41,7 +41,7 @@ node-eyes index.js [options]
   * 传递子进程node的启动参数; $ node-eyes index.js --node-args="--debug=9001"
   * 定义子进程数量: $ node-eyes index.js -i 8
 
-## 1.3 入口点
+### 1.3 入口点
 
 node-eyes启动时传入的第二个参数用来指定服务脚本执行的入口点文件,其中:
 
@@ -60,7 +60,7 @@ node-eyes启动时传入的第二个参数用来指定服务脚本执行的入�
 
 只要其中的一项匹配则作为入口点文件来执行,就不再往下匹配.
 
-## 1.4 选项
+### 1.4 选项
 
 * -c, --config: 指定服务的配置文件,配置文件将会自动读入作为基础配置;
 * -n, --name: 可在此指定服务名.如未配置,则使用脚本的文件名;
@@ -98,6 +98,46 @@ node-eyes启动时传入的第二个参数用来指定服务脚本执行的入�
 * --TMA-monitor-http-seppath: HTTP(s)服务在上报时是否需要区分不同路径.默认为区分路径,其中url.pathname的部分会作为服务的接口名进行上报.如果您的服务拥有非常多(大基数)的pathname(如RESTful),可设置成为off.
 
 * --TMA-monitor-http-socketerr: 默认情况下,HTTP(s)服务在进行上报时会将Socket异常进行上报.可设置成为off.
+
+* --long-stack,--long-stack-filter-usercode: 开启此特性后,会在异常产生时自动附加异步调用堆栈,帮助快速定位异步调用问题.此特性要求Node.js版本大于v8.2.x,并且会造成性能损耗.
+
+### 1.5 配置
+
+node-eyes支持多种配置方式进行启动:
+
+* 命令行参数进行指定;
+
+```js
+node-eyes index.js --run-as-user=user_00
+```
+
+* 在服务脚本的package.json中指定;
+
+```js
+{
+    "nodeEyes": {
+        "runAsUser": "user_00"
+    }
+}
+```
+
+* 在TMA服务的配置文件中指定.
+
+```js
+<TMA>
+    <application>
+        <server>
+            run-as-user=user_00
+        </server>
+    </application>
+<TMA>
+```
+
+其中:
+
+* 在package.json或TMA配置文件中指定的值,会覆盖掉命令行参数中所指定的配置项;
+* 可以通过驼峰式写法将配置参数声明在package.json中nodeEyes的配置;
+* 在TMA服务的配置文件中以配置参数原型直接进行声明.
 
 ## 二、核心代码逻辑设计
 
