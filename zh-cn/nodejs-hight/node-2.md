@@ -93,6 +93,12 @@ node-eyes启动时传入的第二个参数用来指定服务脚本执行的入�
 
 * --TMA-monitor: 如果服务在TMA平台上运行,node-eyes会自动向TMAStat上报服务的监控(用量)信息.默认值为on,设置为off可关闭自动上报功能.
 
+* --TMA-monitor-http-threshold: 如果服务的HTTP(s)返回码大于此阀值则此次请求将作为异常访问进行上报.默认response.statusCode >= 400则为异常访问.设置为off可关闭此特性.
+
+* --TMA-monitor-http-seppath: HTTP(s)服务在上报时是否需要区分不同路径.默认为区分路径,其中url.pathname的部分会作为服务的接口名进行上报.如果您的服务拥有非常多(大基数)的pathname(如RESTful),可设置成为off.
+
+* --TMA-monitor-http-socketerr: 默认情况下,HTTP(s)服务在进行上报时会将Socket异常进行上报.可设置成为off.
+
 ## 二、核心代码逻辑设计
 
 ### 2.1 入口/bin/node-eyes如何设计?
