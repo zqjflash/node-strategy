@@ -87,6 +87,12 @@ node-eyes启动时传入的第二个参数用来指定服务脚本执行的入�
 
 * --keepalive-time: 如果node-eyes在一段时间(--keepalive-time)内未收到子进程发送的心跳,则判定此子进程为僵尸进程(zombie process),将会直接kill,并作为异常进行处理.默认值为5s.
 
+* --applog-max-files,--applog-max-size,--applog-level: 指定服务默认的滚动日志大小(--applog-max-size)、总数(--applog-max-file)与日志级别(--applog-level).服务的启动时会创建两份主(滚动)日志:app.serverName.log: 启动服务的stdout/stderr/console,app.serverName_eyes.log: node-eyes的状态信息
+
+* --TMA-node,--TMA-local: 如果node-eyes是由TMANode启动,则需要指定TMA的RPC连接参数(--TMA-node)与本地被调的启动参数(--TMA-local).此设置也可以通过TMA配置文件(--TMA-config)进行指定.node-eyes会在服务启动时向TMANode上报服务的版本,并在服务运行过程中发送心跳包. 与此同时,node-eyes本地启动的(被调)服务也将从TMANode中接收下发的消息(shutdown/message),并进行响应.
+
+* --TMA-monitor: 如果服务在TMA平台上运行,node-eyes会自动向TMAStat上报服务的监控(用量)信息.默认值为on,设置为off可关闭自动上报功能.
+
 ## 二、核心代码逻辑设计
 
 ### 2.1 入口/bin/node-eyes如何设计?
