@@ -1,0 +1,12 @@
+{
+    "name": "node-eyes",
+    "preferGlobal": "true",
+    "version": "0.0.1",
+    "homepage": "",
+    "description": "TMA框架中Node.js程序启动器,并提供生产环境所需的服务特性",
+    "author": {
+        "name": "zqjflash",
+        "email": "zhengqingjiang03@163.com"
+    }
+}
+
