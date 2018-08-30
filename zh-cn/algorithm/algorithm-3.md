@@ -55,3 +55,30 @@ function btPowerSet(originalSet) {
 }
 btPowerSet(["a", "b", "c"]); // [[], ["a"], ["a", "b"], ["a", "b", "c"], ["a", "c"], ["b"], ["b", "c"], ["c"]]
 ```
+
+* 使用位运算求幂集
+
+```js
+/**
+ * @param {*[]} originalSet
+ * @return [*[][]]
+ */
+function powerSet(originalSet) {
+    const subSets = [];
+    const numberOfCombinations = 2 ** originalSet.length;
+
+    // 每个数字的二进制表示在一个范围从0到2的n次方
+    for (let combinationIndex = 0; combinationIndex < numberOfCombinations; combinationIndex += 1) {
+        const subSet = [];
+        for (let setElementIndex = 0; setElementIndex < originalSet.length; setElementIndex += 1) {
+            // 判断是否需要包含当前元素的子集
+            if (combinationIndex & (1 << setElementIndex)) {
+                subSet.push(originalSet[setElementIndex]);
+            }
+        }
+        subSets.push(subSet);
+    }
+    return subSets;
+}
+powerSet(["a", "b", "c"]); // [[], ["a"], ["a", "b"], ["a", "b", "c"], ["a", "c"], ["b"], ["b", "c"], ["c"]]
+```
