@@ -361,3 +361,7 @@ ProgressContainer.js最后调用方法:
 ```js
 require('module')._load(exec_script, null, true); // 执行业务代码的入口文件
 ```
+
+## 三、node-eyes源码分享
+
+请移步到[node-eyes框架](/node-eyes/)
