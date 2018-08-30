@@ -174,7 +174,44 @@ cmd = process.msg:[all|worker_id]
 通过此命令,可以将自定义消息发送给参数指定的子进程.
 
 * all:发送给所有子进程(包括自己);
-* worker_id: 发送给特定的子进程,其中worker_id为进程顺序ID(process.env.WORKER_ID),所有消息均会通过主进程中转,在大消息量主进程易成为性能瓶颈.
+* worker_id: 发送给特定的子进程,其中worker_id为进程顺序ID(process.env.WORKER_ID),所有消息均会通过主进程中转,在大消息量主进程易成为性能瓶颈
+
+### 1.7 日志
+
+node-eyes会将服务的输出(stdout|stderr管道以及console模块的输出)重定向到指定的文件(当使用-l --log参数启动时)或者管道.日志的输出由winston-tma模块实现,其输出的日志格式为:日期 时间|PID|日志级别|文件名:行号|内容
+
+服务脚本可以通过node自带的console模块输出不同级别的日志.
+
+```js
+console.info=INFO
+console.log=DEBUG
+console.warn=WARN
+console.error=ERROR
+```
+
+也可通过服务的stdout|stderr管道输出.
+
+```js
+process.stdout=INFO
+process.stderr=ERROR
+```
+
+日志级别的优先级为: `INFO < DEBUG < WARN < ERROR < NONE`, 默认的日志级别为DEBUG.
+
+### 1.8 环境变量
+
+node-eyes通过环境变量向服务脚本提供所需的变量:
+
+* process.env.IP: HTTP(s)可监听的IP;
+* process.env.PORT: HTTP(s)可监听的端口;
+* process.env.WORKER_ID: 进程顺序ID(例如启动4个进程,第一个为0,第二个为1,以此类推),重新启动的进程仍然使用之前的ID.
+
+如果服务是由TMANode启动,还支持如下变量:
+
+* process.env.TMA_CONFIG: 启动服务所使用的TMA配置文件所在的绝对路径;
+* process.env.TMA_MONITOR: 是否开启监控(特性)上报(统计).
+
+注:环境变量全为String类型.
 
 ## 二、核心代码逻辑设计
 
