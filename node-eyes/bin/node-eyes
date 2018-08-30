@@ -1,0 +1,65 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const path = require("path");
+const util = require("util");
+const fs = require("fs");
+
+const chalk = require("chalk"); // 修改控制台字符串的样式(字体样式、字体颜色、背景颜色)
+const commander = require("commander"); // Node.js命令行工具包
+const pkg = require("../package.json");
+
+const constants = require("../lib/constants"); // 常量配置文件
+const convert = require("../lib/util/convert"); // 格式转换
+const CLI = require("../lib/CLI"); // 执行入口
+
+const TMAConfigure = require("tma-config-parser"); // 配置文件解析器
+
+const split = function(val) {
+    return val.split(' '); // 以空格分割成数组
+};
+
+const jsonParse = function(val) {
+    try {
+        return JSON.parse(val);
+    } catch (e) {
+        return '';
+    }
+};
+
+const aliveParse = function(val) {
+    if (val === "off") {
+        return 0;
+    }
+    return parseInt(val);
+};
+
+const instancesParse = function(val) {
+    if (val === 'max') {
+        return -1;
+    }
+    if (val === 'auto') {
+        return 0;
+    }
+    val = parseInt(val);
+    if (isNaN(val) || val < 0) {
+        return 0;
+    } else {
+        return val;
+    }
+};
+
+const toBoolean = function(val) {
+    if (typeof val === 'string') {
+        return val === 'on';
+    } else {
+        return false;
+    }
+};
+
+const existsSync = function(path) {
+    
+}
+
+
