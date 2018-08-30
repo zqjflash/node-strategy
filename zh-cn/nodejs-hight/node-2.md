@@ -139,6 +139,43 @@ node-eyes index.js --run-as-user=user_00
 * 可以通过驼峰式写法将配置参数声明在package.json中nodeEyes的配置;
 * 在TMA服务的配置文件中以配置参数原型直接进行声明.
 
+### 1.6 消息与事件
+
+> 一般情况下,业务代码无需处理进程消息与事件,但如果想处理(响应):进程退出、TMA管理命令,则需要进行处理.
+
+* process.on('disconnect', function): 默认情况下node-eyes会对该事件进行处理,但如果用户代码监听了该事件则node-eyes将不再进行处理.请注意,在处理完该事件后,请一定显示调用process.exit()以确保进程可以正常退出.
+
+* process.on('message', object): 一旦node-eyes收到了来自于TAMNode的管理命令(或来自业务脚本的消息),将会通过进程消息发送给(特定的)业务脚本.传送的消息object的格式为:
+
+```js
+{
+    cmd: String,
+    data: String|Object
+}
+```
+
+支持的消息cmd有:
+
+* TMA.viewstatus: 查看服务状态
+* TMA.setloglevel: 设置日志等级
+* TMA.loadconfig: PUSH配置文件
+* TMA.connection: 查看当前链接情况
+* TMA自定义命令;
+* process.msg: [all|worker_id] 跨进程通讯
+
+node-eyes会TMA自定义命令进行切分,命令中第一个空格前的字符作为cmd,而后续的部分则作为data.
+
+* process.send(object): 发送命令给主进程以便主进程执行特定的操作.传递的消息object的格式与收到的消息格式相同.
+
+```js
+cmd = process.msg:[all|worker_id]
+```
+
+通过此命令,可以将自定义消息发送给参数指定的子进程.
+
+* all:发送给所有子进程(包括自己);
+* worker_id: 发送给特定的子进程,其中worker_id为进程顺序ID(process.env.WORKER_ID),所有消息均会通过主进程中转,在大消息量主进程易成为性能瓶颈.
+
 ## 二、核心代码逻辑设计
 
 ### 2.1 入口/bin/node-eyes如何设计?
