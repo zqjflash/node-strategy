@@ -82,3 +82,70 @@ function powerSet(originalSet) {
 }
 powerSet(["a", "b", "c"]); // [[], ["a"], ["a", "b"], ["a", "b", "c"], ["a", "c"], ["b"], ["b", "c"], ["c"]]
 ```
+
+## No.3 排列 (有/无重复)
+
+定义: 从n个不同元素中取出m个元素,按照一定的顺序排成一列,叫做从n个元素中取出m个元素的一个排列,当m=n时,这个排列为全排列.
+
+公式: p(n,m) = n! / (n-m)!
+
+```js
+/**
+ * @param {*[]} permutationOptions 排列项
+ * @param {number} permutationLength 排列长度
+ * @return {*[]}
+ */
+function permutateWithRepetitions(
+    permutationOptions,
+    permutationLength = permutationOptions.length
+) {
+    if (permutationLength === 1) {
+        return permutationOptions.map(permutationOption => [permutationOptions]);
+    }
+    // 初始化一个排列数组
+    const permutations = [];
+
+    // 遍历所有选项,并将其加入到一个小排列中
+    permutationOptions.forEach((currentOption) => {
+        const smallerPermutations = permutateWithRepetitions(permutationOptions, permutationLength - 1);
+        smallerPermutations.forEach((smallerPermutation) => {
+            permutations.push([currentOption].concat(smallerPermutation));
+        });
+    });
+    return permutations;
+}
+permutateWithRepetitions(["a", "b"], 2);  // [["a", ["a", "b"]], ["a", ["a", "b"]], ["b", ["a", "b"]], ["b", ["a", "b"]]]
+```
+
+// 去重排列
+
+```js
+/**
+ * @param {*[]} permutationOptions
+ * @param {*[]}
+ */
+function permutateWithoutRepetitions(permutationOptions) {
+    if (permutationOptions.length === 1) {
+        return [permutationOptions];
+    }
+    // 初始化排列数组
+    const permutations = [];
+
+    // 得到所有permutationOptions除第一个元素外的排列
+    const smallerPermutations = permutateWithoutRepetitions(permutationOptions.slice(1));
+
+    // 第一个选项插入到小排列的所有可能位置
+    const firstOption = permutationOptions[0];
+
+    for (let permIndex = 0; permIndex < smallerPermutations.length; permIndex += 1) {
+        const smallerPermutation = smallerPermutations[permIndex];
+        for (let positionIndex = 0; positionIndex <= smallerPermutation.length; positionIndex += 1) {
+            const permutationPrefix = smallerPermutation.slice(0, positionIndex);
+            const permutationSuffix = smallerPermutation.slice(positionIndex);
+            permutations.push(permutationPrefix.concat([firstOption], permutationSuffix));
+        }
+    }
+    return permutations;
+}
+permutateWithoutRepetitions(["a", "b"]); // [["a", "b"], ["b", "a"]]
+```
