@@ -83,6 +83,56 @@ const parseConfig = function(script, file) {
             dest: 'instances',
             coercion: instancesParse,
             domain: 'client'
+        },
+        {
+            org: 'instances',
+            coercion: instancesParse
+        },
+        {
+            org: 'script-args',
+            coercion: split
+        },
+        {
+            org: 'node-args',
+            coercion: split
+        },
+        {
+            org: 'max-memory-restart',
+            coercion: parseInt
+        },
+        {
+            org: 'deactivating-timeout',
+            dest: 'graceful-shutdown',
+            coercion: parseInt
+        },
+        {
+            org: 'exception-max',
+            coercion: parseInt
+        },
+        {
+            org: 'exception-time',
+            coercion: parseInt
+        },
+        {
+            org: 'keepalive-time',
+            coercion: aliveParse
+        },
+        {
+            org: 'logpath',
+            dest: 'log'
+        },
+        {
+            org: 'logsize',
+            dest: 'applog-max-size',
+            coercion: convert.friendlyformat
+        },
+        {
+            org: 'loglevel',
+            dest: 'applog-level'
+        },
+        {
+            org: 'node',
+            dest: 'tma-node'
         }
     ]
 };
