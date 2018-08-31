@@ -59,7 +59,32 @@ const toBoolean = function(val) {
 };
 
 const existsSync = function(path) {
-    
-}
+    try {
+        fs.statSync(path);
+        return true;
+    } catch(e) {
+        return false;
+    }
+};
+
+const parseConfig = function(script, file) {
+    let TMAConfig = new TMAConfigure();
+    let opts = {
+        config: file
+    };
+    let serverObj;
+    TMAConfig.parseFile(file);
+    serverObj = TMAConfig.get('tma.application', {});
+    [
+        'run-as-user',
+        'run-as-group',
+        {
+            org: 'asyncthread',
+            dest: 'instances',
+            coercion: instancesParse,
+            domain: 'client'
+        }
+    ]
+};
 
 
