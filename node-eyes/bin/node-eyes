@@ -133,8 +133,48 @@ const parseConfig = function(script, file) {
         {
             org: 'node',
             dest: 'tma-node'
+        },
+        {
+            org: 'local',
+            dest: 'tma-local'
+        },
+        {
+            org: 'tma-monitor',
+            coercion: toBoolean
+        },
+        {
+            org: 'tma-monitor-http-threshold',
+            coercion: aliveParse
+        },
+        {
+            org: 'tma-monitor-http-seppath',
+            coercion: toBoolean
+        },
+        {
+            org: 'long-stack',
+            coercion: toBoolean
         }
-    ]
+    ].forEach((item) => {
+        let value = (serverObj[item.domain || 'server'] || {})[item.org || item];
+        if (value) {
+            opts[convert.camelcase(item.dest || item.org || item)] = item.coercion ? item.coercion(value) : value;
+        }
+    });
+    opts['name'] = TMAConfig.get('tma.application.server.app', constants.TMA_DEFAULT_APP) + '.' + TMAConfig.get("tma.application.server.server", path.basename(script, path.extname(script)));
+    if (typeof serverObj.isdocker === "string" && serverObj.isdocker.toLowerCase() === 'y' && serverObj.container) {
+        opts['container'] = serverObj.container;
+    }
+
+    if (serverObj['server']) {
+        Object.getOwnPropertyNames(serverObj['server']).some((key) => {
+            if (serverObj['server'][key] && typeof serverObj['server'][key] === 'object' && serverObj['server'][key].protocol === 'not_tma') {
+                opts[convert.camelcase('http-address')] = serverObj['server'][key].endpoint.match(/\-h\s([^\s]+)/)[1] + ':' + serverObj['server'][key].endpoint.match(/\-p\s[^\s]+)/)[1];
+                return true;
+            }
+            return false;
+        });
+    }
+    return opts;
 };
 
 
