@@ -177,4 +177,36 @@ const parseConfig = function(script, file) {
     return opts;
 };
 
+const parsePackage = function(file) {
+    if (!scriptPkg) {
+        scriptPkg = require(file);
+    }
+    scriptPkg.nodeEyes = scriptPkg.nodeEyes || {};
+    if (scriptPkg.name) {
+        scriptPkg.nodeEyes.name = scriptPkg.name;
+    }
+    return scriptPkg.nodeEyes;
+};
+
+const error = function(str, code) {
+    console.error(chalk.red(str));
+    process.exit(code || 0);
+};
+
+commander
+    .version(pkg.version)
+    .option('-c, --config <config>','specify tma config file.NOTE:independent config will be override this')
+    .option('-n --name <name>', 'set a <name> for script -e.g. app.servername')
+    .option('-l, --log <path>', 'specify log file')
+    .option('-i, --instances <number>', 'launch [number] instances (for networked app)(load balanced)', instancesParse)
+    .option('--env <environment_name>', 'specify environment to get specific env variables (for JSON declaration)', jsonParse)
+    .option('--http-address <http_address>', 'specify http ip:port address to pass to script -e.g. 127.0.0.1:80')
+    .option('--script-args <script_args>', "space delimited arguments to pass to script -e.g. --use=\"https\"", split)
+    .option('--node-args <node_args>', "space delimited arguments to pass to node -e.g. --node-args=\"--debug=9001 --trace-deprecation\"", split)
+    .option('--run-as-user <run_as_user>', 'The user or uid to run a managed process as')
+    .option('--run-as-group <run_as_group>', 'The group or gid to run a managed process as')
+    .option('--max-memory-restart <memory>', 'specify max memory amount used to autorestart (in megaoctets)', parseInt)
+    .option('--graceful-shutdown <graceful>', util.format('specify graceful shutdown timeout (in millisecond), default is %sms', constants.GRACEFUL_TIMEOUT), parseInt)
+    .option('--exception-max <exp_max>', util.format('The program will be terminated if an exceeding max exception count, default is %s', constants.EXCEPTION_TOTAL), parseInt)
+    .option('--exception-time <exp_time>', util.format('The program will be terminated if and exception occurs within a particular period of time, default is %sms', constants.EXCEPTION_TIME), parseInt)
 
