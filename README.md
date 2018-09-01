@@ -90,7 +90,7 @@
 
 ### [第一节 错误处理/调试](/zh-cn/error/error.md)
 
-### [第二节 JS常见错误及如何避免](/zh-cn/js-error.md)
+### [第二节 JS常见错误及如何避免](/zh-cn/error/js-error.md)
 
 ## 第六章 测试
 
