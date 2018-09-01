@@ -149,3 +149,58 @@ function permutateWithoutRepetitions(permutationOptions) {
 }
 permutateWithoutRepetitions(["a", "b"]); // [["a", "b"], ["b", "a"]]
 ```
+
+## No.4 组合(有无重复)
+
+定义: 从n个不同的元素中,任取m个元素为一组,叫作从n个不同元素中取出m个元素的一个组合.我们把有关求组合的个数的问题叫组合问题.
+
+重复组合公式: C(m,n) = m!/n!(m-n)!
+
+非重复组合公式: H(m,n) = (n+m-1)!/m!(n-1)!
+
+```js
+function combineWithRepetitions(comboOptions, comboLength) {
+    if (comboLength === 1) {
+        return comboOptions.map(comboOption => [comboOption]);
+    }
+    // 初始化一个组合数组
+    const combos = [];
+
+    comboOptions.forEach((currentOption, optionIndex) => {
+        const smallerCombos = combineWithRepetitions(
+            comboOptions.slice(optionIndex),
+            comboLength - 1
+        );
+        smallerCombos.forEach((smallerCombo) => {
+            combos.push([currentOption].concat(smallerCombo));
+        });
+    });
+    return combos;
+}
+combineWithRepetitions(["a", "b"], 2);
+```
+
+非重复组合:
+
+```js
+function combineWithoutRepetitions(comboOptions, comboLength) {
+    if (comboLength === 1) {
+        return comboOptions.map(comboOption => [comboOption]);
+    }
+
+    // 初始化一个组合数组
+    const combos = [];
+
+    comboOptions.forEach((currentOption, optionIndex) => {
+        const smallerCombos = combineWithoutRepetitions(
+            comboOptions.slice(optionIndex + 1),
+            comboLength - 1
+        );
+        smallerCombos.forEach((smallerCombo) => {
+            combos.push([currentOption].concat(smallerCombo));
+        });
+    });
+    return combos;
+}
+combineWithoutRepetitions(["a", "b"], 2);
+```
