@@ -177,7 +177,7 @@ function combineWithRepetitions(comboOptions, comboLength) {
     });
     return combos;
 }
-combineWithRepetitions(["a", "b"], 2);
+combineWithRepetitions(["a", "b"], 2); // [["a", "a"], ["b", "b"], ["a", "b"]]
 ```
 
 非重复组合:
@@ -202,5 +202,5 @@ function combineWithoutRepetitions(comboOptions, comboLength) {
     });
     return combos;
 }
-combineWithoutRepetitions(["a", "b"], 2);
+combineWithoutRepetitions(["a", "b"], 2); ["a", "b"]
 ```
