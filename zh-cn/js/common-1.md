@@ -253,11 +253,22 @@ parent("xxx", "yyy", "zzz");
 * 第三种: 使用ES5 Array.from(arguments)
 * 第四种: 使用ES6扩展运算符, [...arguments]
 
+```js
+function test() {
+    console.log(arguments);
+    console.log(Array.prototype.slice.call(arguments));
+    console.log([].slice.call(arguments));
+    console.log(Array.from(arguments));
+    console.log([...arguments]);
+}
+test();
+```
+
 ## No.13 什么是闭包,闭包有哪些用处?
 
 闭包就是作用域的范围,因为js是函数作用域,所以函数就是闭包,全局函数的作用域范围就是全局,无须讨论,更多的应用其实是在内嵌函数,这就会涉及到内嵌作用域,或者叫作用域链.说到内嵌,其实就是父子引用关系(父函数包含子函数,子函数因为函数作用域又引用父函数),如果引用不结束,就会一直占用内存,引起内存泄露.
 
-通常闭包的使用场景是实现数据的私有化
+通常闭包的使用场景是实现数据的私有化.
 es6的class可以将class内部的方法移到外部去定义,达到私有的目的
 
 ```js
