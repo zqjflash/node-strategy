@@ -32,18 +32,19 @@
 const target = {a: 1, b: 1};
 const source1 = {b: 2, c: 2};
 const source2 = {c: 3, [Symbol('c')]: 'd'};
-Object.assign(target, source1, source2);
+Object.assign(target, source1, source2); // {a: 1, b: 2, c: 3, Symbol(c): "d"}
 ```
 
 2. defineProperty, hasOwnProperty, propertyIsEnumerable都是什么用的?
 
-  * Object.defineProperty(obj, prop, descriptor); 用来给对象定义属性,三个参数:
+* Object.defineProperty(obj, prop, descriptor); 用来给对象定义属性,三个参数:
 
-obj:必需,要在其上添加或修改属性的对象.这可能是一个本机JavaScript对象或DOM对象或内置对象;
-prop:必需,一个包含属性的名称的字符串;
-其中descriptor包含对属性的设置,主要有value、writable, configurable, enumerable, set/get等.
+  * obj:必需,要在其上添加或修改属性的对象.这可能是一个本机JavaScript对象或DOM对象或内置对象;
+  * prop:必需,一个包含属性的名称的字符串;
+  * 其中descriptor包含对属性的设置,主要有value、writable, configurable, enumerable, set/get等.
 
 示例代码:
+
 ```js
 const someOne = {};
 Object.defineProperty(someOne, "name", {
@@ -55,8 +56,8 @@ someOne.name = "yyy";
 console.log(someOne.name); // xxx
 ```
 
-  * hasOwnProperty用于检查某一属性是不是存在对象本身,继承来的父对象属性不算;
-  * propertyIsEnumerable用来检测某一属性是否可遍历,也就是能不能用for...in循环来取到.
+* hasOwnProperty用于检查某一属性是不是存在对象本身,继承来的父对象属性不算;
+* propertyIsEnumerable用来检测某一属性是否可遍历,也就是能不能用for...in循环来取到.
 
 ## No.5 ES6数组的新方法(map/reduce, forEach, filter)
 
