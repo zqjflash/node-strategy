@@ -204,3 +204,24 @@ function combineWithoutRepetitions(comboOptions, comboLength) {
 }
 combineWithoutRepetitions(["a", "b"], 2); ["a", "b"]
 ```
+
+## No.5 洗牌算法 - 随机置换有限序列
+
+洗牌算法是常见的随机问题,它可以抽象成:得到一个M以内的所有自然数的随机顺序数组.
+
+```js
+/**
+ * @param {*[]} originalArray
+ * @return {*[]}
+ */
+function fisherYates(originalArray) {
+    // 克隆一个原始数组,防止原始数组修改
+    const array = originalArray.slice(0);
+    for (let i = (array.length - 1); i > 0; i -= 1) {
+        const randomIndex = Math.floor(Math.random() * (i + 1));
+        [array[i], array[randomIndex]] = [array[randomIndex], array[i]];
+    }
+    return array;
+}
+fisherYates([5, 8, 20, 17]); // [8, 20, 17, 5]
+```
