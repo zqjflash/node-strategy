@@ -286,4 +286,26 @@ if (!existsSync(entrypoint)) {
     return;
 }
 
+if (commander.config) {
+    try {
+        configOpt = parseConfig(commander.args[0], commander.config);
+    } catch (e) {
+        error(chalk.red('>> Reading the config file failed.'));
+        return;
+    }
+} else if (existsSync(path.join(path.dirname(entrypoint), 'package.json'))) {
+    try {
+        configOpt = parsePackage(path.join(path.dirname(entrypoint), 'package.json'));
+    } catch(e) {
+    }
+}
 
+if (configOpt) {
+    Object.getOwnPropertyNames(configOpt).forEach((key) => {
+        if (!commander[key] || typeof commander[key] === 'function') {
+            commander[key] = configOpt[key];
+        }
+    });
+}
+
+CLI.start(entrypoint, commander);
