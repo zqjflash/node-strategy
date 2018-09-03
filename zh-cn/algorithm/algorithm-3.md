@@ -225,3 +225,79 @@ function fisherYates(originalArray) {
 }
 fisherYates([5, 8, 20, 17]); // [8, 20, 17, 5]
 ```
+
+## No.6  最长公共子序列 (LCS)
+
+> 一个数列S,如果分别是两个或多个已知数列的子序列,且是所有匹配此条件序列中最长的,则S称为已知序列的最长公共子序列.主要广泛地应用在版本控制,比如Git用来调和文件之间的改变.
+
+动态规划的一个计算最长公共子序列的方法,以两个序列X、Y为例:
+
+设有二维数组f[i][j]表示X的i位和Y的j位之前的最长公共子序列的长度,则有:
+
+f[1][1] = same(1, 1)
+f[i][j] = max{f[i - 1][j - 1] + same(i, j), f[i - 1][j], f[i][j - 1]}
+
+其中,same(a, b)当X的第a位与Y的第b位完全相同时为"1",否则为0.此时,f[i][j]中最大的数便是X和Y的最长公共子序列的长度,依据该数组回溯,便可找出最长公共子序列.
+
+```js
+/**
+ * @param {string[]} set1
+ * @param {string[]} set2
+ * @return {string[]}
+ */
+function longestCommonSubsequence(set1, set2) {
+    // 初始化LCS二维数组
+    const lcsMatrix = Array(set2.length + 1).fill(null).map(() => Array(set1.length + 1).fill(null));
+
+    // 第一行填充0
+    for (let columnIndex = 0; columnIndex <= set1.length; columnIndex += 1) {
+        lcsMatrix[0][columnIndex] = 0;
+    }
+
+    // 第一列填充0
+    for (let rowIndex = 0; rowIndex <=  set2.length; rowIndex += 1) {
+        lcsMatrix[rowIndex][0] = 0;
+    }
+
+    // 对两个子序列剩下的列进行填充
+    for (let rowIndex = 1; rowIndex <= set2.length; rowIndex += 1) {
+        for (let columnIndex = 1; columnIndex <= set1.length; columnIndex += 1) {
+            if (set1[columnIndex - 1] === set2[rowIndex - 1]) {
+                lcsMatrix[rowIndex][columnIndex] = lcsMatrix[rowIndex - 1][columnIndex - 1] + 1;
+            } else {
+                lcsMatrix[rowIndex][columnIndex] = Math.max(
+                    lcsMatrix[rowIndex - 1][columnIndex],
+                    lcsMatrix[rowIndex][columnIndex - 1]
+                );
+            }
+        }
+    }
+
+    // 计算lcs矩阵最大的字符串长度为0,返回空数组
+    if (!lcsMatrix[set2.length][set1.length]) {
+        return [''];
+    }
+
+    const longestSequence = [];
+    let columnIndex = set1.length;
+    let rowIndex = set2.length;
+
+    while (columnIndex > 0 || rowIndex > 0) {
+        if (set1[columnIndex - 1] === set2[rowIndex - 1]) {
+            // 从后往前填充子序列1
+            longestSequence.unshift(set1[columnIndex - 1]);
+            columnIndex -= 1;
+            rowIndex -= 1;
+        } else if (lcsMatrix[rowIndex][columnIndex] === lcsMatrix[rowIndex][columnIndex - 1]) {
+            // 左移
+            columnIndex -= 1;
+        } else {
+            // 上移
+            rowIndex -= 1;
+        }
+    }
+    return longestSequence;
+}
+longestCommonSubsequence(["a", "d", "e"], ["a", "d", "f"]);
+```
+
