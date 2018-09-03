@@ -232,7 +232,18 @@ Object.getOwnPropertyNames(person); // ["name", "age", "methodA"]
 修饰器只能用于类和类的方法,不能用于函数,因为存在函数提升.
 如果一定要修饰函数,可以采用高阶函数的形式直接执行.
 
+类的修饰代码示例:
 
+```js
+@testable
+class MyTestableClass {
+    // ...
+}
+function testable(target) {
+    target.isTestable = true;
+}
+MyTestableClass.isTestable // true
+```
 
 # 参考
 
