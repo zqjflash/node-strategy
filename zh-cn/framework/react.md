@@ -1,6 +1,30 @@
 # 第一节 React框架
 
-## No.1 React Keys的作用
+## No.1 React如何实现事件监听?
+
+给需要监听事件的元素加上属性类似于onClick、onKeyDown这样的属性,在未经过特殊处理的时候,这些on*的事件监听只能用在普通的HTML标签上,而不能用在组件标签上.
+
+注意事项:
+
+* 事件监听函数默认会自动传入一个event对象,React封装了一层event对象;
+* 事件中的this,由于React事件调用方法不是通过对象方法调用,而是直接通过函数调用,需要手动将实例方法bind到当前实例上.
+
+```js
+class Title extends Component {
+    handleClickOnTitle (e) {
+        console.log(e.target.innerHTML);
+        console.log(this);
+    }
+    render() {
+        return (
+            <h1 onClick={this.handleClickOnTitle.bind(this)}>test</h1>
+        )
+    }
+}
+```
+
+
+## No.2 React Keys的作用
 
 * key可以帮助React标志哪个列表项发生变化,添加或删除,应该给列表项元素内一个稳定的标识;大多数使用数据的ID作为key:
 
@@ -33,7 +57,7 @@ const todoItems = todos.map((todo) => {
 
 react通过key来发现tree2的第二个元素不是原先tree1的第二个元素,原先的第二个元素被挪到下面去了,因此在操作的时候就会直接指向insert操作,来减少dom操作的性能开销.
 
-## No.2 React refs有什么作用?
+## No.3 React refs有什么作用?
 
 可以给某个JSX元素加上ref属性,通过ref属性能够让我们获取已经挂载的元素DOM节点,记住一个原则:能不用ref就不用,特别是要避免用ref来做React本来就可以帮助你做到的页面自动更新的操作和事件监听.
 
@@ -78,7 +102,7 @@ class MyComponent extends React.Component {
 const node = this.myRef.current;
 ```
 
-## No.3 Component与PureComponent的差异?
+## No.4 Component与PureComponent的差异?
 
 1. state状态变化时会触发Component组件重新渲染;
 2. PureComponent组件相当于在shouldComponentUpdate加了以下逻辑;
@@ -92,7 +116,7 @@ shouldComponentUpdate(nextProps, nextState) {
 
 注:如果某个组件的props或者是state频繁变动的话,那么根本不用换成PureComponent,用了反倒需要多次进行shallowEqual比较.
 
-## No.4 React的render机制是什么?
+## No.5 React的render机制是什么?
 
 * 入口调用ReactDOM.render();
 * 获取当前的virtual DOM;
@@ -101,7 +125,7 @@ shouldComponentUpdate(nextProps, nextState) {
 
 注: 尽量不要触发render function;尽量保持virtual DOM的一致.
 
-## No.5 shallowEqual与Immutable data structures
+## No.6 shallowEqual与Immutable data structures
 
 * 首先:shallowEqual与Immutable数据相关;
 * 其次:必须使用扩展运算符来创建对象,示例代码如下:
@@ -118,7 +142,7 @@ const nextProps = {
 props.list === nextProps.list; // false
 ```
 
-## No.6 如何给route组件赋值key?
+## No.7 如何给route组件赋值key?
 
 通常情况下我们是没法传props给route组件的,解决方案是createElement方法.
 
@@ -139,7 +163,7 @@ class App extends Component {
 }
 ```
 
-## No.7 如何看待React与Preact的差异?
+## No.8 如何看待React与Preact的差异?
 
 1. 虚拟DOM树结构不一样,在preact中,children在props中永远是数组,但react中可能是字符串、数字、null、undefined、数组、单个虚拟DOM;
 2. ref机制也有差异,preact有些时候this.refs.xxx为undefined;
@@ -147,7 +171,7 @@ class App extends Component {
 4. 事件系统也有差异,react的事件系统是基于冒泡的,preact是简单绑定元素节点上;
 5. diff算法差异:preact没有考虑到children出现相同key的情况.
 
-## No.8 React生命周期是什么样的?
+## No.9 React生命周期是什么样的?
 
 1. 可选的static方法;
 2. constructor构造函数;
@@ -164,13 +188,13 @@ class App extends Component {
 13. 可选的render方法
 14. render()方法
 
-## No.9 组件的state和setState的作用是什么?
+## No.10 组件的state和setState的作用是什么?
 
 React.js的state就是用来存储组件可变化的显示形态;
 setState方法由父类Component所提供,当我们调用这个函数的时候,React.js会更新组件的状态state,并且重新调用render方法.
 setState不会马上修改state,而是采用合并消息以后再统一重新渲染组件.
 
-## No.10 组件的props作用是什么?
+## No.11 组件的props作用是什么?
 
 props作用是让React.js组件具有一定的"可配置"性,每个组件都可以接受一个props参数,它是一个对象,包含了所有你对这个组件的配置.
 
@@ -185,14 +209,14 @@ class LikeButton extends Component {
 }
 ```
 
-## No.11 state与props有什么区别?
+## No.12 state与props有什么区别?
 
 * state的主要作用是用于组件保存、控制、修改自身的可变状态;
 * props的主要作用是让使用该组件的父组件可以传入参数来配置该组件;
 
 记住一个简单的规则:尽量少地用state,尽量多地用props.
 
-## No.12 更新阶段的组件生命周期是什么样的?
+## No.13 更新阶段的组件生命周期是什么样的?
 
 更新阶段组件的生命周期如下:
 
@@ -201,7 +225,7 @@ class LikeButton extends Component {
 3. componentWillUpdate(): 组件开始重新渲染之前调用;
 4. componentDidUpdate(): 组件重新渲染并且把更改变更到真实的DOM以后调用.
 
-## No.13 PropTypes和组件参数的验证是怎样的?
+## No.14 PropTypes和组件参数的验证是怎样的?
 
 1. 首先,安装一个React提供的第三方库prop-types;
 
@@ -221,7 +245,7 @@ static defaultProps = {
 };
 ```
 
-## No.14 React与Vue的区别?
+## No.15 React与Vue的区别?
 
 1. 监听数据变化的实现原理不同
 
@@ -248,7 +272,7 @@ Vue2.x数据流: Parent-(Props)->child-(v-modle)->DOM
 在Redux中,我们每个组件都需要显示的用connect把需要的props和dispatch连接起来,Redux只能进行dispatch,并不能直接调用reducer进行修改.
 Vuex既可以dispatch action也可以commit updates
 
-## No.15 dangerouslySetHTML和style属性的作用是什么?
+## No.16 dangerouslySetHTML和style属性的作用是什么?
 
 出于安全考虑的原因(XSS攻击),在React.js当中所有的表达式插入的内容都会被自动转移.如果在页面中要把一个富文本的标签结构渲染在页面,就需要使用dangerouslySetHTML属性,示例代码如下:
 
@@ -269,7 +293,7 @@ style接受一个对象,这个对象里面是这个元素的CSS属性键值对,�
 
 实际运用中,我们可以用props或者state中的数据生成样式对象再传给元素,然后用setState就可以修改样式,非常灵活.
 
-## No.16 props.children和容器类组件是什么关系?
+## No.17 props.children和容器类组件是什么关系?
 
 使用自定义组件的时候,可以在其中嵌套JSX结构,嵌套的结构在组件内部都可以通过props.children获取到,这种组件的编写方式在编写容器类型的组件当中非常有用.
 
@@ -304,7 +328,7 @@ ReactDOM.render(
 );
 ```
 
-## No.17 什么是高阶组件?
+## No.18 什么是高阶组件?
 
 高阶组件就是一个函数,传给它一个组件,它返回一个新的组件.
 作用就是为了组件之间的代码复用,组件可能有着某些相同的逻辑,把这些逻辑抽离出来,放到高阶组件中进行复用.高阶组件内部的包装组件和被包装组件之间通过props传递数据.
@@ -330,7 +354,7 @@ export default (WrappedComponent) => {
 
 高阶组件的设计模式就是装饰者模式,通过组合的方式达到很高的灵活程度.
 
-## No.18 了解过React DOM未来可以朝哪些方向优化?
+## No.19 了解过React DOM未来可以朝哪些方向优化?
 
 * 停止在value属性中映射输入值,因为这并不是DOM的工作方式;
 
