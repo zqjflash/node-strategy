@@ -26,6 +26,10 @@
 
 * 工具平台...
 
+## 三、抽象出一套中间件
+
+![node-middle-ware](/assets/node-middle-ware.png)
+
 ## 三、开发范式
 
 每个团队需遵守一套相同的规则,比如一个node.js工程目录及作用: 
