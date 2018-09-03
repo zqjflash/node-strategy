@@ -226,6 +226,14 @@ Object.defineProperty(person, "methodA", {
 Object.getOwnPropertyNames(person); // ["name", "age", "methodA"]
 ```
 
+## No.16 为什么修饰器不能用于函数?
+
+修饰器是一个对类进行处理的函数,修饰器函数的第一个参数就是所要修饰的目标类.
+修饰器只能用于类和类的方法,不能用于函数,因为存在函数提升.
+如果一定要修饰函数,可以采用高阶函数的形式直接执行.
+
+
+
 # 参考
 
 ### [ECMAScript 6入门 阮一峰](http://es6.ruanyifeng.com/)
