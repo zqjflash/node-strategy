@@ -215,4 +215,8 @@ commander
     .option('--tam-node <tma_node>', 'set tma node connection string, eyes would send notifications to tma node -e.g. tma.tmanode.ServerObj@tcp -h 10.11.10.12 - p 12555 -t 60000')
     .option('--tma-local <tma_local>', 'set local interface setup string, eyes would receive the notifications from tma node -e.g. tcp -h 127.0.0.1 -p 13001 -t 3000')
     .option('--tma-monitor <tma_monitor>', util.format('enable or disable service monitor running in tma platform, and the default value is %s', constants.TMA_MONITOR ? 'on' : 'off'), toBoolean)
+    .option('--tma-monitor-http-threshold <http_threshold>', util.format('if the http(s) status code is large than the preseted threshold then this request will be considered error. default threshold is %s, set it "off" to disabled', constants.TMA_MONITOR_HTTP_THRESHOLD), aliveParse)
+    .option('--tma-monitor-http-seppath <http_seppath>', util.format('separate url pathname as interface name, default is %s', constants.TMA_MONITOR_HTTP_SEPPATH ? 'on' : 'off'), toBoolean)
+    .option('--tma-monitor-http-socketerr <http_socketerr>', util.format('considered socket error as error, default is %s', constants.TMA_MONITOR_HTTP_SOCKETERR ? 'on' : 'off'), toBoolean)
+    .option('--long-stack <long_stack>', util.format('enable long stack trace to auto append asynchronous stack, default is %s', constants.LONG_STACK ? 'on' : 'off'), toBoolean)
 
