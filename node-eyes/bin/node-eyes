@@ -209,4 +209,10 @@ commander
     .option('--graceful-shutdown <graceful>', util.format('specify graceful shutdown timeout (in millisecond), default is %sms', constants.GRACEFUL_TIMEOUT), parseInt)
     .option('--exception-max <exp_max>', util.format('The program will be terminated if an exceeding max exception count, default is %s', constants.EXCEPTION_TOTAL), parseInt)
     .option('--exception-time <exp_time>', util.format('The program will be terminated if and exception occurs within a particular period of time, default is %sms', constants.EXCEPTION_TIME), parseInt)
+    .option('--applog-max-files <applog_max_files>', util.format('specify max number of rolling log, default is %s', constants.APPLOG_MAX_FILES), parseInt)
+    .option('--applog-max-size <applog_max_size>', util.format('specify max file size for each rolling log, use human readable unit in [K|G|M], default is %s', convert.byteformat(constants.APPLOG_MAX_SIZE)), convert.friendlyformat)
+    .option('--applog-level <applog_level>', util.format('define log level, default is %s', constants.APPLOG_LEVEL))
+    .option('--tam-node <tma_node>', 'set tma node connection string, eyes would send notifications to tma node -e.g. tma.tmanode.ServerObj@tcp -h 10.11.10.12 - p 12555 -t 60000')
+    .option('--tma-local <tma_local>', 'set local interface setup string, eyes would receive the notifications from tma node -e.g. tcp -h 127.0.0.1 -p 13001 -t 3000')
+    .option('--tma-monitor <tma_monitor>', util.format('enable or disable service monitor running in tma platform, and the default value is %s', constants.TMA_MONITOR ? 'on' : 'off'), toBoolean)
 
