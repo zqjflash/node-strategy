@@ -219,4 +219,71 @@ commander
     .option('--tma-monitor-http-seppath <http_seppath>', util.format('separate url pathname as interface name, default is %s', constants.TMA_MONITOR_HTTP_SEPPATH ? 'on' : 'off'), toBoolean)
     .option('--tma-monitor-http-socketerr <http_socketerr>', util.format('considered socket error as error, default is %s', constants.TMA_MONITOR_HTTP_SOCKETERR ? 'on' : 'off'), toBoolean)
     .option('--long-stack <long_stack>', util.format('enable long stack trace to auto append asynchronous stack, default is %s', constants.LONG_STACK ? 'on' : 'off'), toBoolean)
+    .option('--long-stack-filter-usercode <stack_usercode>', util.format('filter long stack trace keep user module code only, default is %s', constants.LONG_STACK_FILTER_USERCODE ? 'on' : 'off'), toBoolean)
+    .usage('app.js [options]')
+    .parse(process.argv);
+
+if (process.argv.length == 2) {
+    commander.parse(process.argv);
+    commander.outputHelp();
+    process.exit(0);
+}
+
+if (!commander.args[0]) {
+    error('>> The script is NOT specified.');
+    return;
+}
+let scriptStat;
+let scriptPkg;
+let entrypoint;
+let configOpt;
+
+try {
+    scriptStat = fs.statSync(commander.args[0]);
+} catch(e) {
+    error('>> Can NOT find the script or directory');
+    return;
+}
+
+if (scriptStat.isFile() && path.extname(commander.args[0]).toLowerCase() === '.js') {
+    entrypoint = path.resolve(commander.args[0]);
+} else if (scriptStat.isDirectory()) {
+    if (existsSync(path.resolve(commander.args[0], 'package.json'))) {
+        try {
+            scriptPkg = require(path.resolve(commander.args[0], 'package.json'));
+        } catch(e) {
+        }
+        if (scriptPkg && scriptPkg.nodeEyes && scriptPkg.nodeEyes.main) {
+            entrypoint = path.resolve(commander.args[0], scriptPkg.nodeEyes.main);
+        } else if (scriptPkg && scriptPkg.scripts && scriptPkg.scripts.start && scriptPkg.scripts.start.indexOf('node ') === 0) {
+            entrypoint = path.resolve(commander.args[0], scriptPkg.scripts.start.slice(5));
+        } else if (scriptPkg && scriptPkg.main) {
+            entrypoint = path.resolve(commander.args[0], scriptPkg.main);
+        }
+    }
+
+    if (!entrypoint) {
+        constants.ENTRY_POINT_NAME.some((name) => {
+            if (existsSync(path.resolve(commander.args[0], name))) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+    }
+
+    if (!entrypoint) {
+        error('>> Can NOT find the entry point in the directory');
+        return;
+    }
+} else {
+    error('>> The script is neither a file nor a directory');
+    return;
+}
+
+if (!existsSync(entrypoint)) {
+    error(util.format('>> Can NOT find the entrypoint(%s) in the file system', entrypoint));
+    return;
+}
+
 
