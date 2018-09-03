@@ -330,6 +330,18 @@ export default (WrappedComponent) => {
 
 高阶组件的设计模式就是装饰者模式,通过组合的方式达到很高的灵活程度.
 
+## No.18 了解过React DOM未来可以朝哪些方向优化?
+
+* 停止在value属性中映射输入值,因为这并不是DOM的工作方式;
+
+* 在React根目录而不是document对象中添加事件.
+
+* onChange迁移到onInput,并且不要填充不受控制的组件.
+
+* 大大简化事件系统.
+
+* className->class.
+
 
 # 参考
 
