@@ -283,6 +283,122 @@ const sleep = (timeountMS) => new Promise((resolve) => {
 })();
 ```
 
+## No.8 关系型数组如何转成树形结构对象?
+
+> 思路: 先找到它的根元素,然后根据id和parent来判断它们之间的关系.
+
+* 关系型数组
+
+```js
+var obj = [
+    {id: 3, parent: 2},
+    {id: 1, parent: null},
+    {id: 2, parent: 1},
+];
+```
+
+* 期望结果:
+
+```js
+o = {
+    obj: {
+        id: 1,
+        parent: null,
+        child: {
+            id: 2,
+            parent:1,
+            child: {
+                id: 3,
+                parent: 2
+            }
+        }
+    }
+}
+```
+
+实现源码:
+
+```js
+var obj = [
+    {id: 3, parent: 2},
+    {id: 1, parent: null},
+    {id: 2, parent: 1},
+];
+function treeObj(obj) {
+    obj.map(item => {
+        if (item.parent !== null) {
+            obj.map(o => {
+                if (item.parent === o.id) {
+                    if (!o.child) {
+                        o.child = [];
+                    }
+                    o.child.push(item);
+                    o.child = o.child;
+                }
+            })
+        }
+    })
+    return obj.filter(item => item.parent === null)[0];
+}
+treeObj(obj);
+```
+
+## No.9 请用js实现一个函数parseUrl(url),将一段url字符串解析为Object.
+
+> 思路:需要先了解URL(统一资源定位符),另外还需要了解URI(统一资源标识符),URI最常见的形式是URL.URL一般包括协议、域名、端口、query、param等.可以通过创建一个a标签来将字符串转成URL.
+
+```js
+parseUrl("http://www.baidu.com/product/list?id=111&sort=discount#title");
+```
+
+期望结果:
+
+```js
+{
+    protocol: "http",
+    host: "www.baidu.com",
+    path: "/product/list",
+    params: {
+        id: "111",
+        sort: "discount"
+    },
+    hash: "title"
+}
+```
+
+```js
+// 实现代码
+function parseUrl(url) {
+    let a = document.createElement("a");
+    a.href = url;
+    return {
+        source: url,
+        protocol: a.protocol.replace(':', ''),
+        host: a.hostname,
+        port: a.port,
+        query: a.search,
+        params: (() => {
+            let ret = {};
+            let querys = [];
+            let searchQuery = a.search.replace(/^\?/,'').split('&');
+            for (var i = 0; i < searchQuery.length; i++) {
+                if (searchQuery[i]) {
+                    querys = searchQuery[i].split('=');
+                    ret[querys[0]] = querys[1];
+                }
+            }
+            return ret;
+        })(),
+        file: (a.pathname.match(/\/([^\/?#]+)$/i)),
+        hash: a.hash.replace('#', ''),
+        path: a.pathname.replace(/^([^\/])/, '/$1'),
+        relative: (a.href.match(/tps?:\/\/[^\/]+(.+)/) || [, ''])[1],
+        segments: a.pathname.replace(/^\//,'').split('/')
+    };
+}
+parseUrl("http://www.baidu.com/product/list?id=111&sort=discount#title");
+```
+
 # 参考
 
 ### [js浮点运算](https://blog.csdn.net/u013347241/article/details/79210840)
