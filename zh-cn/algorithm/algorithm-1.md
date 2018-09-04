@@ -430,6 +430,29 @@ function Element(tagName, props, children) {
 
 更详细的解析请点击[如何实现一个Virtual DOM算法](https://github.com/livoras/blog/issues/13)
 
+## No.17 JavaScript实现笛卡尔积乘积,一般用于商品sku属性配置,例如输入['1', '2'],['a', 'b'],['+', '-', 'x'],输出['1a+', '2a+', '1b+', '2b+', '1a-', '2a-', '1b-', '2b-', '1ax', '2ax', '1bx', '2bx']
+
+```js
+function mix(arr) {
+  const result = arr.reduce((accArr, currentArr) => {
+    let result = [];
+    currentArr.forEach(c => {
+      if (accArr.length) {
+        accArr.forEach(a => {
+          result.push(a.concat(c));
+        })
+      } else {
+        result.push([c]);
+      }
+    })
+    return result;
+  }, [])
+  return result.map(arr => arr.join(''));
+}
+
+console.log(mix([['1', '2'], ['a', 'b'], ['+', '-', 'x']]));
+```
+
 
 # 参考
 
