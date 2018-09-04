@@ -330,29 +330,48 @@ ReactDOM.render(
 
 ## No.18 什么是高阶组件?
 
-高阶组件就是一个函数,传给它一个组件,它返回一个新的组件.
-作用就是为了组件之间的代码复用,组件可能有着某些相同的逻辑,把这些逻辑抽离出来,放到高阶组件中进行复用.高阶组件内部的包装组件和被包装组件之间通过props传递数据.
+* 高阶组件就是一个函数,传给它一个组件,它返回一个新的组件.
+* 作用就是为了组件之间的代码复用,组件可能有着某些相同的逻辑,把这些逻辑抽离出来,放到高阶组件中进行复用.高阶组件内部的包装组件和被包装组件之间通过props传递数据.
+* 高阶组件的设计模式就是装饰者模式,通过组合的方式达到很高的灵活程度.
+
+看一个高阶组件的示例:
 
 ```js
-const NewComponent = higherOrderComponent(OldComponent);
-```
-
-简单的高阶组件示例:
-
-```js
+// wrapWithLoadData.js
 import React, {Component} from 'react';
-export default (WrappedComponent) => {
+export default (WrappedComponent, name) => {
     class NewComponent extends Component {
-        // 可以做很多自定义逻辑
-        render () {
-            return <WrappedComponent />
+        constructor() {
+            super();
+            this.state = {data: null}
+        }
+        // 模块渲染前
+        componentWillMount() {
+            let data = localStorage.getItem(name);
+            this.setState({data});
+        }
+        render() {
+            return <WrappedComponent data={this.state.data} />
         }
     }
     return NewComponent;
-}
+};
 ```
 
-高阶组件的设计模式就是装饰者模式,通过组合的方式达到很高的灵活程度.
+实际引用高阶组件示例:
+
+```js
+import wrapWithLoadData from './wrapWithLoadData';
+class InputWithUserName extends Component {
+    render () {
+        return <input value={this.props.data} />
+    }
+}
+InputWithUserName = wrapWithLoadData(InputWithUserName, 'username');
+export default InputWithUserName;
+```
+
+wrapWithLoadData高阶组件挂载的时候会先去localStorage加载数据,渲染的时候再通过props.data传给真正的InputWithUserName.
 
 ## No.19 了解过React DOM未来可以朝哪些方向优化?
 
