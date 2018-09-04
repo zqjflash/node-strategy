@@ -399,6 +399,52 @@ function parseUrl(url) {
 parseUrl("http://www.baidu.com/product/list?id=111&sort=discount#title");
 ```
 
+## No.10 数组元素的排列组合问题
+
+> 思路: 每次取数组中的一个数,然后将剩余的数,依次加入到该数的组合数组中
+
+```js
+[1, 2, 3]
+```
+
+期望结果是全排列:
+
+```js
+[[1, 2], [1, 3], [2, 1], [2, 3], [3, 1], [3, 2]]
+```
+
+实现代码:
+
+```js
+function Permutations(target, size, origin) {
+    let _arr = [];
+    function getArrange(target, nums, ret) {
+        if (nums === 1) {
+            for (let i = 0; i < target.length; i++) {
+                let tmp = ret.slice();
+                tmp.push(target[i]);
+                _arr.push(tmp);
+            }
+        } else {
+            nums -= 1;
+            for (let i = 0; i < target.length; i++) {
+                let tmp = ret.slice();
+                let newTarget = target.slice();
+                console.log(newTarget.splice(i, 1));
+                tmp.push(target[i]);
+                newTarget.splice(i, 1); // 按i索引读取1个元素
+                getArrange(newTarget, nums, tmp);
+            }
+        }
+    }
+    getArrange(target, size, origin);
+    return _arr;
+}
+Permutations([1, 2, 3], 2, []);
+```
+
+
+
 # 参考
 
 ### [js浮点运算](https://blog.csdn.net/u013347241/article/details/79210840)
