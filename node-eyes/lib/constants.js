@@ -16,7 +16,7 @@ const conf = {
         ERRORED: 5   
     },
     GOD_MESSAGE: {
-        EXCEPTION_REACHED_COND: 1,
+        EXCEPTION_REACHED_COND: 1, // 异常触达
         KILLING_ALL_WORKERS: 2,
         KILLING_WORKER: 3,
         FORCE_KILL_WORKER: 4,
