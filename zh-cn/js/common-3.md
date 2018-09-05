@@ -407,7 +407,7 @@ parseUrl("http://www.baidu.com/product/list?id=111&sort=discount#title");
 [1, 2, 3]
 ```
 
-期望结果是全排列:
+* 期望结果是全排列:
 
 ```js
 [[1, 2], [1, 3], [2, 1], [2, 3], [3, 1], [3, 2]]
@@ -439,9 +439,36 @@ function Permutations(target, size, origin) {
     getArrange(target, size, origin);
     return _arr;
 }
-Permutations([1, 2, 3], 2, []);
+Permutations([1, 2, 3], 2, []); // [[1, 2], [1, 3], [2, 1], [2, 3], [3, 1], [3, 2]]
 ```
 
+* 期望结果是
+
+```js
+[[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]]
+```
+
+> 思路:取一个数,加入到数组中,接着再取一个数加入数组,直到需要的num为0.
+
+```js
+function Permutations(arr, nums) {
+    let ret = [];
+    function getRet(origin, target, nums) {
+        if (nums === 0) {
+            ret[ret.length] = origin;
+            return;
+        }
+        for (let i = 0; i <= target.length - nums; i++) {
+            let tmp = origin.slice();
+            tmp.push(target[i]);
+            getRet(tmp, target.slice(i + 1), nums - 1);
+        }
+    }
+    getRet([], arr, nums);
+    return ret;
+}
+Permutations([1, 2, 3, 4], 3); // [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]]
+```
 
 
 # 参考
