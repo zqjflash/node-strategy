@@ -301,3 +301,61 @@ function longestCommonSubsequence(set1, set2) {
 longestCommonSubsequence(["a", "d", "e"], ["a", "d", "f"]);
 ```
 
+## No.7 最长递增子序列
+
+> 给定一个长度为N的数组,找出一个最长的单调自增子序列(不一定连续,但是顺序不能乱).例如:给定一个长度为6的数组A{5, 6, 7, 1, 2, 8},则其最长的单调递增子序列为{5, 6, 7, 8},长度为4.
+
+不过,有时候一个数组可能存在多个最长递增子序列,比如下列数组:
+
+```
+{0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15}
+// 最长递增子序列有多种情况
+{0, 2, 6, 9, 11, 15}
+{0, 4, 6, 9, 11, 15}
+{0, 2, 6, 9, 13, 15}
+{0, 4, 6, 9, 13, 15}
+```
+
+实现代码:
+
+```js
+/**
+ * 动态规划找最长递增子序列
+ * @param {number[]} sequence
+ * @return {number}
+ */
+function dpLongestIncreasingSubsequence(sequence) {
+    // 申请一个长度为sequence.length的空间,记录最长递增子序列的长度
+    const lengthsArray = Array(sequence.length).fill(1);
+    let previousElementIndex = 0;
+    let currentElementIndex = 1;
+
+    while(currentElementIndex < sequence.length) {
+        if (sequence[previousElementIndex] < sequence[currentElementIndex]) {
+            const newLength = lengthsArray[previousElementIndex] + 1;
+            if (newLength > lengthsArray[currentElementIndex]) {
+                lengthsArray[currentElementIndex] = newLength;
+            }
+        }
+        // 右移前一个元素索引
+        previousElementIndex += 1;
+
+        if (previousElementIndex === currentElementIndex) {
+            currentElementIndex += 1;
+            previousElementIndex = 0;
+        }
+    }
+    console.log(lengthsArray);
+    // 在lengthsArray找到最大元素,这个最大数就是最长递增子序列的长度
+    let longestIncreasingLength = 0;
+    for (let i = 0; i < lengthsArray.length; i += 1) {
+        if (lengthsArray[i] > longestIncreasingLength) {
+            longestIncreasingLength = lengthsArray[i];
+        }
+    }
+    return longestIncreasingLength;
+}
+dpLongestIncreasingSubsequence([0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15]); // 最长递增子序列的长度为6
+```
+
+
