@@ -219,16 +219,49 @@ class App extends Component {
 
 ## No.10 React生命周期是什么样的?
 
+* 完整生命周期过程:
+
 1. 可选的static方法;
+
 2. constructor构造函数;
+
+  * 关于组件自身的状态初始化工作都会放在这里处理,例如组件的state的初始化;
+
+```js
+constructor () {
+    super();
+    this.state = {
+        date: new Date()
+    };
+}
+```
+
 3. getChildContext获取子元素内容;
-4. componentWillMount模块渲染前;
-5. componentDidMount模块渲染后;
+4. componentWillMount模块渲染前;注:此时组件还没挂载完成
+
+  * 组件启动的动作,包括像Ajax数据拉取操作,定时器启动等;
+
+```js
+componentWillMount() {
+    ajax.get("http://xxx.com/api/user", (userData) => {
+        this.setState({userData});
+    });
+}
+```
+
+5. componentDidMount模块渲染后;作用:有些组件的启动工作是依赖DOM的,例如动画的启动.
 6. componentWillReceiveProps组件从父组件接收新的props之前;
 7. shouldComponentUpdate判断模块需不需要重新渲染;
 8. componentWillUpdate组件开始重新渲染之前调用;
 9. componentDidUpdate模块渲染结束;
-10. componentWillunmount模块将从DOM中清除,做一些清理任务;
+10. componentWillUnmount 组件从页面销毁的时候,做一些清理任务,比如删除定时器等;
+
+```js
+componentWillUnmount () {
+    clearInterval(this.timer);
+}
+```
+
 11. 点击回调或者事件处理器如onClickSubmit()或onChangeDescription();
 12. render里的getter方法;
 13. 可选的render方法
