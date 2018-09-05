@@ -430,7 +430,6 @@ function Permutations(target, size, origin) {
             for (let i = 0; i < target.length; i++) {
                 let tmp = ret.slice();
                 let newTarget = target.slice();
-                console.log(newTarget.splice(i, 1));
                 tmp.push(target[i]);
                 newTarget.splice(i, 1); // 按i索引读取1个元素
                 getArrange(newTarget, nums, tmp);
@@ -448,4 +447,6 @@ Permutations([1, 2, 3], 2, []);
 # 参考
 
 ### [js浮点运算](https://blog.csdn.net/u013347241/article/details/79210840)
+
+### [前端常见面试题](https://zhuanlan.zhihu.com/p/42581858)
 
