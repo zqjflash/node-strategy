@@ -208,4 +208,42 @@ const getWorkerArgs = (script, opts) => {
     if (opts.env) {
         args['env'] = opts.env;
     }
+
+    if (opts.httpAddress) {
+        obj = convert.extractAddress(opts.httpAddress);
+        if (obj) {
+            args['http_ip'] = obj.ip;
+            args['http_port'] = obj.port;
+        }
+    }
+
+    if (opts.runAsUser) {
+        args['run_as_user'] = opts.runAsUser;
+    }
+    if (opts.runAsGroup) {
+        args['run_as_group'] = opts.runAsGroup;
+    }
+
+    if (!isNaN(opts.maxMemoryRestart)) {
+        if (!Array.isArray(args['node_args'])) {
+            args['node_args'] = [];
+        }
+        args['node_args'].push('--max-old-space-size=' + opts.maxMemoryRestart);
+    }
+    if (opts.config) {
+        args['config'] = opts.config;
+    }
+
+    if (!isNaN(opts.keepaliveTime)) {
+        args['keepaliveTime'] = opts.keepaliveTime;
+    }
+
+    if (typeof opts.tmaMonitor === 'boolean') {
+        args['tmaMonitor'] = opts.tmaMonitor;
+    }
+
+    if (opts.log) {
+        args['log'] = path.join(opts.log, args['name'].replace('.', '/') + '/');
+    }
+    return args;
 };
