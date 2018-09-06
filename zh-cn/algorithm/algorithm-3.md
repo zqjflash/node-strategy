@@ -298,10 +298,10 @@ function longestCommonSubsequence(set1, set2) {
     }
     return longestSequence;
 }
-longestCommonSubsequence(["a", "d", "e"], ["a", "d", "f"]);
+longestCommonSubsequence(["a", "d", "e"], ["a", "d", "f"]); // ["a", "d"]
 ```
 
-## No.7 最长递增子序列
+## No.7 最长递增子序列(LIS)
 
 > 给定一个长度为N的数组,找出一个最长的单调自增子序列(不一定连续,但是顺序不能乱).例如:给定一个长度为6的数组A{5, 6, 7, 1, 2, 8},则其最长的单调递增子序列为{5, 6, 7, 8},长度为4.
 
@@ -358,4 +358,127 @@ function dpLongestIncreasingSubsequence(sequence) {
 dpLongestIncreasingSubsequence([0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15]); // 最长递增子序列的长度为6
 ```
 
+## No.8 最短公共父序列 (SCS)
 
+示例:
+
+```js
+Input: str1 = "geek", str2 = "eke"
+Output: "geeke"
+
+Input: str1 = "AGGTAB", str2 = "GXTXAYB"
+Output: "AGXGTXAYB"
+```
+
+```js
+function longestCommonSubsequence(set1, set2) {
+    // 初始化LCS二维数组
+    const lcsMatrix = Array(set2.length + 1).fill(null).map(() => Array(set1.length + 1).fill(null));
+
+    // 第一行填充0
+    for (let columnIndex = 0; columnIndex <= set1.length; columnIndex += 1) {
+        lcsMatrix[0][columnIndex] = 0;
+    }
+
+    // 第一列填充0
+    for (let rowIndex = 0; rowIndex <=  set2.length; rowIndex += 1) {
+        lcsMatrix[rowIndex][0] = 0;
+    }
+
+    // 对两个子序列剩下的列进行填充
+    for (let rowIndex = 1; rowIndex <= set2.length; rowIndex += 1) {
+        for (let columnIndex = 1; columnIndex <= set1.length; columnIndex += 1) {
+            if (set1[columnIndex - 1] === set2[rowIndex - 1]) {
+                lcsMatrix[rowIndex][columnIndex] = lcsMatrix[rowIndex - 1][columnIndex - 1] + 1;
+            } else {
+                lcsMatrix[rowIndex][columnIndex] = Math.max(
+                    lcsMatrix[rowIndex - 1][columnIndex],
+                    lcsMatrix[rowIndex][columnIndex - 1]
+                );
+            }
+        }
+    }
+
+    // 计算lcs矩阵最大的字符串长度为0,返回空数组
+    if (!lcsMatrix[set2.length][set1.length]) {
+        return [''];
+    }
+
+    const longestSequence = [];
+    let columnIndex = set1.length;
+    let rowIndex = set2.length;
+
+    while (columnIndex > 0 || rowIndex > 0) {
+        if (set1[columnIndex - 1] === set2[rowIndex - 1]) {
+            // 从后往前填充子序列1
+            longestSequence.unshift(set1[columnIndex - 1]);
+            columnIndex -= 1;
+            rowIndex -= 1;
+        } else if (lcsMatrix[rowIndex][columnIndex] === lcsMatrix[rowIndex][columnIndex - 1]) {
+            // 左移
+            columnIndex -= 1;
+        } else {
+            // 上移
+            rowIndex -= 1;
+        }
+    }
+    return longestSequence;
+}
+function shortestCommonSupersequence(set1, set2) {
+    // 先找到set1和set2的最长公共子序列
+    const lcs = longestCommonSubsequence(set1, set2);
+    // 如果lcs为空,最短公共子序列就是两个序列组合
+    if (lcs.length === 1 && lcs[0] === '') {
+        return set1.concat(set2);
+    }
+    let supersequence = [];
+    let setIndex1 = 0;
+    let setIndex2 = 0;
+    let lcsIndex = 0;
+    let setOnHold1 = false;
+    let setOnHold2 = false;
+    while (lcsIndex < lcs.length) {
+        // Add elements of the first set to supersequence in correct order.
+        if (setIndex1 < set1.length) {
+            if (!setOnHold1 && set1[setIndex1] !== lcs[lcsIndex]) {
+                supersequence.push(set1[setIndex1]);
+                setIndex1 += 1;
+            } else {
+                setOnHold1 = true;
+            }
+        }
+
+        // Add elements of the second set to supersequence in correct order.
+        if (setIndex2 < set2.length) {
+            if (!setOnHold2 && set2[setIndex2] !== lcs[lcsIndex]) {
+                supersequence.push(set2[setIndex2]);
+                setIndex2 += 1;
+            } else {
+                setOnHold2 = true;
+            }
+        }
+
+        // Add LCS element to the supersequence in correct order.
+        if (setOnHold1 && setOnHold2) {
+            supersequence.push(lcs[lcsIndex]);
+            lcsIndex += 1;
+            setIndex1 += 1;
+            setIndex2 += 1;
+            setOnHold1 = false;
+            setOnHold2 = false;
+        }
+    }
+
+    // Attach set1 leftovers.
+    if (setIndex1 < set1.length) {
+        supersequence = supersequence.concat(set1.slice(setIndex1));
+    }
+
+    // Attach set2 leftovers.
+    if (setIndex2 < set2.length) {
+        supersequence = supersequence.concat(set2.slice(setIndex2));
+    }
+    return supersequence;
+}
+shortestCommonSupersequence("AGGTAB", "GXTXAYB");
+```
