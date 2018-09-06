@@ -172,3 +172,40 @@ const initLog = (name, dir) => {
 
     Log.setLevel(constants.APPLOG_LEVEL, null);
 };
+
+const outRedirect = () => {
+    let register = (level) => {
+        return () => {
+            Log.append('eyes', {
+                level: level,
+                msg: util.format.apply(util, arguments),
+                meta: {
+                    pid: process.pid
+                }
+            });
+        };
+    };
+    console.info = register('info');
+    console.warn = register('warn');
+    console.error = register('error');
+};
+
+// 获取work进程参数
+const getWorkerArgs = (script, opts) => {
+    let args = {};
+    let obj;
+    args['script'] = script;
+    if (opts.scriptArgs) {
+        args['script_args'] = opts.scriptArgs;
+    }
+    if (opts.nodeArgs) {
+        args['node_args'] = opts.nodeArgs;
+    }
+    // work进程标题
+    args['name'] = typeof opts.name === 'string' ? opts.name : path.basename(script, path.extname(script));
+
+    // 运行自定义的进程环境
+    if (opts.env) {
+        args['env'] = opts.env;
+    }
+};
