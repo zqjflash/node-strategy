@@ -28,6 +28,8 @@
 
 ### [第六篇: Node.js开发体系实践](/zh-cn/lighting-talk/lesson6.md)
 
+### [第七篇: Node.js建设运营活动体系](/zh-cn/lighting-talk/lesson7.md)
+
 ## 第一章 JS 基础
 
 > 与前端 JS 不同, 后端是直面服务器的, 更加偏向内存方面.
