@@ -453,6 +453,71 @@ function mix(arr) {
 console.log(mix([['1', '2'], ['a', 'b'], ['+', '-', 'x']]));
 ```
 
+## No.18 给定整数n和m,写一个dispatch,把1~n尽量平均地分成m个组.
+
+示例:
+
+```js
+var n = 2;
+var m = 2;
+dispatch(n, m); // [[1], [2]];
+```
+
+思路: 
+
+* 问题转化为将n个小球放到m个框子里边;
+* 计算每个框子至少可以放多少个小球: Math.floor(n/m),注意取整;
+* 计算剩下多少个小球: left = n % m,剩下的小球放到前left个框子里边;
+* 将相关数据填充到框子里边即可.
+
+```js
+function dispatch(n, m) {
+	// 每个框子至少可以放几个球
+	var least = Math.floor(n/m);
+	// 剩下多少个球
+	var left = n % m; // 求余
+	// 框子
+	var buckets = [];
+	var last = 1;
+	// 依次遍历每个框子,
+	for (var i = 0; i < m; i++) {
+		let bucket;
+		if (left-- > 0) {
+			bucket = generateArray(last, least + 1);
+		} else {
+			bucket = generateArray(last, least);
+		}
+		buckets.push(bucket);
+		last = getMaxOfArray(buckets[i]) + 1; // buckets数组偏移地址往后移动一位
+	}
+	return buckets;
+}
+
+/**
+ * 生成数组
+ * @param base {number} 基址
+ * @param offset {number} 偏移量
+ * @return Array
+ * eg. generateArray(3, 2) => [3, 4]
+ */
+function generateArray(base, offset) {
+	var end = base + offset;
+	var target = [];
+	for (base; base < end; base++) {
+		target.push(base);
+	}
+	return target;
+}
+
+/**
+ * 获取数组中的最大值
+ */
+function getMaxOfArray(arr) {
+	return Math.max.apply(null, arr);
+}
+dispatch(5, 4);
+```
+
 
 # 参考
 
