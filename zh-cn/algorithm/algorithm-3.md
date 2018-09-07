@@ -482,3 +482,54 @@ function shortestCommonSupersequence(set1, set2) {
 }
 shortestCommonSupersequence("AGGTAB", "GXTXAYB");
 ```
+
+## No.9 背包问题 - "0/1" and "Unbound" ones
+
+> 有N件物品和一个容量为V的背包.第i件物品的重要c[i],价值为w[i].将哪些物品装入背包可使价值总和最大.
+
+思路:
+
+特点: 每种物品仅有一件,可以选择放或不放.
+
+用子问题定义状态,即f[i][v]表示前i件物品恰放入一个容器为v的背包可以获得的最大价值.则其状态转移方程便是:
+
+```js
+f[i][v]=max{f[i-1][v], f[i-1][v-c[i]]+w[i]}
+```
+
+解释一下方程:将前i件物品放入容量v的背包中,若只考虑第i件物品的策略(放或不放),那么就可以转化为一个只牵扯前i-1件物品的问题.如果不放第i件物品,那么问题就转化为前i-1件物品放入容量为v的背包中,价值为f[i-1][v];如果放第i件物品,那么问题就转化为“前i-1件物品放入剩下的容量为v-c[i]的背包中”,此时能获得的最大价值就是f[i-1][v-c[i]]再加上通过放入第i件物品获得的价值w[i].
+
+代码实现:
+
+```js
+/**
+ * @param size 承重量
+ * @param value 每件物品的价值
+ * @param weight 每件物品的重量
+ */
+const packageMaxValue = (weight, value, size) => {
+    // 省略参数合法性校验
+    let bagMatrix = [];
+    for (let w = 0; w <= size; w++) {
+        // 初始化二维数组
+        bagMatrix[w] = [];
+        for (let j = 0; j < 5; j++) {
+            // 背包的容量为0,那么一个东西也装不下,此时的值肯定也是为0
+            if (w === 0) {
+                bagMatrix[w][j] = 0;
+                continue;
+            }
+            // 背包的容量小于物品j的重量
+            if (w < weight[j]) {
+                bagMatrix[w][j] = bagMatrix[w][j-1] || 0;
+                continue;
+            }
+            bagMatrix[w][j] = Math.max((bagMatrix[w-weight[j]][j-1] || 0) + value[j], bagMatrix[w][j-1] || 0);
+        }
+    }
+    return bagMatrix;
+};
+let weight = [4, 5, 6, 2, 2];
+let value = [6, 4, 5, 3, 6];
+console.log(packageMaxValue(weight, value, 10));
+```
