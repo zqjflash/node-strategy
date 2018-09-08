@@ -141,3 +141,103 @@ ProtoBuf.load("./tma.video.js", (err, root) => {
 ### 运行结果: 
 
 * 由于没有在Writer中给可选字段opt赋值,因此Reader没有相应值.
+
+### 4.3 客户端调服务端的示例
+
+> 使用protobuf实现网络的数据交换.
+
+### 创建一个.proto文件,命名:tma.shop.proto
+
+```js
+package tma;
+message shop {
+    message shopReq {
+        required string name = 1;
+    }
+    message shopRsp {
+        required int32 retCode = 1;
+        optional string reply = 2;
+    }
+}
+```
+
+### 编译.proto文件(如果是动态编译,此步省略)
+
+```js
+$ pbjs ./tma.shop.proto -t proto3 > ./tma.shop.js
+```
+
+### 编写客户端服务
+
+一般情况下,使用Protobuf都会先写好.proto文件,再用Protobuf编译器生成目标语言所需要的源代码文件.
+在某些情况下,可能无法预先知道.proto文件,需要动态处理一些未知的.proto文件.比如一个通用的消息转发中间件,它不可能预知需要处理怎样的消息.这需要动态编译.proto文件,并使用当中的Message.
+
+这里使用protobuf动态编译的特性,在代码中直接读取proto文件,动态生成我们需要的commonjs模块.
+
+* client.js
+
+```js
+const dgram = require('dgram');
+const ProtoBuf = require("protobufjs");
+const PORT = 11222;
+const HOST = "127.0.0.1";
+const shop = ProtoBuf.loadSync("./tma.shop.proto");
+const shopMsg = shop.lookupType("tma.shop");
+
+const shopReq = shop.lookupType("tma.shop.shopReq");
+const shopRsp = shop.lookupType("tma.shop.shopRsp");
+
+let payload = {
+    name: "zqjflash"
+};
+let errMsg = shopReq.verify(payload);
+if (errMsg) {
+    throw Error(errMsg);
+}
+const req = shopReq.create(payload);
+const reqBuffer = shopReq.encode(req).finish(); // 编码成buffer
+
+const socket = dgram.createSocket({
+    type: 'udp4',
+    fd: 8080
+}, (err, message) => {
+    if (err) {
+        console.log(err);
+    }
+    console.log(message);
+});
+
+socket.send(reqBuffer, 0, reqBuffer.length, PORT, HOST, (err, bytes) => {
+    if (err) {
+        throw err;
+    }
+    console.log('UDP message send to ' + HOST + ':' + PORT);
+});
+
+socket.on("message", (msg, rinfo) => {
+    console.log("[UDP-CLIENT] Received message: " + shopRsp.decode(msg).reply + " from " + rinfo.address + ":" + rinfo.port);
+    console.log(shopRsp.decode(msg));
+    socket.close();
+});
+
+socket.on("close", () => {
+    console.log("socket closed.");
+});
+
+socket.on("error", (err) => {
+    socket.close();
+    console.log("socket err");
+    console.log(err);
+});
+```
+
+* 服务端:server.js
+
+```js
+const PORT = 11222;
+const HOST = "127.0.0.1";
+const ProtoBuf = require("protobufjs");
+const dgram = require("dgram");
+const server = dgram.createSocket("udp4");
+```
+

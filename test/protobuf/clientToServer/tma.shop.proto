@@ -1,0 +1,10 @@
+package tma;
+message shop {
+    message shopReq {
+        required string name = 1;
+    }
+    message shopRsp {
+        required int32 retCode = 1;
+        optional string reply = 2;
+    }
+}
