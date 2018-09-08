@@ -241,3 +241,82 @@ const dgram = require("dgram");
 const server = dgram.createSocket("udp4");
 ```
 
+### 运行结果
+
+```js
+
+// client.js
+UDP message send to 127.0.0.1:11222
+<Buffer 08 00 12 10 73 65 72 76 65 72 20 72 65 73 70 6f 6e 73 65 21>
+{ address: '127.0.0.1', family: 'IPv4', port: 11222, size: 20 }
+[UDP-CLIENT] Received message: server response! from 127.0.0.1:11222
+shopRsp { retCode: 0, reply: 'server response!' }
+socket closed.
+
+// server.js
+127.0.0.1:56339 -
+zqjflash
+[object Object]from client!
+UDP message reply to 127.0.0.1:56339
+
+```
+
+## 五、其它高级特性
+
+### 5.1 嵌套Message
+
+```js
+message Person {
+    required string name = 1;
+    required int32 id = 2;
+    optional string email = 3;
+    enum PhoneType {
+        MOBILE = 0;
+        HOME = 1;
+        WORK = 2;
+    }
+    message PhoneNumber {
+        required string number = 1;
+        optional PhoneType type = 2 [default = HOME];
+    }
+    repeated PhoneNumber phone = 4;
+}
+```
+
+在Message Person中,定义了嵌套消息PhoneNumber,并用来定一个Person消息中的phone域.这使得可以定义更加复杂的数据解雇.
+
+### 5.2 Import Message
+
+在一个.proto文件中,可以用import关键字引入其它.proto文件中定义的消息,称为Import Message或者Dependency Message.
+
+示例如下:
+
+```js
+import common.header;
+message youMsg {
+    message youMsg {
+        required common.info_header header = 1;
+        required string youPrivateData = 2;
+    }
+}
+```
+
+其中common.info_header定义在common.header包内.
+
+Import Message的用处主要在于提供了方便的代码管理机制,类似C语言中的头文件.可以将一些公用的Message定义在一个package中,然后在别的.proto文件中引入该package.进而使用其中的消息定义.
+
+## 六、总结 
+
+### 优点
+
+Protobuf简洁、运行速度块;
+
+* 简洁:Protobuf信息表示紧凑,意味着消息体积小,占用资源自然少,在网络传输中字节数少,需要的IO的也跟着少,从而提供性能;
+
+* 快
+
+  * XML封解包过程:需要从文件中读取字符串,再转换为XML文档对象结构模型.之后,再从XML文档对象结构模型中读取指定节点的字符串,最后再将这个字符串转换成指定类型的变量.这个过程复杂,其中将XML文件转换为文档对象结构模型的过程通常需要完成词法文法分析等大量消耗CPU的复杂计算.
+
+  * Protobuf:将一个二进制序列,按照指定的格式读取到编程语言对应的结构类型中就可以,而消息的decoding过程也可以通过几个位移操作组成的表达式计算即可完成.速度非常快.
+
+  ### 缺点: 二进制的序列化协议,可读性差.
