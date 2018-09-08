@@ -1,0 +1,8 @@
+package tma;
+syntax = "proto3";
+message video
+{
+    required int32   id = 1; // ID
+    required string  str = 2; // str
+    optional int32   opt = 3; // 可选字段
+}
