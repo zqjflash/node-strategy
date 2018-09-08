@@ -535,3 +535,38 @@ console.log(packageMaxValue(weight, value, 10));
 ```
 
 ## No.9 最大子数列问题 - BF算法 与 动态规划
+
+最大子数列问题的目标是在数列的一维方向找到一个连续的子数列,使该子数列的和最大.例如,对一个数列[-2, 1, -3, 4, -1, 2, 1, -5, 4],其连续子数列中和最大的是[4, -1, 2, 1],其和为6.
+
+算法描述:
+
+* 遍历该数组,在遍历过程中,将遍历的元素依次累加起来,当累加结果小于或等于0时,从下一个元素开始,重新开始累加;
+* 累加过程中,要用一个变量记录所获得过的最大值;
+* 一次遍历之后,变量中存储的即为最大子片段的和值.
+
+```js
+/**
+ * @param {Number[]} inputArray
+ * @param {Number[]}
+ */
+function bfMaximumSubarray(inputArray) {
+    let maxSubarrayStartIndex = 0;
+    let maxSubarrayLength = 0;
+    let maxSubarraySum = null;
+
+    for (let startIndex = 0; startIndex < inputArray.length; startIndex += 1) {
+        let subarraySum = 0;
+        for (let arrLength = 1; arrLength <= (inputArray.length - startIndex); arrLength += 1) {
+            subarraySum += inputArray[startIndex + (arrLength - 1)];
+            if (maxSubarraySum === null || subarraySum > maxSubarraySum) {
+                maxSubarraySum = subarraySum;
+                maxSubarrayStartIndex = startIndex;
+                console.log(startIndex);
+                maxSubarrayLength = arrLength;
+            }
+        }
+    }
+    return inputArray.slice(maxSubarrayStartIndex, maxSubarrayStartIndex + maxSubarrayLength);
+}
+bfMaximumSubarray([-2, 1, -3, 4, -1, 2, 1, -5, 4]); // [4, -1, 2, 1]
+```
