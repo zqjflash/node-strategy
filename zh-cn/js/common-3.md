@@ -470,6 +470,62 @@ function Permutations(arr, nums) {
 Permutations([1, 2, 3, 4], 3); // [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]]
 ```
 
+## No.11 JS如何判断一组数字是否连续
+
+```js
+// 当出现连续数字的时候以'-'输出
+[1, 2, 3, 4, 6, 8, 9, 10]
+```
+
+期望结果:
+
+```js
+["1-4", 6, "8-10"]
+```
+
+* 原理:判断前后数字是否相差为1,如果是则加入同一个数组
+
+* 实现代码,判断是否连续:
+
+```js
+var arrange = (arr) => {
+    let result = [];
+    let temp = [];
+    arr.sort((source, dest) => {
+        return source - dest;
+    }).concat(Infinity).reduce((source, dest) => {
+        temp.push(source);
+        // 如果后一个元素减去前一个元素大于1,重新用新的临时数组存储
+        if (dest - source > 1) {
+            result.push(temp);
+            temp = [];
+        }
+        return dest;
+    });
+    return result;
+};
+arrange([1, 2, 3, 4, 6, 8, 9, 10]); // [[1, 2, 3, 4], [6], [8, 9, 10]]
+```
+
+* 数据格式化
+
+```js
+var formatarr = (arr) => {
+    let newArr = [];
+    let arr1 = arrange(arr);
+    for (let i in arr1) {
+        let str = "";
+        if (arr1[i].length > 1) {
+            str = arr1[i][0] + '-' + arr1[i][arr1[i].length - 1]; // 头尾元素用-相连
+            newArr.push(str);
+        } else {
+            newArr.push(arr1[i][0]);
+        }
+    }
+    return newArr;
+}
+formatarr([1, 2, 3, 4, 6, 8, 9, 10]); // ["1-4", 6, "8-10"]
+```
 
 # 参考
 

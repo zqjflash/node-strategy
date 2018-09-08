@@ -533,3 +533,5 @@ let weight = [4, 5, 6, 2, 2];
 let value = [6, 4, 5, 3, 6];
 console.log(packageMaxValue(weight, value, 10));
 ```
+
+## No.9 最大子数列问题 - BF算法 与 动态规划
