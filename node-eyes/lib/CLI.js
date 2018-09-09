@@ -247,3 +247,133 @@ const getWorkerArgs = (script, opts) => {
     }
     return args;
 };
+
+const setConstants = (opts) => {
+    if (!isNaN(opts.gracefulShutdown)) {
+        constants.GRACEFUL_TIMEOUT = opts.gracefulShtdown;
+    }
+    if (opts.config) {
+        if (constants.GRACEFUL_TIMEOUT > 1000) {
+            constants.GRACEFUL_TIMEOUT -= 1000;
+        } else {
+            constants.GRACEFUL_TIMEOUT = 0;
+        }
+    }
+    // !isNaN表示数值型
+    if (!isNaN(opts.exceptionMax)) {
+        constants.EXCEPTION_TOTAL = opts.exceptionMax;
+    }
+    if (!isNaN(opts.exceptionTime)) {
+        constants.EXCEPTION_TIME = opts.exceptionTime;
+    }
+    if (!isNaN(opts.keepaliveTime)) {
+        constants.WORKER_DETECT_INTERVAL = opts.keepaliveTime;
+    }
+    if (!isNaN(opts.applogMaxFiles)) {
+        constants.APPLOG_MAX_SIZE = opts.applogMaxFiles;
+    }
+    if (opts.applogLevel) {
+        constants.APPLOG_LEVEL = opts.applogLevel;
+    }
+    if (typeof opts.tmaMonitor === 'boolean') {
+        constants.TMA_MONITOR = opts.tmaMonitor;
+    }
+    if (!isNaN(opts.tmaMonitorHttpThreshold)) {
+        constants.TMA_MONITOR_HTTP_THRESHOLD = opts.tmaMonitorHttpThreshold;
+    }
+    if (typeof opts.tmaMonitorHttpSeppatch === 'boolean') {
+        constants.TMA_MONITOR_HTTP_SEPPATH = opts.tmaMonitorHttpSeppatch;
+    }
+    if (typeof opts.tmaMonitorHttpSocketerr === 'boolean') {
+        constants.TMA_MONITOR_HTTP_SOCKETERR = opts.tmaMonitorHttpSocketerr;
+    }
+    if (typeof opts.longStack === 'boolean') {
+        constants.LONG_STACK = opts.longStack;
+    }
+    if (typeof opts.longStackFilterUsercode === 'boolean') {
+        constants.LONG_STACK_FILTER_USERCODE = opts.longStackFilterUsercode;
+    }
+    if (constants.LONG_STACK && compareVersions(process.versions.node, '8.2.0') < 0) {
+        constants.LONG_STACK = false;
+    }
+    if (!constants.LONG_STACK) {
+        constants.LONG_STACK_FILTER_USERCODE = false;
+    }
+};
+
+const initTmaComponent = (args, opts) => {
+    if (opts.tmaNode) {
+        console.info('tma node:', opts.tmaNode);
+        tmaReport.init(args['name'], opts.container, opts.tmaNode);
+        tmaReport.reportVersion(pkg.version || process.version);
+        tmaReport.keepAlive();
+    }
+    if (opts.tmaLocal) {
+        console.info('local interface:', opts.tmaLocal);
+        tmaMessage.startServer(args['name'], opts.tmaLocal);
+    }
+    if (opts.config) {
+        tmaNotify.init(opts.config);
+    }
+};
+
+const startWorker = (opts) => {
+    let instances;
+    if (!isNaN(opts.instances) && opts.instances > 0) {
+        instances = opts.instances;
+    } else {
+        if (opts.instances === -1) { // 最大实例数
+            instances = cpu.totalCores;
+        } else {
+            // 自动选配实例数,物理核心数
+            if (cpu.physicalCores > 0 && cpu.totalCores > cpu.physicalCores) {
+                instances = cpu.physicalCores;
+            } else {
+                instances = cpu.totalCores;
+            }
+        }
+    }
+    instances = instances || 1;
+
+    console.info('forking %s workers ...', instances);
+    God.startWorker(instances);
+};
+
+const deviceInfo = () => {
+    if (cpu.physicalCores !== 0) {
+        return util.format('%s arch, %d cpus, %d physical cores, %s platform, %s', os.arch(), cpu.totalCores, cpu.physicalCores, os.platform, os.hostname());
+    } else {
+        return util.format('%s arch, %d cpus, %s platform, %s', os.arch(), cpu.totalCores, os.platform(), os.hostname());
+    }
+};
+
+// 程序入口
+exports.start = (script, opts) {
+    let args = getWorkerArgs(script, opts);
+    setConstants(opts);
+    process.title = util.format('%s: master process', path.resolve(process.cwd(), script));
+    initLog(args['name'], args['log']);
+    outRedirect();
+
+    console.info('starting eyes ...');
+    console.info('node:', process.version);
+    console.info('version:', 'v' + pkg.version);
+
+    deps.list((err, depslist) => {
+        if (!err) {
+            console.info('dependencies:', depslist);
+        }
+        console.info('options:', util.inspect(args).replace(/[\n|\r]/g, '')); // 回车或换行
+        cpu.init((err) => {
+            if (err) {
+                console.warn('%s, callback to use os.cpus()', err);
+            }
+            console.info('device:', deviceInfo());
+            bindEvents();
+            God.prepare(args);
+            initTmaComponent(args, opts);
+            startWorker(opts);
+            tmaNotify.report.info('restart');
+        });
+    });
+};
