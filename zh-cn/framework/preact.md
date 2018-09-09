@@ -118,4 +118,8 @@ export function render(vnode, parent, merge) {
 
 preact的diff包含创建节点和比较节点的功能,因此把比较和创建放到一起.
 
+### 3.2 组件更新过程
 
+diff方法就是将VNode节点进行创建和对比,下图画了主要的分支结构:
+
+![preact-diff](/assets/preact-diff.png)
