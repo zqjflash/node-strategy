@@ -212,6 +212,27 @@ function Person() {
 }
 ```
 
+* 组合继承
+
+```js
+// 父类
+function People(name) {
+    this.name = name;
+    this.say = function() {
+        console.log("my name is : " + this.name);
+    };
+}
+// 子类
+function Child(name) {
+    People.call(this);
+    this.name = name;
+}
+Child.prototype = Object.create(People.prototype);
+Child.prototype.constructor = Child;
+var child = new Child('zqjflash');
+child.say(); // my name is : zqjflash
+```
+
 ## No.9 js多重继承的实现方法是怎么样的?
 
 就是类继承里面的属性复制法来实现,因为当所有父类的prototype属性被复制后,子类自然拥有类似行为和属性.
