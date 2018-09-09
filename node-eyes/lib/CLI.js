@@ -348,7 +348,7 @@ const deviceInfo = () => {
 };
 
 // 程序入口
-exports.start = (script, opts) {
+exports.start = (script, opts) => {
     let args = getWorkerArgs(script, opts);
     setConstants(opts);
     process.title = util.format('%s: master process', path.resolve(process.cwd(), script));
