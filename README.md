@@ -118,7 +118,9 @@
 
 ### [第一节 React框架](/zh-cn/framework/react.md)
 
-### [第二节 框架的状态管理](zh-cn/framework/state.md)
+### [第二节 框架的状态管理](/zh-cn/framework/state.md)
+
+### [第三节 Preact源码分析](/zh-cn/framework/preact.md)
 
 ## 第十一章 安全
 
