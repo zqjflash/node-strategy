@@ -46,5 +46,30 @@ const setCluster = (args, execArgv) => {
             error = worker._errMesg;
         }
         events.emit('exit', worker, error, code, signal);
+    }).on('exit', (worker) => {
+        let exitedAfterDisconnect = typeof worker.exitedAfterDisconnect === 'boolean' ? worker.exitedAfterDisconnect : worker.suicide;
+        workers_seq[worker._seq] = false;
+        worker._status = constants.WORKER_STATUS.STOPPED;
+        if (worker._timerId) {
+            clearTimeout(worker._timerId);
+            delete worker._timeId;
+        }
+        if (!exitedAfterDisconnect || worker._hasError) {
+            switch (canStartWorker()) {
+                case constants.CAN_START_WORKER:
+                    startWorker();
+                    break;
+                case constants.CAN_START_WORKER.NEED_TO_KILLALL:
+                    killAll();
+                    break;
+            }
+        }
+        if (workers_seq.every((exists) => {
+            return exists !== true;
+        })) {
+            destroy();
+        }
+    }).on('online', (worker) => {
+        worker._status = constants.WORKER_STATUS.ONLINE;
     })
 };
