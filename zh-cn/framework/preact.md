@@ -130,3 +130,94 @@ diff更新伴随着创建,因为preact只维护一套VNode节点,直接与真实
 
 * 2. idiff是diff方法的核心实现:即伴随着创建,伴随着比较,场景有三种情况:文本、组件、DOM对象.
 
+  * 字符串diff: 字符串或数字,文本节点处理 创建/更新,如果是一个text类型,就直接返回
+
+  ```js
+  if (typeof vnode === 'string' || typeof vnode === 'number') {
+      ...
+  }
+  ```
+
+  * 组件diff: 针对组件进行渲染,就进行组件的差异化比较, nodeName:该组件的函数,如果是一个新建的组件,直接返回
+
+  ```js
+    let vnodeName = vnode.nodeName;
+    if (typeof vnodeName === 'function') {
+        ...
+    }
+  ```
+
+  * dom diff: 考虑条件相对比较多
+
+  ```js
+    // 看一下是否svg,需要做特殊处理
+    isSvgMode = vnodeName==='svg' ? true : vnodeName==='foreignObject' ? false : isSvgMode;
+    
+    // 如果不是一个已经存在的元素,或者类型有问题,就重新创建一个
+    // 1) 类似dom是null || undefined这种
+    // 2) isNamedNode[dom, vnodeName]判断节点类型是否相同
+    // 如果不同,就创建新的节点类型,然后,将旧DOM以及它的子节点更新到新的DOM上面.
+    // dom比较第一个策略,不同类型的DOM,将子节点移入,然后,就直接替换更新了.
+    vnodeName = String(vnodeName);
+    if (!dom || !isNamedNode(dom, vnodeName)) {
+        ...
+    }
+
+    // 获取将要输出的dom节点
+    let fc = out.firstChid;
+
+    // 1) 判断是否是preact创建的节点,如果不是就把属性赋值.
+    // 2) 注意[undefined == null]是true
+    if (props == null) {
+        ...
+    }
+
+    // 优化,场景是对于只有一个子节点,并且该子节点是文本节点
+    // 并没有缓存vnode任何数据,就可以直接更新
+    if (!hydrating && vchildren && vchildren.length === 1 && typeof vchildren[0] === 'string') {
+        ...
+    }
+    // 否则,存在子节点,或者新的孩子节点,就执行diff
+    else if (vchildren && vchildren.length || fc != null) {
+        ...
+    }
+    // 将props和attributes从vnode中应用到DOM元素
+    diffAttributes(out, vnode.attributes, props);
+
+    isSvgMode = prevSvgMode;
+  ```
+
+  * diff dom第一个策略:组件不同,卸载原有组件,创建替换为新的.
+
+  由于DOM树这个场景比较特殊,如果组件类型不同,大部分情况下,表达的内容就不太一样,这个假设成立的可能性非常大,代码的语义化时一个很重要大事情.
+
+  ```js
+    // 该组件已经被渲染的时候,dom存在,构造函数类型没有改变,是组件或者组件没有被渲染完成
+    if (c && isOwner && (!mountAll || c.component)) {
+        setComponentProps(c, props, ASYNC_RENDER, context, mountAll); // 设定组件属性,更新该节点类型即可.
+    } else {
+        // 组件类型不同
+        // 删除掉原有的旧DOM节点,对应的组件
+        if (originalComponent && !isDirectOwner) {
+            unmountComponent(originalComponent);
+            dom = oldDom = null;
+        }
+
+        // 创建新vnode节点对应的新DOM组件
+        c = createComponent(vnode.nodeName, props, context);
+
+        if (dom && !c.nextBase) {
+            c.nextBase = dom;
+            oldDom = null;
+        }
+
+        // 更新属性
+        setComponentProps(c, props, SYNC_RENDER, context, mountAll);
+        dom = c.base;
+
+        if (oldDom && dom !== oldDom) {
+            oldDom._component = null;
+            recollectModeTree(oldDom, false);
+        }
+    }
+  ```
