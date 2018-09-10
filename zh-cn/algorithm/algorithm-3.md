@@ -570,3 +570,52 @@ function bfMaximumSubarray(inputArray) {
 }
 bfMaximumSubarray([-2, 1, -3, 4, -1, 2, 1, -5, 4]); // [4, -1, 2, 1]
 ```
+
+## No.10 组合求和 - 查找形成特定总和的所有组合
+
+> 输入两个整数n和m,从数列1,2,3......n中随意取几个数.使其和等于m,要求将其中所有的可能组合列出来.
+
+解法:
+
+* 采用0~1背包的思想,使用递归方法;
+* 当选择n时,就用剩下的n-1填满m-n;
+* 当不选择n时,就用剩下的n-1填满m;
+
+注:当m=n时,即找到了符合条件的解.
+
+```js
+/**
+ * @param {number[]} candidates 复数
+ * @param {number} remainingSum 剩余的和
+ * @param {number[][]} finalCombinations 结果列表的组合
+ * @param {number[]} currentCombination 当前组合
+ * @param {number} startFrom 检索开始
+ * @return {number[][]}
+ */
+function combinationSumRecursive(candidates, remainingSum, finalCombinations = [], currentCombination = [], startFrom = 0) {
+    if (remainingSum < 0) {
+        return finalCombinations;
+    }
+    if (remainingSum === 0) {
+        finalCombinations.push(currentCombination.slice());
+        return finalCombinations;
+    }
+    for (let candidateIndex = startFrom; candidateIndex < candidates.length; candidateIndex += 1) {
+        console.log(candidateIndex);
+        const currentCandidate = candidates[candidateIndex];
+        currentCombination.push(currentCandidate);
+        combinationSumRecursive(candidates, remainingSum - currentCandidate, finalCombinations, currentCombination, candidateIndex);
+        currentCombination.pop();
+    }
+    return finalCombinations;
+}
+/**
+ * @param {number[]} candidates
+ * @param {number} target
+ * @return {number[][]}
+ */
+function combinationSum(candidates, target) {
+    return combinationSumRecursive(candidates, target);
+}
+combinationSum([2, 3, 6, 7], 7); // [[2, 2, 3], [7]]
+```
