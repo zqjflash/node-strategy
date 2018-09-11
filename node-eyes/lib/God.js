@@ -199,3 +199,94 @@ const prepare = (args) => {
         setMonitor();
     }
 };
+const startWorker = (num) => {
+    let i = 0;
+    let seq = 0;
+    num = num || 1;
+    for (; i < num; i += 1) {
+        seq = workers_seq.indexOf(false);
+        if (seq === -1) {
+            seq = workers_seq.length;
+            workers_seq.push(true);
+        } else {
+            workers_seq[seq] = true;
+        }
+        env['WORKER_ID'] = seq;
+        ((worker) => {
+            worker._status = constants.WORKER_STATUS.LAUNCHING;
+            worker._heartbeat = process.uptime(); // 包含当前进程运行的时长(秒)
+            worker._seq = seq;
+            worker.once('error', () => {
+                worker._status = constants.WORKER_STATUS.ERRORED;
+            }).on('message', (mesg) => {
+                cluster.emit('worker_message', worker, mesg);
+            });
+        })(cluster.fork(env));
+        delete env['WORKER_ID'];
+    }
+};
+
+const killWorker = (worker) => {
+    treekill(worker.process.pid, 'SIGTERM', (err) => {
+        if (err) {
+            events.emit("message", constants.GOD_MESSAGE.KILL_ERROR, worker, err);
+        }
+    });
+};
+
+const stopWorker = (worker, err) => {
+    if (worker._status === constants.WORKER_STATUS.LAUNCHING || worker._status === constants.WORKER_STATUS.ONLINE) {
+        events.emit('message', constants.GOD_MESSAGE.KILLING_WORKER, worker);
+        worker._status = constants.WORKER_STATUS.STOPPING;
+        if (err) {
+            worker._hasError = true;
+        }
+        if (constants.GRACEFUL_TIMEOUT === 0) {
+            killWorker(worker);
+        }
+        worker._timerId = setTimeout(() => {
+            events.emit('message', constants.GOD_MESSAGE.FORCE_KILL_WORKER, worker);
+            delete worker._timerId;
+            killWorker(worker);
+        }, constants.GRACEFUL_TIMEOUT);
+
+        try {
+            worker.send({
+                cmd: 'eyes.shutdown'
+            });
+            worker.disconnect();
+        } catch (e) {
+            if (worker._timerId) {
+                clearTimeout(worker._timerId);
+                delete worker._timerId;
+            }
+            killWorker(worker);
+        }
+    }
+};
+
+const send = (message) => {
+    allWorkers().forEach((worker) => {
+        try {
+            worker.send(message);
+        } catch (e) {
+
+        }
+    });
+};
+
+const killAll = () => {
+    events.emit('message', constants.GOD_MESSAGE.KILLING_ALL_WORKERS);
+    allWorkers().forEach((worker) => {
+        stopWorker(worker);
+    });
+};
+
+const getStatus = (worker) => {
+    if (worker) {
+        return worker._status;
+    }
+    return allWorkers().map((worker) => {
+        return worker._status;
+    });
+};
