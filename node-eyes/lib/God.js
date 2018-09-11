@@ -179,3 +179,23 @@ const setArgs = (args) => {
         env['TMA_MONITOR'] = args['tmaMonitor'];
     }
 };
+
+const setMonitor = () => {
+    heartbeat_timer = setInterval(() => {
+        let uptime = process.uptime();
+        allWorkers().forEach((worker) => {
+            if (worker._status === constants.WORKER_STATUS.ONLINE && uptime - worker._heartbeat > constants.WORKER_DETECT_INTERVAL && os.freemem() > minFreebytes * 2) {
+                events.emit('message', constants.GOD_MESSAGE.STOP_ZOMBIE_WORKER, worker);
+                stopWorker(worker, true);
+            }
+        });
+    }, constants.WORKER_DETECT_INTERVAL * 1000);
+};
+
+const prepare = (args) => {
+    setArgs(args);
+    setCluster(args['script_args'], args['node_args']);
+    if (constants.WORKER_DETECT_INTERVAL > 0) {
+        setMonitor();
+    }
+};
