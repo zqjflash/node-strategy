@@ -71,5 +71,39 @@ const setCluster = (args, execArgv) => {
         }
     }).on('online', (worker) => {
         worker._status = constants.WORKER_STATUS.ONLINE;
-    })
+    }).on('worker_message', (worker, message) => {
+        let cmd = message.cmd;
+        let data = message.data;
+        let seq = null;
+        if (typeof cmd !== 'string') {
+            return;
+        }
+        if (cmd.indexOf('process.msg:') === 0) {
+            seq = cmd.slice(12);
+            if (seq === 'all') {
+                allWorkers().forEach((worker) => {
+                    worker.send(message);
+                });
+            } else {
+                seq = parseInt(seq);
+                if (!isNaN(seq)) {
+                    allWorkers().forEach((worker) => {
+                        if (worker._seq === seq) {
+                            worker.send(message);
+                        }
+                    });
+                }
+            }
+            return;
+        }
+        switch (cmd) {
+            case 'god:err': 
+                worker._hasError = true;
+                worker._errMesg = data;
+                return;
+            case 'god:alive':
+                worker._heartbeat = process.uptime();
+                return;
+        }
+    });
 };
