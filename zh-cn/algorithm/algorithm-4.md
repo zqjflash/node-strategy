@@ -51,4 +51,32 @@ function levenshteinDistance(a, b) {
 levenshteinDistance("zqjflash", "myflash");
 ```
 
+## No.2 汉明距离 - 符号不同的位置数
 
+表示两个(相同长度)字对应位不同的数量,我们以d(x,y)表示两个字x,y之间的汉明距离.对两个字符串进行异或运算,并统计结果为1的个数,那么这个数就是汉明距离.
+
+示例:
+
+* 1011101与1001001 之间的汉明距离是2;
+* 2143896与2233796之间的汉明距离是3;
+* "toned"与"roses"之间的汉明距离是3.
+
+```js
+/**
+ * @param {string} a
+ * @param {string} b
+ * @return {number}
+ */
+function hammingDistance(a, b) {
+    if (a.length !== b.length) {
+        throw new Error('两个比较字符串a、b的长度要相同');
+    }
+    let distance = 0;
+    for (let i = 0; i < a.length; i += 1) {
+        if (a[i] !== b[i]) {
+            distance += 1;
+        }
+    }
+    return distance;
+}
+```
