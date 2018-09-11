@@ -107,3 +107,44 @@ const setCluster = (args, execArgv) => {
         }
     });
 };
+
+const setArgs = (args) => {
+    if (args['env'] && typeof args['env'] === 'object') {
+        env = args['env'];
+    }
+    env['eyes_args'] = {};
+
+    // 入口脚本
+    env['eyes_args']['exec_script'] = path.resolve(process.cwd(), args['script']);
+
+    // 进程权限
+    if (args['run_as_user']) {
+        env['eyes_args']['process_user'] = args['run_as_user'];
+    }
+
+    if (args['run_as_group']) {
+        env['eyes_args']['process_group'] = args['run_as_group'];
+    }
+
+    // 心跳
+    if (typeof args['keepaliveTime'] === 'number' && !isNaN(args['keepaliveTime'])) {
+        env['eyes_args']['process_keepalive'] = args['keepaliveTime'];
+    }
+
+    // 日志设置
+    if (args['log'] && args['name']) {
+        env['eyes_args']['log_main'] = path.join(args['log'], args['name'] + '.log');
+        env['eyes_args']['log_maxsize'] = constants.APPLOG_MAX_SIZE;
+        env['eyes_args']['log_maxfiles'] = constants.APPLOG_MAX_FILES;
+        env['eyes_args']['log_level'] = constants.APPLOG_LEVEL;
+    }
+
+    // http监控设置
+    env['eyes_args']['http_threshold'] = constants.TMA_MONITOR_HTTP_THRESHOLD;
+    env['eyes_args']['http_seppath'] = constants.TMA_MONITOR_HTTP_SEPPATH;
+    env['eyes_args']['http_socketerr'] = constants.TMA_MONITOR_HTTP_SOCKETERR;
+
+    // 堆栈长度设置
+    env['eyes_args']['long_stack'] = constants.LONG_STACK;
+    env['eyes_args']['stack_usercode'] = constants.LONG_STACK_FILTER_USERCODE;
+};
