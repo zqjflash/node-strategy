@@ -147,4 +147,35 @@ const setArgs = (args) => {
     // 堆栈长度设置
     env['eyes_args']['long_stack'] = constants.LONG_STACK;
     env['eyes_args']['stack_usercode'] = constants.LONG_STACK_FILTER_USERCODE;
+
+    // 环境参数
+    if (args['node_args']) {
+        env['eyes_args']['node_args'] = args['node_args'].join(',');
+    }
+
+    if (args['name']) {
+        env['eyes_args']['exec_name'] = args['name'];
+    }
+
+    // 序列化eyes_args
+    env['eyes_args'] = JSON.stringify(env['eyes_args']);
+
+    // 公共env
+
+    if (args['http_ip']) {
+        env['HTTP_IP'] = args['http_ip'];
+        env['IP'] = args['http_ip'];
+    }
+
+    if (args['http_port']) {
+        env['HTTP_PORT'] = args['http_port'];
+        env['PORT'] = args['http_port'];
+    }
+
+    if (args['config']) {
+        env['TMA_CONFIG'] = args['config'];
+    }
+    if (typeof args['tmaMonitor'] === 'boolean') {
+        env['TMA_MONITOR'] = args['tmaMonitor'];
+    }
 };
