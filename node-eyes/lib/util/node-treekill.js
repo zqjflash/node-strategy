@@ -69,7 +69,31 @@ function buildProcessTree(ppid, tree, pidsToProcess, cb) {
                 downgradePs = true;
                 return buildProcessTree(ppid, tree, pidsToProcess, cb);
             }
+            if (/Command failed/.test(err.message)) {
+                return isFinish();
+            }
+            throw err;
         }
-    });
+        let pids = stdout.split('\n');
 
+        downgradePs && pids.shift();
+
+        pids = pids.filter((pid) => {
+            return !!pid;
+        }).map((pid) => {
+            pid = pid.trim();
+            return parseInt(downgradePs ? pid.slice(0, pid.search(/\s/)) : pid, 10);
+        });
+        if (pids.length > 0) {
+            tree[ppid] = tree[ppid].concat(pids);
+            pids.forEach((pid) => {
+                if (!tree[pid]) {
+                    buildProcessTree(pid, tree, pidsToProcess, cb);
+                } else {
+                    delete pidsToProcess[pid];
+                }
+            })
+        }
+        isFinish();
+    });
 }
