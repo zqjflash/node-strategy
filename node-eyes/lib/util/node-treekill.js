@@ -51,3 +51,25 @@ function killPid(pid, signal) {
         }
     }
 }
+
+function buildProcessTree(ppid, tree, pidsToProcess, cb) {
+    pidsToProcess[ppid] = 1;
+    tree[ppid] = [];
+
+    function isFinish() {
+        delete pidsToProcess[ppid];
+        if (Object.keys(pidsToProcess).length == 0) {
+            return cb();
+        }
+    }
+    let args = downgradePs ? '-eo pid,ppid | grep -w ' : '-o pid --no-headers --ppid ';
+    let ps = exec('ps ' + args + ppid, (err, stdout, stderr) => {
+        if (err) {
+            if (/illegal/.test(err.message) && !downgradePs) {
+                downgradePs = true;
+                return buildProcessTree(ppid, tree, pidsToProcess, cb);
+            }
+        }
+    });
+
+}
