@@ -108,6 +108,39 @@ const p = spawn('node', ['b.js'], {
 
 在spawn的第三个参数中,可以设置detached属性,如果该属性为true,则会调用setsid方法.
 
+```js
+// 守护进程的C语言版本
+void init_daemon()
+{
+    pid_t pid;
+    int i = 0;
+    
+    if ((pid = fork()) == -1) {
+        printf("Fork error !\n");
+        exit(1);
+    }
+    if (pid != 0) {
+        exit(0); // 父进程退出
+    }
+    setsid(); // 子进程开启新会话,并成为会话首进程和组长进程
+    if ((pid = fork()) == -1) {
+        printf("Fork error !\n");
+        exit(-1);
+    }
+
+    if (pid != 0) {
+        exit(0); // 结束第一子进程,第二子进程不再是会话首进程,避免当前会话组重新与tty连接
+    }
+    chdir("/tmp"); // 改变工作目录
+    umask(0); // 重设文件掩码
+    for(; i < getdtablesize(); ++i) {
+        close(i); // 关闭打开的文件描述符
+    }
+    return;
+}
+```
+
+
 ## No.11 什么时候应该在后台进程中使用消息服务?怎么处理工作线程的任务,怎么给work安排任务?
 
 消息队列适用于后台数据传输服务,比如发送邮件和数据图像处理.消息队列有很多解决方案,比如RabbitMQ和kafka.
