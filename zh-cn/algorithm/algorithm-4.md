@@ -80,3 +80,135 @@ function hammingDistance(a, b) {
     return distance;
 }
 ```
+
+## No.3 克努斯-莫里斯-普拉特算法 - 子串搜索
+
+用案例来讲解KMP算法
+
+1. 首先,字符串"BBC ABCDAB ABCDABCDABDE"的第一个字符与搜索词"ABCDABD"的第一个字符,进行比较.因为B与A不匹配,所以搜索词后移一位.
+
+```js
+BBC ABCDAB ABCDABCDABDE
+|
+ABCDABD
+```
+
+2. 因为B与A不匹配,搜索词再往后移
+
+```js
+BBC ABCDAB ABCDABCDABDE
+ |
+ ABCDABD
+```
+
+3. 就这样,直到字符串有一个字符,与搜索词的第一个字符相同为止.
+
+```js
+BBC ABCDAB ABCDABCDABDE
+    |
+    ABCDABD
+```
+
+4. 接着比较字符串和搜索词的下一个字符,还是相同
+
+```js
+BBC ABCDAB ABCDABCDABDE
+    ||
+    ABCDABD
+```
+
+5. 直到字符串有一个字符,与搜索词对应的字符不相同为止.
+
+```js
+BBC ABCDAB ABCDABCDABDE
+          |
+    ABCDABD
+```
+
+6. 这时,最自然的反应是,将搜索词整个后移一位,再从头逐个比较.这样做虽然可行,但是效率很差,因为你要把"搜索位置"移到已经比较过的位置,重比一遍.
+
+```js
+BBC ABCDAB ABCDABCDABDE
+     |
+     ABCDABD
+```
+
+7. 一个基本事实是,当空格与D不匹配时,你其实知道前面六个字符是"ABCDAB".KMP算法的想法是,设法利用这个已知信息,不要把"搜索位置"移回已经比较过的为止,继续把它向后移,这样就提高了效率.
+
+8. 针对搜索词,算出一张《部分匹配表》.
+
+```js
+搜索词     A B C D A B D
+部分匹配值  0 0 0 0 1 2 0
+```
+
+“部分匹配值”就是“前缀”和“后缀”的最长的共有元素的长度.以"ABCDABD"为例:
+
+```js
+"A"的前缀和后缀都为空集,共有元素的长度为0;
+"AB"的前缀为[A],后缀为[B],共有元素的长度为0;
+"ABC"的前缀为[A, AB], 后缀为[BC, C],共有元素的长度0;
+"ABCD"的前缀为[A, AB, ABC],后缀为[BCD, CD, D],共有元素的长度为0;
+"ABCDA"的前缀为[A, AB, ABC, ABCD], 后缀为[BCDA, CDA, DA, A],共有元素为"A",长度为1;
+"ABCDAB"的前缀为[A, AB, ABC, ABCD, ABCDA], 后缀为[BCDAB, CDAB, DAB, AB, B],共有元素为"AB",长度为2;
+"ABCDABD"的前缀为[A, AB, ABC, ABCD, ABCDA, ABCDAB],后缀为[BCDABD, CDABD, DABD, ABD, BD, D],共有元素的长度为0
+```
+
+代码实现:
+
+```js
+/**
+ * 创建匹配表
+ * @param {string} word
+ * @return {number[]}
+ */
+function buildPatternTable(word) {
+    const patternTable = [0];
+    let prefixIndex = 0;
+    let suffixIndex = 1;
+    while (suffixIndex < word.length) {
+        if (word[prefixIndex] === word[suffixIndex]) {
+            patternTable[suffixIndex] = prefixIndex + 1;
+            suffixIndex += 1;
+            prefixIndex += 1;
+        } else if (prefixIndex === 0) {
+            patternTable[suffixIndex] = 0;
+            suffixIndex += 1;
+        } else {
+            prefixIndex = patternTable[prefixIndex - 1];
+        }
+    }
+    return patternTable;
+}
+
+/**
+ * @param {string} text
+ * @param {string} word
+ * @return {number}
+ */
+function knuthMorrisPratt(text, word) {
+    if (word.length === 0) {
+        return 0;
+    }
+    let textIndex = 0;
+    let wordIndex = 0;
+    const patternTable = buildPatternTable(word);
+
+    while (textIndex < text.length) {
+        if (text[textIndex] === word[wordIndex]) {
+            if (wordIndex === word.length - 1) {
+                return (textIndex - word.length) + 1;
+            }
+            wordIndex += 1;
+            textIndex += 1;
+        } else if (wordIndex > 0) {
+            wordIndex = patternTable[wordIndex - 1];
+        } else {
+            wordIndex = 0;
+            textIndex += 1;
+        }
+    }
+    return -1;
+}
+knuthMorrisPratt("BBC ABCDAB ABCDABCDABDE", "ABCDABD");
+```
