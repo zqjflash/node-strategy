@@ -290,3 +290,43 @@ const getStatus = (worker) => {
         return worker._status;
     });
 };
+
+const canStartWorker = () => {
+    if (exception_count === 0) {
+        exception_timer = setTimeout(() => {
+            exception_count = 0;
+            exception_timer = undefined;
+        }, constants.EXCEPTION_TIME);
+    }
+    exception_count += 1;
+    if (exception_count >= constants.EXCEPTION_TOTAL) {
+        if (exception_timer) {
+            clearTimeout(exception_timer);
+            exception_timer = undefined;   
+        }
+        if (exception_count === constants.EXCEPTION_TOTAL) {
+            events.emit('message', constants.GOD_MESSAGE.EXCEPTION_REACHED_COND);
+            return constants.CAN_START_WORKER.NEED_TO_KILLALL;
+        }
+        return constants.CAN_START_WORKER.ALREADY_SEND_CMD;
+    }
+    return constants.CAN_START_WORKER.OK;
+};
+
+const destroy = () => {
+    if (heartbeat_time) {
+        clearInterval(heartbeat_timer);
+        heartbeat_timer = undefined;
+    }
+    events.emit('message', constants.GOD_MESSAGE.ALL_WORKERS_STOPPED);
+};
+
+module.exports = {
+    prepare: prepare,
+    startWorker: startWorker,
+    stopWorker: stopWorker,
+    killAll: killAll,
+    getStatus: getStatus,
+    events: events,
+    send: send
+};
