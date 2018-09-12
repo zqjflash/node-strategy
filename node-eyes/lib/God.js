@@ -4,7 +4,7 @@ const os = require('os');
 const cluster = require('cluster');
 const path = require('path');
 
-const treekill = require('super-treekill');
+const treekill = require('./util/node-treekill');
 const constants = require('./constants');
 
 const EventEmitter = new require('events').EventEmitter;
