@@ -212,3 +212,125 @@ function knuthMorrisPratt(text, word) {
 }
 knuthMorrisPratt("BBC ABCDAB ABCDABCDABDE", "ABCDABD");
 ```
+
+## No.4 字符串快速查找 - 子串搜索
+
+Rabin-Karp算法,是由M.O.Rabin和R.A.Karp发明的一种基于散列的字符串查找算法.通常情况下,基于散列的字符串查找步骤是:
+
+1. 首先计算模式字符串的散列函数;
+2. 然后利用相同的散列函数计算文本中所有可能的M个字符的子字符串的散列函数值并寻找匹配;
+
+不过这种方法比暴力查找还慢,因为计算散列值会涉及字符串中的每个字符.Rabin和Karp对上述方法进行了改进,发明了一种能够在常数时间内算出M个字符的子字符串散列值的方法.
+
+* 基本思想:以文本"3141592653589793",模式串"26535"为例.
+
+比较思路如下:
+
+寻找一个大素数(作为散列表的大小),通过"除留余数法"计算模式串的散列值.然后依次计算文本中的相同长度子串的散列值,进行比较.
+
+```js
+// charAt(j)
+
+索引j 0  1  2  3  4
+----------------------
+     2  6  5  3  5  % 997 = 613
+```
+
+```js
+// txt.charAt(i)
+i    0  1  2  3  4  5  6  7  8  9  10  11  12  13  14  15
+----------------------------------------------------------
+     3  1  4  1  5  9  2  6  5  3   5   8   9   7   9   3  
+0    3  1  4  1  5  % 997 = 508
+1       1  4  1  5  9  % 997 = 201
+2          4  1  5  9  2  % 997 = 715
+3             1  5  9  2  6  % 997 = 971
+4                5  9  2  6  5  % 997 = 442
+5                   9  2  6  5  3  % 997 = 929
+6 <- return i = 6      2  6  5  3   5  % 997 = 613(匹配) 
+```
+
+递推文本串的散列值:
+
+以Ti表示文本字符T[i],Xi表示文本字符串T[i...M-1~i]的整数值,其中M为模式串长度,则:
+
+可以在初识时求得字符串T[i...M-1~i]的hash值,即X[i] % P = hash(txt, 0, M - 1),其中P为大素数;
+然后通过上述公式递推就可以得到字符串T[i+1...M-1]的hash值,即X[i+1] % P.
+
+性能分析:RK算法,由于通过计算模式串和文本子串的散列值来做相等性比较,所以有一定概率出现冲突,即散列值相同但是字符串不匹配.
+出现冲突的概率与大素数的选择有关,概率约为1/Q(Q为大素数的值),实际应用中,该算法是可靠的,只有极小的概率会出现冲突.时间复杂度是O(N).
+
+```js
+const DEFAULT_BASE = 37;
+const DEFAULT_MODULUS = 101;
+class PolynomialHash {
+    /**
+     * @param {number} [base]
+     * @param {number} [modulus]
+     */
+    constructor({base = DEFAULT_BASE, modulus = DEFAULT_MODULUS} = {}) {
+        this.base = base;
+        this.modulus = modulus;
+    }
+    /**
+     * @param {string} word
+     * @return {number}
+     */
+    hash(word) {
+        const charCodes = Array.from(word).map(char => this.charToNumber(char));
+        let hash = 0;
+
+        for (let charIndex = 0; charIndex < charCodes.length; charIndex += 1) {
+            hash *= this.base;
+            hash += charCodes[charIndex];
+            hash %= this.modulus;
+        }
+        return hash;
+    }
+
+    /**
+     * @param {number} prevHash
+     * @param {string} prevWord
+     * @param {string} newWord
+     * @return {number}
+     */
+    roll(prevHash, prevWord, newWord) {
+        let hash = prevHash;
+        const prevValue = this.charToNumber(prevWord[0]);
+        const newValue = this.charToNumber(newWord[newWord.length - 1]);
+
+        let prevValueMultiplier = 1;
+        for (let i = 1; i < prevWord.length; i += 1) {
+            prevValueMultiplier *= this.base;
+            prevValueMultiplier %= this.modulus;
+        }
+
+        hash += this.modulus;
+        hash -= (prevValue * prevValueMultiplier) % this.modulus;
+
+        hash *= this.base;
+        hash += newValue;
+        hash %= this.modulus;
+        return hash;
+    }
+
+    /**
+     * @param {string} char
+     * @return {number}
+     */
+    charToNumber(char) {
+        let charCode = char.codePointAt(0);
+        const surrogate = char.codePointAt(1);
+        if (surrogate !== undefined) {
+            const surrogateShift = 2 ** 16;
+            charCode += surrogate * surrogateShift;
+        }
+        return charCode;
+    }
+}
+
+function rabinKarp(text, word) {
+    const hasher = new PolynomialHash();
+    const wordHash = hasher.hash(word);
+}
+```
