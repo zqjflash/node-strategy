@@ -68,7 +68,7 @@ exports.prepare = (name, dir) => {
     });
 };
 
-exports.init = (name, type, options) {
+exports.init = (name, type, options) => {
     name = name || '_global';
     if (winston.loggers.has(name)) {
         return true;
