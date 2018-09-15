@@ -276,3 +276,40 @@ diff更新伴随着创建,因为preact只维护一套VNode节点,直接与真实
 
   这里描述一下i是什么,i是遍历VNode的key,注意,VNode的就是即将要更新到DOM上面的新节点.所以通过i保证节点顺序的准确性.
   
+  ### 3.3 析构删除
+
+  主体设计思路: 一边创建,一边回收.因此,只有在idiff的时候,才有可能通过Preact删除无用组件,它使用collectComponent方法进行删除,其实并不是真的删除.只是放在全局变量中const components = {};回收时,相同的节点,后面会覆盖前面.
+
+### 3.4 属性更新
+
+这里没有react的setState基于事务的操作,Preact只是简单的把属性更新,在此期间,会判断是否立即执行,还是异步渲染,如果是异步渲染,会执行enqueueRender,放入items数组中,等待rerender的时候,全部渲染.
+
+在执行方法diffAttributes的时候,就将setAccessor执行,分别包含class、ref、object、innerHTML、事件等;以及svg做了特殊处理.
+
+### 3.5 事件绑定
+
+在真实的react世界里, 它实现了一套基于W3C标准的事件系统. 大部分类react框架都没有实现,在Preact内同样没有,只支持原生的addEventListener简化版本的,不支持IE8以下的.这里并没有进行什么特别的处理
+
+```js
+function diffAttributes(dom, attrs, old) {
+    ...
+    setAccessor(dom, name, od[name], old[name], = attrs[name], isSvgMode);
+}
+...
+// 点击事件onClick...
+else if (name[0] == 'o' && name[1] == 'n') {
+    ...
+    if (value) {
+        if (!old) { // 之前没有设定这个事件,就将该节点的事件设定
+            node.addEventListener(name, eventProxy, useCapture);
+        }
+    } else { // value不存在,就将这个事件删除掉
+        node.removeEventListener(name, eventProxy, useCapture);
+    }
+}
+// this指向的是上下文,就是绑定事件的DOM
+// 设定一个钩子函数保存该节点函数
+function eventProxy(e) {
+    return this._listeners[e.type](options.event && options.event(e) || e);
+}
+```
