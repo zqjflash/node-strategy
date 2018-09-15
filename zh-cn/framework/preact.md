@@ -241,7 +241,7 @@ diff更新伴随着创建,因为preact只维护一套VNode节点,直接与真实
   for (let i = 0; i < vlen; i++) {
       ...
   }
-  // 有key匹配处理
+  // 有key匹配处理: 组件中key要避免使用索引来做处理,这样会导致被覆盖
   let key = vchild.key; // vnode节点是否有key
   if (key != null) {
       // 如果key存在...
@@ -260,4 +260,7 @@ diff更新伴随着创建,因为preact只维护一套VNode节点,直接与真实
   if (child && child !== dom && child !== f) {
   }
   ```
+### preact子节点比较策略流程图:
+
+![preact-child-diff](/assets/preact-child-diff.png)
 
