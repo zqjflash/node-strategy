@@ -353,3 +353,51 @@ function rabinKarp(text, word) {
 }
 rabinKarp("3141592653589793", "26535"); // 6
 ```
+
+## No.5 最长公共子串
+
+> 最长公共子串问题是寻找两个或多个已知字符串最长的子串.此问题与最长公共子序列问题的区别在于子序列不必是连续的,而子串却必须是.
+
+求两个字符串的最长公共子串,如"abcdefg"和adefgwgeweg"的最长公共子串"defg"(子串必须是连续的)
+
+解法: 对于较短的那个字符串,假设其长度为n,依次找到它的长度为n, n-1, n-2, ...1的若干的子串,若另外那个较长的字符串包含了较短字符串的某个子串,则找到了二者的最长公共子串.
+
+```js
+function maxSubstring(strOne, strTwo) {
+    if (strOne.length == 0 || strTwo.length == 0) {
+        return;
+    }
+
+    // 二者中较长的字符串
+    let maxString = "";
+    // 二者中较短的字符串
+    let minString = "";
+
+    if (strOne.length < strTwo.length) {
+        maxString = strTwo;
+        minString = strOne;
+    } else {
+        minString = strTwo;
+        maxString = strOne;
+    }
+
+    // 遍历较短的字符串,并依次减少短字符串的字符数量,判断长字符串是否包含该子串
+    for (let i = 0; i < minString.length; i++) {
+        let end = minString.length - i; // 动态获取尾部边界
+        for (let begin = 0; end <= minString.length; begin++) {
+            end++;
+            let current = minString.substring(begin, end);
+            // 子串是否在大的字符串里面
+            if (maxString.indexOf(current) != -1) {
+                return current;
+            }
+        }
+    }
+    return "";
+}
+maxSubstring("abcdefg", "adefgwgeweg"); // "defg"
+```
+
+
+
+
