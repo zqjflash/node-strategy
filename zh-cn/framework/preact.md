@@ -126,9 +126,9 @@ diff方法就是将VNode节点进行创建和对比,下图画了主要的分支�
 
 diff更新伴随着创建,因为preact只维护一套VNode节点,直接与真实DOM进行比较,因此,采用边比较、边创建、边删除、边更新; 无需维护两个虚拟DOM的比较, 比较完最后在全量更新.
 
-* 1. diff递归比较创建,通过diffLevel进行层级判断.通过idiff进行深度比较和判断, diff需要注意一点:无法返回多个同级节点
+1. diff递归比较创建,通过diffLevel进行层级判断.通过idiff进行深度比较和判断, diff需要注意一点:无法返回多个同级节点
 
-* 2. idiff是diff方法的核心实现:即伴随着创建,伴随着比较,场景有三种情况:文本、组件、DOM对象.
+2. idiff是diff方法的核心实现:即伴随着创建,伴随着比较,场景有三种情况:文本、组件、DOM对象.
 
   * 字符串diff: 字符串或数字,文本节点处理 创建/更新,如果是一个text类型,就直接返回
 
@@ -221,3 +221,43 @@ diff更新伴随着创建,因为preact只维护一套VNode节点,直接与真实
         }
     }
   ```
+
+在DOM节点的场景下,有一个需要特殊注意的点,跟组件场景一样,如果存在节点不一样的时候, 创建更新即可,也就是类react框架的第一层策略.但是,这里注意,旧节点的子节点,全部移到新节点下面,而不是简单的删除.
+
+在进行节点比较的时候,preact的idff只管当前层级节点的比较,子节点的比较他并不关心.交给innerDiffNode处理,而再innerDiffNode方法中,会看到第二个策略.
+
+3. 比较子节点:innerDiffNode流程:
+
+  * 将DOM的孩子节点分为2类:
+
+  一类:带key放到keyed对象中, 另一类:不带key,放入children数组中;
+
+  * 遍历当前:待更新的VNode的节点数组;
+
+  * 进行比较更新,这是核心部分
+
+  ```js
+  // 使用VNode顺序遍历
+  for (let i = 0; i < vlen; i++) {
+      ...
+  }
+  // 有key匹配处理
+  let key = vchild.key; // vnode节点是否有key
+  if (key != null) {
+      // 如果key存在...
+  }
+  // 无key就近原则
+  // 从低到高,第一个匹配到规则,就退出, min初始值为0, childrenLen表示子节点数组长度
+  for (j = min; j < childrenLen; j++) {
+      ...
+  }
+  // 子节点继续递归处理
+  // 将找到的节点,进行diff比较,其实就是递归比较当前子节点的子节点,如果找不到这个子节点就创建新的,然后更新到child上
+  // vchild是当前child对应的VNode节点
+  child = idiff(child, vchild, context, mountAll);
+
+  // 更新到真实的DOM上的条件:子节点存在,并且不是父节点,并且不是对应顺序的旧DOM节点.
+  if (child && child !== dom && child !== f) {
+  }
+  ```
+
