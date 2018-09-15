@@ -260,7 +260,19 @@ diff更新伴随着创建,因为preact只维护一套VNode节点,直接与真实
   if (child && child !== dom && child !== f) {
   }
   ```
+
 ### preact子节点比较策略流程图:
 
 ![preact-child-diff](/assets/preact-child-diff.png)
 
+  * 如果VNode节点有key,就查key,如果key没查到,直接进入idiff创建;
+  * 如果VNode节点没有key,进入循环,找第一个类型相同的节点,招到立即返回;
+  * 进入idiff进行节点创建或者属性更新,真实DOM f = originalChildren[i]就被更新过;
+  * 替换旧的DOM节点:如果更新后的child不是dom节点,并且不等于对应位置的原始DOM节点
+    * f为空,一个节点没有,直接append到末尾,也就是第一个;
+    * 更新后的节点和f节点的下一个节点相同,删除当前节点removeNode(f);
+    * 插入到f节点前面.保证当前顺序是正确的.
+  * 剩下的旧DOM节点:回收掉,两部分,一部分是有key,一部分无key.
+
+  这里描述一下i是什么,i是遍历VNode的key,注意,VNode的就是即将要更新到DOM上面的新节点.所以通过i保证节点顺序的准确性.
+  
