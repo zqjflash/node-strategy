@@ -245,6 +245,49 @@ function testable(target) {
 MyTestableClass.isTestable // true
 ```
 
+## No.17 Proxy是什么?用于什么场景?
+
+Proxy用于修改某些操作的默认行为,等同于在语言层面作出修改,属于一种“元编程”.
+主要是在目标对象之前架设一层“拦截”, 外界对该对象的访问,都必须先通过这层拦截.因此提供了一种机制,可以对外界的访问进行过滤和改写.
+
+```js
+let obj = new Proxy({}, {
+    get: function(target, key, receiver) {
+        console.log(`getting ${key}!`);
+        return Reflect.get(target, key, receiver);
+    },
+    set: function(target, key, value, receiver) {
+        console.log(`setting ${key}!`);
+        return Reflect.set(target, key, value, receiver);
+    }
+});
+obj.count = 1; // setting count!
+++obj.count; // getting count! setting count!
+```
+
+## No.18 Reflect对象的作用是什么?
+
+* 将Object对象的一些明显属于语言内部的方法(比如Object.defineProperty)放到Reflect对象上;
+
+* 修改某些Object方法的返回结果,让其变得更加合理.
+
+```js
+// 旧的写法
+try {
+    Object.defineProperty(target, property, attributes);
+    // 成功的处理
+} catch (e) {
+    // 失败的处理
+}
+
+// 新的写法
+if (Reflect.defineProperty(target, property, attributes)) {
+    // 成功的处理
+} else {
+    // 失败的处理
+}
+```
+
 # 参考
 
 ### [ECMAScript 6入门 阮一峰](http://es6.ruanyifeng.com/)

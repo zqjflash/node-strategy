@@ -20,7 +20,7 @@
 
 ## No.2 js中什么类型是引用传递,什么类型是值传递?如何将值类型的变量以引用的方式传递呢?
 
-js中对象类型是引用传递,基本数据类型是值传递.
+js中对象类型是引用传递,基本数据类型是值传递. 可以通过将基础类型包装(boxing)可以以引用的方式传递.
 引用类型包括:object、Array、RegExp、Date、Function等;
 基本类型包括:undefined、null、string、number、boolean、symbol
 
@@ -83,7 +83,7 @@ while (true) {
     arr.push();
 }
 ```
-执行最后的结果:while(true)一直死循环下去,空元素不占用内存空间
+执行最后的结果:while(true)一直死循环下去,CPU资源耗尽.
 
 扩展3:如果push的是Buffer情况结果会如何?
 
