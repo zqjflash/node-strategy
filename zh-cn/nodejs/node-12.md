@@ -75,3 +75,21 @@ LZ77的核心思路是如果一个串中有两个重复的串,那么只需要知
 比如:ABCDEFGABCDEFH->ABCDEFG(7,6)H. 7指的是往前第7个数开始,6指的是重复串的长度,ABCDEFG(7,6)H完全可以表示前面的串,并且是没有二义性.
 
 哈夫曼编码: 核心思路是通过构造哈夫曼树的方式给字符重新编码-核心是避免一个叶子的路径是另一个叶子路径的前缀,以保证出现频路越高的字符占用的字节越少.
+
+### Nginx如何开启Gzip压缩的方式?
+
+```js
+# 开启
+gzip on;
+# 压缩等级, 1~9, 设置多少可以参考:http://serverfault.com/questions/253074/what-is-this-best-nginx-compression-gzip-level
+gzip_comp_level 2;
+# "MSIE [1-6]\." 比如禁止IE6使用Gzip
+gzip_disable regex ...
+# 最小压缩文件长度
+gzip_min_length 20;
+# 使用Gzip压缩的最小HTTP版本
+gzip_http_version 1.1;
+# 压缩的文件类型,值是[MIME type](https://developer.mozilla.org/zh-CN/doc/Web/HTTP/Basics_of_HTTP/MIME_types/Complete_list_of_MIME_types)
+gzip_types text/html;
+```
+

@@ -398,6 +398,78 @@ function maxSubstring(strOne, strTwo) {
 maxSubstring("abcdefg", "adefgwgeweg"); // "defg"
 ```
 
+## No.6 正则表达式匹配
 
+正则表达式需要一种更加抽象的自动机(引擎),非确定有限状态自动机(NFA).正则引擎大体上可分为不同的两类:DFA和NFA.而NFA又基本上可以分为传统型NFA和POSIX NFA.
 
+DFA-确定性有穷自动机: 在线性时状态下执行,因为它们不要求回溯(并因此它们永远不测试相同的字符两次).DFA引擎还可以确保匹配最长的可能字符串;
+
+NFA-非确定型有穷自动机:最重要的部分是回溯,回溯就像是在道路的每个分岔口留下一小堆面包屑.如果走了死路,就可以照原路返回,直到遇见面包屑标示的尚未尝试过的道路.如果那条路也走不通,你可以继续返回,找到下一堆面包屑,如此重复,直到找到出路,或者走完所有没有尝试过的路.
+
+```js
+const ZERO_OR_MORE_CHARS = '*';
+const ANY_CHAR = '.';
+function regularExpressionMatching(string, pattern) {
+  /**
+    * 动态规划
+    *     a * b . b
+    *   - - - - - -
+    * a - - - - - -
+    * a - - - - - -
+    * b - - - - - -
+    * y - - - - - -
+    * b - - - - - -
+   */
+  const matchMatrix = Array(string.length + 1).fill(null).map(() => {
+    return Array(pattern.length + 1).fill(null);
+  });
+
+  matchMatrix[0][0] = true;
+  for (let columnIndex = 1; columnIndex <= pattern.length; columnIndex += 1) {
+    const patternIndex = columnIndex - 1;
+
+    if (pattern[patternIndex] === ZERO_OR_MORE_CHARS) {
+      matchMatrix[0][columnIndex] = matchMatrix[0][columnIndex - 2];
+    } else {
+      matchMatrix[0][columnIndex] = false;
+    }
+  }
+
+  for (let rowIndex = 1; rowIndex <= string.length; rowIndex += 1) {
+    matchMatrix[rowIndex][0] = false;
+  }
+
+  for (let rowIndex = 1; rowIndex <= string.length; rowIndex += 1) {
+    for (let columnIndex = 1; columnIndex <= pattern.length; columnIndex += 1) {
+      const stringIndex = rowIndex - 1;
+      const patternIndex = columnIndex - 1;
+
+      if (pattern[patternIndex] === ZERO_OR_MORE_CHARS) {
+        if (matchMatrix[rowIndex][columnIndex - 2] === true) {
+          matchMatrix[rowIndex][columnIndex] = true;
+        } else if (
+          (
+            pattern[patternIndex - 1] === string[stringIndex]
+            || pattern[patternIndex - 1] === ANY_CHAR
+          )
+          && matchMatrix[rowIndex - 1][columnIndex] === true
+        ) {
+          matchMatrix[rowIndex][columnIndex] = true;
+        } else {
+          matchMatrix[rowIndex][columnIndex] = false;
+        }
+      } else if (
+        pattern[patternIndex] === string[stringIndex]
+        || pattern[patternIndex] === ANY_CHAR
+      ) {
+        matchMatrix[rowIndex][columnIndex] = matchMatrix[rowIndex - 1][columnIndex - 1];
+      } else {
+        matchMatrix[rowIndex][columnIndex] = false;
+      }
+    }
+  }
+  return matchMatrix[string.length][pattern.length];
+}
+regularExpressionMatching("abc", "a*b.b");
+```
 
