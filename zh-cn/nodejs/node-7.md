@@ -96,16 +96,26 @@ Buffer是Node.js中用于处理二进制数据的类,其中与IO相关的操作(
 
 Node.js的Buffer在ES6增加了TypedArray类型之后,修改了原来的Buffer的实现,选择基于TypedArray中Uint8Array来实现,从而提升了一波性能.
 
+|  接口  | 用途 |
+| ------ | ------ |
+| Buffer.from() | 根据已有数据生成一个Buffer对象 |
+| Buffer.alloc() | 创建一个初始化后的Bufer对象 |
+| Buffer.allocUnsafe() | 创建一个未初始化的Buffer对象 |
+
 用法示例代码:
 
 ```js
-const arr = new uint16Array(2);
+const arr = new Uint16Array(2);
 arr[0] = 5000;
 arr[1] = 4000;
 const buf1 = Buffer.from(arr); // 拷贝了该Buffer
 const buf2 = Buffer.from(arr.buffer); // 与该数组共享了内存
 console.log(buf1); // 输出:<Buffer 88 a0>,拷贝的buffer只有两个元素
 console.log(buf2); // 输出:<Buffer 88 13 a0 0f>
+
+arr[1] = 6000;
+console.log(buf1); // 输出:<Buffer 88 a0>
+console.log(buf2); // 输出:<Buffer 88 13 70 17>
 ```
 
 ## No.10 什么是文件描述符?输入流/输出流/错误流是什么?
