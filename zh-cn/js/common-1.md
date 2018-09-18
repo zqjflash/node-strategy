@@ -498,6 +498,75 @@ ajax("http://m.baidu.com/", "post", null, {"test": 1}).catch((error) => {
 });
 ```
 
+## No.20 JS数组去重有哪些方法?
+
+1. 利用ES6 Set去重(ES6中最常用)
+
+```js
+function unique(arr) {
+    return Array.from(new Set(arr));
+}
+let arr = [1,1, 'true', 'true', true, true, 15, 15, {}, {}, undefined, undefined, null, null];
+console.log(unique(arr));
+```
+
+2. 利用for嵌套for,然后splice去重(ES5中最常用)
+
+```js
+function unique(arr) {
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = i + 1; j < arr.length; j++) {
+            if (arr[i] == arr[j]) { // 第一个等同于第二个,splice方法删除第二个
+                arr.splice(j, 1);
+                j--;
+            }
+        }
+    }
+    return arr;
+}
+let arr = [1,1, 'true', 'true', true, true, 15, 15, {}, {}, undefined, undefined, null, null];
+console.log(unique(arr));
+```
+
+3. 利用indexOf去重
+
+```js
+function unique(arr) {
+    if (!Array.isArray(arr)) {
+        console.log('type error!');
+        return;
+    }
+    let array = [];
+    for (let i = 0; i < arr.length; i++) {
+        if (array.indexOf(arr[i]) === -1) {
+            array.push(arr[i]);
+        }
+    }
+    return array;
+}
+let arr = [1,1, 'true', 'true', true, true, 15, 15, {}, {}, undefined, undefined, null, null];
+console.log(unique(arr));
+```
+
+4. 利用reduce
+
+```js
+Array.prototype.unique = function() {
+    let sortArr = this.sort();
+    let array = [];
+    sortArr.reduce((s1, s2) => {
+        if (s1 !== s2) {
+            array.push(s1);
+        }
+        return s2;
+    });
+    console.log(sortArr[sortArr[sortArr.length - 1]]);
+    array.push(sortArr[sortArr[sortArr.length - 1]]);
+    return array;
+};
+let arr = [1,1, 'true', 'true', true, true, 15, 15, {}, {}, undefined, undefined, null, null];
+console.log(arr.unique());
+```
 
 # 参考
 
