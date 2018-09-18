@@ -4,7 +4,7 @@ const path = require('path');
 const cluster = require('cluster');
 
 const winston = require('winston');
-const winstonTma = require('./util/winston-tma');
+const winstonTma = require('winston-tma');
 
 let servername;
 let dirname;
