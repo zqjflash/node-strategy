@@ -88,6 +88,8 @@
 
 ### [第四节 字符串](/zh-cn/algorithm/algorithm-4.md)
 
+### [第五节 搜索](/zh-cn/algorithm/algorithm-5.md)
+
 ### [第六节 排序](/zh-cn/algorithm/algorithm-6.md)
 
 ## 第五章 错误处理/调试
