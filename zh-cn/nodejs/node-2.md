@@ -45,7 +45,7 @@ console.log/info/error/warning/time/timeEnd/trace/table
 setTimeout/clearTimeout,setInterval/clearInterval,setImmediate/clearImmediate,process.nextTick
 
 * setImmediate: 属于check观察者
-* process.nextTick(): 会在代码运行完成后立即执行
+* process.nextTick(): 会在代码运行完成后立即执行,行为类似于微任务(microtask),但具有优先级,意味着在所有同步代码之后立即执行,
 * setTimeout(fn, 0)从源码分析上其实是在执行setTimeout(fn, 1),虽然setTimeout按事件观察者排序,优先级高于setImmediate,实际上执行顺序就不一定谁先谁后.
 
 ## No.5 Node.js事件循环是什么样子的?
