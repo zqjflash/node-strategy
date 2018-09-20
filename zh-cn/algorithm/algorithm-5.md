@@ -181,5 +181,89 @@ function jumpSearch(sortedArray, seekElement, comparatorCallback) {
 jumpSearch(["a", "c", "d"], "d");
 ```
 
+## No.3 二分查找
 
+搜索过程从数组的中间元素开始,如果中间元素正好是要查找的元素,则搜索过程结束,如果某一特定元素大于或者小于中间元素,则在数组大于或小于中间元素的那一半中查找,而且跟开始一样从中间元素开始比较.如果在某一步数组为空,则代表找不到.
 
+```js
+class Comparator {
+    /**
+     * @param {function(a: *, b: *)} [compareFunction]
+     */
+    constructor(compareFunction) {
+        this.compare = compareFunction || Comparator.defaultCompareFunction;
+    }
+
+    /**
+     * @param {(string|number)} a
+     * @param {(string|number)} b
+     * @returns {number}
+     */
+    static defaultCompareFunction(a, b) {
+        if (a === b) {
+            return 0;
+        }
+        return a < b ? -1 : 1;
+    }
+
+    // 等于
+    equal(a, b) {
+        return this.compare(a, b) === 0;
+    }
+
+    // 小于
+    lessThan(a, b) {
+        return this.compare(a, b) < 0;
+    }
+
+    // 大于
+    greaterThan(a, b) {
+        return this.compare(a, b) > 0;
+    }
+
+    // 小于等于
+    lessThanOrEqual(a, b) {
+        return this.lessThan(a, b) || this.equal(a, b);
+    }
+
+    // 大于等于
+    greaterThanOrEqual(a, b) {
+        return this.greaterThan(a, b) || this.equal(a, b);
+    }
+
+    // 取反
+    reverse() {
+        const compareOriginal = this.compare;
+        this.compare = (a, b) => compareOriginal(b, a);
+    }
+}
+/**
+ * Binary search implementation.
+ * @param {*[]} sortedArray
+ * @param {*} seekElement
+ * @param {function(a, b)} [comparatorCallback]
+ * @return {number}
+ */
+function binarySearch(sortedArray, seekElement, comparatorCallback) {
+    const comparator = new Comparator(comparatorCallback);
+    let startIndex = 0;
+    let endIndex = sortedArray.length - 1;
+    while (startIndex <= endIndex) {
+        const middleIndex = startIndex + Math.floor((endIndex - startIndex) / 2);
+        // 如果中间元素等于比较的元素,直接返回
+        if (comparator.equal(sortedArray[middleIndex], seekElement)) {
+            return middleIndex;
+        }
+        // 选择所在范围的半区进行遍历
+        if (comparator.lessThan(sortedArray[middleIndex], seekElement)) {
+            // 右移到所在范围的半区起始点
+            startIndex = middleIndex + 1;
+        } else {
+            // 左移到所在范围的半区结束点
+            endIndex = middleIndex - 1;
+        }
+    }
+    return -1;
+}
+binarySearch(["a", "c", "d"], "d"); // 2
+```
