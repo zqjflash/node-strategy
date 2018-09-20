@@ -17,11 +17,30 @@
 
   * __dirname
   * __filename
-  * require()
+  * require
+
+  它是一个获取模块名称并返回该模块的exports对象的函数.有一些规则:
+    * 根据名称检索核心模块;
+    * 如果路径以./或../开头,则尝试解析文件;
+    * 如果找不到文件,尝试在其中找到包含index.js文件的目录;
+    * 如果path不以./或../开头,请转到node_modules/并检查文件夹/文件
+
   * module
-  * exports
+
+```js
+function (exports, require, module, __filename, __dirname) {
+    // your module
+}
+```
+
+  * exports对象的本质:它只是一个传递给函数的参数,所以在我们给它指定一个新对象的情况时,我们只是重写这个变量,旧的引用就不存在.尽管它没有完全消失, module.exports是同一个对象,所以它们实际上是对单个对象的相同引用:
+
+```js
+module.exports === exports; // true
+```
 
 注:全局对象在使用的时候都不需要require
+这些是注入到模块中的变量,可以作为“全局”变量使用,即使它们不是真正的全局变量.
 
 ## No.2 process有哪些常用的方法?
 
