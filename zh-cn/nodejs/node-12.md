@@ -25,6 +25,28 @@ fs模块主要由下面几部分组成:
 注: 这两种方法会将文件分成一块一块逐步操作,在读写文件过程中允许执行其他操作.无法满足从文件中读取部分数据.
 
 5. createReadStream:创建一个将文件内容读取为流数据的ReadStream对象;
+
+实际应用场景:针对读取文件太大,所有内容放入内存,如果没有足够内存将无法正常工作,加上有很多并发请求,必须将数据对象保留在内存中,因此造成内存泄露.
+
+然而,实际上服务不需要关心这个文件的内容,因此不会查看内容,可以考虑读取一部分,立即返回给客户端来释放内存,重复这个过程,直到我们完成整个文件的发送.由于响应对象本身实现了可写流,我们可以将信息写入该流而不是将其保留在内存中.
+
+```js
+function (req, res) {
+    const filename = req.url.slice(1);
+    const filestream = fs.createReadStream(filename, {encoding: 'utf-8'});
+    filestream.on('data', chunk => {
+        res.write(chunk); // 响应体实现可写流
+    });
+    filestream.on('end', () => {
+        res.end();
+    });
+    filestream.on('error', () => {
+        res.statusCode = 500;
+        res.end('Something went wrong');
+    });
+}
+```
+
 6. createWriteStream:创建一个将流数据写入到文件中的WriteStream对象;
 
 ## No.3 怎么读取JSON配置文件?

@@ -75,6 +75,43 @@ EventEmitter是node中一个实现观察者模式的类,主要功能是监听和
 
 通过继承EventEmitter来使得一个具有node提供的基本的event方法,这样的对象可以称作emitter,而触发emit事件的cb则称作listener.
 
+EventEmitter的核心实现:
+
+```js
+class EventEmitter {
+    constructor() {
+        this.events = {};
+    }
+    checkExistence(event) {
+        if (!this.events[event]) {
+            this.events[event] = [];
+        }
+    }
+    once(event, cb) {
+        this.checkExistence(event);
+        const cbWithRemove = (...args) => {
+            cb(...args);
+            this.off(event, cbWithRemove);
+        };
+        this.events[event].push(cbWithRemove);
+    }
+    on(event, cb) {
+        this.checkExistence(event);
+        this.events[event].push(cb);
+    }
+    off(event, cb) {
+        this.checkExistence(event);
+        this.events[event] = this.events[event].filter(
+            registeredCallack => registeredCallback !== cb
+        );
+    }
+    emit(event, ...args) {
+        this.checkExistence(event);
+        this.events[event].forEach(cb => cb(...args));
+    }
+}
+```
+
 ## No.6 如何实现一个EventEmitter?
 
 主要分三步: 1) 定义一个类并实现call调用; 2) 继承EventEmitter; 3) 实例化调用
