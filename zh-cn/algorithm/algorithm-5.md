@@ -267,3 +267,63 @@ function binarySearch(sortedArray, seekElement, comparatorCallback) {
 }
 binarySearch(["a", "c", "d"], "d"); // 2
 ```
+
+## No.4 插值搜索 - 搜索均匀分布的排序数组
+
+给定n个均匀分布值的排序数组,写一个函数来搜索数组中的特定元素x.
+线性搜索时间复杂度O(n),跳跃搜索时间复杂度O(√n),二分查找时间复杂度O(logn)
+
+插值搜索是对实例的二分查找搜索的改进,其中排序数组中的值是均匀分布的,根据正在搜索的键值,插值搜索可以去不同的位置,例如,如果键值更接近最后一个元素,则插值搜索可能会朝向尾部开始搜索.
+
+```js
+pos = lo + [(x-arr[lo]) * (hi - lo) / (arr[hi] - arr[lo])]
+x => 搜索元素
+lo => 开始搜索数组的索引
+hi =>  数组的结束索引
+```
+
+```js
+/**
+ * @param {*[]} sortedArray 均匀分布的排序数组
+ * @param {*} seekElement
+ * @return {number}
+ */
+function interpolationSearch(sortedArray, seekElement) {
+    let leftIndex = 0;
+    let rightIndex = sortedArray.length - 1;
+    while (leftIndex <= rightIndex) {
+        const rangeDelta = sortedArray[rightIndex] - sortedArray[leftIndex];
+        const indexDelta = rightIndex - leftIndex;
+        const valueDelta = seekElement - sortedArray[leftIndex];
+
+        // 如果valueDelta小于0意味着没有找到元素
+        if (valueDelta < 0) {
+            return -1;
+        }
+
+        // 找不到范围的元素
+        if (!rangeDelta) {
+            return sortedArray[leftIndex] === seekElement ? leftIndex : -1;
+        }
+
+        // 插值中间指数
+        const middleIndex = leftIndex + Math.floor(valueDelta * indexDelta / rangeDelta);
+
+        // 如果发现元素直接返回索引位置
+        if (sortedArray[middleIndex] === seekElement) {
+            return middleIndex;
+        }
+
+        if (sortedArray[middleIndex] < seekElement) {
+            leftIndex = middleIndex + 1;
+        } else {
+            rightIndex = middleIndex - 1;
+        }
+    }
+    return -1;
+}
+interpolationSearch([5, 19, 21], 19); // 索引值1
+```
+
+
+
