@@ -126,3 +126,17 @@ orm.table("xxx").find(query).skip(0).limit(20).then(list => console.log("results
 orm.table("xxx").update(query, update).then(ret => console.log(ret))
 .catch(err => console.log(err));
 ```
+
+## No.12 MySQL索引背后的数据结构与算法原理
+
+* 数据结构采用的是B+Tree:
+
+  * 每个节点的指针上限为2d而不是2d+1;
+  * 内节点不存储data,只存储key,叶子节点不存储指针;
+
+mysql对B+Tree进行了优化,增加了顺序访问指针.在B+树的每个叶子节点增加一个指向相邻叶子节点的指针,就形成了带有顺序访问指针的B+Tree.这个目的是为了提高区间访问的性能.
+
+* 索引算法实现
+
+  * MyISAM中索引检索的算法:首先按照B+Tree搜索算法进行搜索,如果指定的Key存在,则取出其data域值,然后以data域的值为地址, 读取相应数据记录;
+  * InnoDB,表数据文件本身就是按B+Tree组织的一个索引结构,这棵树的叶节点data域保存了完整的数据记录.这个索引的key是数据表的主键,因此InnoDB表数据文件本身就是主索引.因为InnoDB的数据文件本身要按主键聚集,所以InnoDB要求表必须有主键.
