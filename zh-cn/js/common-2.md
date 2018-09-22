@@ -288,6 +288,24 @@ if (Reflect.defineProperty(target, property, attributes)) {
 }
 ```
 
+## No.19 ArrayBuffer的作用是什么?
+
+由三类对象组成.
+
+1. ArrayBufer对象: 代表内存之中的一段二进制数据,可以通过"视图"进行操作;
+2. TypedArray视图: 用来读写简单类型的二进制数据;
+3. DataView视图: 用来读写复杂类型的二进制数据.
+
+```js
+const buffer = new ArrayBuffer(12);
+const x1 = new Int32Array(buffer);
+x1[0] = 1;
+const x2 = new Uint8Array(buffer);
+x2[0] = 2;
+
+x1[0] // 2
+```
+
 # 参考
 
 ### [ECMAScript 6入门 阮一峰](http://es6.ruanyifeng.com/)
