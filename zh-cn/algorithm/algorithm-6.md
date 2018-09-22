@@ -1,6 +1,37 @@
 # 第六节 排序
 
-## No.1 堆排序
+## No.1 冒泡排序
+
+冒泡排序算法的原理如下:
+
+1. 比较相邻的元素.如果第一个比第二个大,就交换他们两个;
+2. 对每一对相邻元素做同样的工作,从开始第一对到结尾的最后一对.在这一点,最后的元素应该会是最大的数.
+3. 针对所有的元素重复以上的步骤,除了最后一个;
+4. 持续每次对越来越少的元素重复上面的步骤,直到没有任何一对数字需要比较.
+
+```js
+function bubbleSort(arr) {
+    let i = arr.length;
+    let j;
+    let tempExchangVal;
+    while (i > 0) {
+        for (j = 0; j < i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                tempExchangVal = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = tempExchangVal;
+            }
+        }
+        i--;
+    }
+    return arr;
+}
+let arr = [3, 2, 4, 9, 1, 5, 7, 6, 8];
+let arrSorted = bubbleSort(arr);
+console.log(arrSorted); // [1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
+
+## No.4 堆排序
 
 在实际应用场景中,比如百万数据取top1000的数,使用堆排序,可以在不需要完整排序完再取出前top1000,可以利用大顶堆依次取出堆顶最大数达到1000个即可.
 
