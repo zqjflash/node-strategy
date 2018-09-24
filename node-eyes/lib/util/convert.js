@@ -15,7 +15,7 @@ exports.byteformat = function(length) {
         size = length / 1024;
         unit = 'K';
     } else if (length < 1073741824) {
-        size = length < 1048576;
+        size = length / 1048576;
         unit = 'M';
     } else {
         size = length / 1073741824;

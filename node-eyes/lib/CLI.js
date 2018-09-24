@@ -12,12 +12,12 @@ const constants = require('./constants');
 const convert = require('./util/convert');
 const cpu = require('./util/cpu');
 const deps = require('./util/lsdeps');
-const Log = require('./log');
+// const Log = require('./log');
 const pkg = require('../package.json');
 
-const tmaReport = require('./tma/tmaReport');
-const tmaMessage = require('./tma/tmaMessage');
-const tmaNotify = require('./tma/tmaNotify');
+// const tmaReport = require('./tma/tmaReport');
+// const tmaMessage = require('./tma/tmaMessage');
+// const tmaNotify = require('./tma/tmaNotify');
 
 const bindEvents = () => {
     let exception = false;
@@ -41,13 +41,13 @@ const bindEvents = () => {
                 });
             }
         };
-        if (Log.isLogToFile()) {
-            worker.process.stdout.on('data', procStd(worker.process.pid, 'info'));
-            worker.process.stderr.on('data', procStd(worker.process.pid, 'error'));
-        } else {
+        // if (Log.isLogToFile()) {
+        //     worker.process.stdout.on('data', procStd(worker.process.pid, 'info'));
+        //     worker.process.stderr.on('data', procStd(worker.process.pid, 'error'));
+        // } else {
             worker.process.stdout.pipe(process.stdout);
             worker.process.stderr.pipe(process.stderr);
-        }
+        // }
     }).on('online', (worker) => {
         console.info('worker(%s), online.', worker.process.pid);
     }).on('listening', (worker, address) => {
@@ -58,21 +58,21 @@ const bindEvents = () => {
         switch (code) {
             case constants.GOD_MESSAGE.EXCEPTION_REACHED_COND:
                 console.error('exception occurred more than %s times within %s seconds, exiting ...', constants.EXCEPTION_TOTAL, constants.EXCEPTION_TIME / 1000);
-                tmaNotify.report.error(util.format('exiting, exception occurred more than %s times within %s seconds', constants.EXCEPTION_TOTAL, constants.EXCEPTION_TIME / 1000), '');
+                // tmaNotify.report.error(util.format('exiting, exception occurred more than %s times within %s seconds', constants.EXCEPTION_TOTAL, constants.EXCEPTION_TIME / 1000), '');
                 exception = true;
                 break;
             case constants.GOD_MESSAGE.KILLING_ALL_WORKERS:
                 console.info('killing all worker process ...');
-                tmaReport.destroy();
-                tmaMessage.destroy();
-                Log.close();
+                // tmaReport.destroy();
+                // tmaMessage.destroy();
+                // Log.close();
                 break;
             case constants.GOD_MESSAGE.KILLING_WORKER:
                 console.info('killing worker(%s) ...', worker.process.pid);
                 break;
             case constants.GOD_MESSAGE.FORCE_KILL_WORKER:
                 console.error('exceeded the graceful timeout, force kill worker(%s) ...', worker.process.pid);
-                tmaNotify.report.error('exceeded the graceful timeout, force kill worker', worker.process.pid);
+                // tmaNotify.report.error('exceeded the graceful timeout, force kill worker', worker.process.pid);
                 break;
             case constants.GOD_MESSAGE.ALL_WORKERS_STOPPED:
                 console.info('all workers killed, really exiting now ...');
@@ -82,11 +82,11 @@ const bindEvents = () => {
                 break;
             case constants.GOD_MESSAGE.STOP_ZOMBIE_WORKER:
                 console.error('detected zombie worker(%s), freemem %sM.', worker.process.pid, parseInt(os.freemem() / 1024 / 1024));
-                tmaNotify.report.error(util.format('detected zombie worker, freemem %sM.', parseInt(os.freemem() / 1024 / 1024)), worker.process.pid);
+                // tmaNotify.report.error(util.format('detected zombie worker, freemem %sM.', parseInt(os.freemem() / 1024 / 1024)), worker.process.pid);
                 break;
             case constants.GOD_MESSAGE.KILL_ERROR:
                 console.error('kill worker(%s) failed, %s.', worker.process.pid, args || 'no error');
-                tmaNotify.report.error('kill worker failed', worker.process.pid);
+                // tmaNotify.report.error('kill worker failed', worker.process.pid);
                 break;
         }
     }).on('exit', (worker, error, code, signal) => {
@@ -115,24 +115,24 @@ const bindEvents = () => {
         console.info('exit%s.', convert.friendlyExit(code, null, ' with'));
     });
 
-    tmaMessage.on('notify', (command, data, callback) => {
-        let mesgObj = {
-            cmd: command
-        };
-        if (data) {
-            mesgObj.data = data;
-        }
-        // 发送给worker进程
-        God.send(mesgObj);
+    // tmaMessage.on('notify', (command, data, callback) => {
+    //     let mesgObj = {
+    //         cmd: command
+    //     };
+    //     if (data) {
+    //         mesgObj.data = data;
+    //     }
+    //     // 发送给worker进程
+    //     God.send(mesgObj);
 
-        // 发送给主进程(自身)
-        mesgObj.setRet = callback;
-        process.emit('message', mesgObj);
-    }).on('shutdown', () => {
-        console.info('received TMA shutdown signal.');
-        tmaNotify.report.info('stop');
-        God.killAll();
-    });
+    //     // 发送给主进程(自身)
+    //     mesgObj.setRet = callback;
+    //     process.emit('message', mesgObj);
+    // }).on('shutdown', () => {
+    //     console.info('received TMA shutdown signal.');
+    //     tmaNotify.report.info('stop');
+    //     God.killAll();
+    // });
 
     process.on('message', function(message) {
         if (message) {
@@ -158,31 +158,31 @@ const bindEvents = () => {
 };
 
 const initLog = (name, dir) => {
-    Log.prepare(name, dir);
+    // Log.prepare(name, dir);
 
-    Log.init(null, 'TmaRotate', {
-        maxFiles: constants.APPLOG_MAX_FILES,
-        maxSize: constants.APPLOG_MAX_SIZE
-    });
+    // Log.init(null, 'TmaRotate', {
+    //     maxFiles: constants.APPLOG_MAX_FILES,
+    //     maxSize: constants.APPLOG_MAX_SIZE
+    // });
 
-    Log.init('eyes', 'TmaRotate', {
-        maxFiles: constants.APPLOG_MAX_FILES,
-        maxSize: constants.APPLOG_MAX_SIZE
-    });
+    // Log.init('eyes', 'TmaRotate', {
+    //     maxFiles: constants.APPLOG_MAX_FILES,
+    //     maxSize: constants.APPLOG_MAX_SIZE
+    // });
 
-    Log.setLevel(constants.APPLOG_LEVEL, null);
+    // Log.setLevel(constants.APPLOG_LEVEL, null);
 };
 
 const outRedirect = () => {
     let register = (level) => {
         return () => {
-            Log.append('eyes', {
-                level: level,
-                msg: util.format.apply(util, arguments),
-                meta: {
-                    pid: process.pid
-                }
-            });
+            // Log.append('eyes', {
+            //     level: level,
+            //     msg: util.format.apply(util, arguments),
+            //     meta: {
+            //         pid: process.pid
+            //     }
+            // });
         };
     };
     console.info = register('info');
@@ -373,7 +373,7 @@ exports.start = (script, opts) => {
             God.prepare(args);
             initTmaComponent(args, opts);
             startWorker(opts);
-            tmaNotify.report.info('restart');
+            // tmaNotify.report.info('restart');
         });
     });
 };

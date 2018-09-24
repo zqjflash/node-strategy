@@ -14,7 +14,7 @@ const constants = require("../lib/constants"); // 常量配置文件
 const convert = require("../lib/util/convert"); // 格式转换
 const CLI = require("../lib/CLI"); // 执行入口
 
-const TMAConfigure = require("tma-config-parser"); // 配置文件解析器
+// const TMAConfigure = require("tma-config-parser"); // 配置文件解析器
 
 const split = function(val) {
     return val.split(' '); // 以空格分割成数组

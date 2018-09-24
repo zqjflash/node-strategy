@@ -15,7 +15,7 @@ const minFreebytes = require('./util/mem').minFreebytes;
 let exception_count = 0;
 let workers_seq = [];
 let exception_timer;
-let heartbeat_time;
+let heartbeat_timer;
 
 let env = {};
 
@@ -313,8 +313,8 @@ const canStartWorker = () => {
     return constants.CAN_START_WORKER.OK;
 };
 
-const destroy = () => {
-    if (heartbeat_time) {
+let destroy = function() {
+    if (heartbeat_timer) {
         clearInterval(heartbeat_timer);
         heartbeat_timer = undefined;
     }
