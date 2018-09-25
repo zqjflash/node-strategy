@@ -114,6 +114,31 @@ v8::Local<v8::Primitive> Nan::Undefined()
 v8::Local<v8::Primitive> Nan::Null
 ```
 
+## No.3 Node.js V8模块
+
+该模块用于开放Node.js内建的V8引擎的事件和接口.这些接口由V8底层决定,所以无法保证绝对的稳定性.
+
+|  接口  | 描述 |
+| ------ | ------ |
+| V8.getHeapStatistics() | 获取heap信息 |
+| V8.getHeapSpaceStatistics() | 获取heap space信息 |
+| V8.setFlagsFromString(string) | 动态设置V8 options |
+
+setFlagsFromString该方法用于添加额外的V8命令行标志.在VM启动后修改配置可能会发生不可预测的行为、崩溃和数据丢失;或者什么反应都没有.
+
+通过`node --v8-options`命令可以查询当前Node.js环境中有哪些可用的V8 options,此外,还可以参考费官方维护的一个V8 options列表.
+
+用法:
+
+```js
+// 打印GC事件
+const v8 = require('v8');
+v8.setFlagsFromString('--trace_gc');
+setTimeout(() => {
+    v8.setFlagsFromString('--notrace_gc');
+}, 60e3);
+```
+
 # 参考
 
 ## [Node.js 和 C++ 之间的类型转换](http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/)
