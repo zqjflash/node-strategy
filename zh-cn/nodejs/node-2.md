@@ -103,7 +103,7 @@ console.log(buf1);
 
 * String Decoder
 字符串解码器(String Decoder)是一个用于将Buffer拿来decode到string到模块,是作为Buffer.toString补充.
-防止宽字节处理不当,造成乱码.
+防止宽字节处理不当,造成乱码.它支持多子节UTF-8和UTF-16字符
 
 ```js
 const StringDecoder = require('string_decoder').StringDecoder;

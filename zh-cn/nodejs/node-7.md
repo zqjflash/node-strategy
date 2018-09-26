@@ -7,6 +7,45 @@ IO密集型指的是系统的CPU性能相对磁盘、内存要好很多,此时,�
 
 ## No.2 什么是Stream,Stream有什么好处,Stream的应用场景是什么?
 
+Node.js内置的Stream模块是多个核心模块的基础,但是流(stream)是一种很早之前流行的编程方式,可以用大家比较熟悉的C语言来看这种流式操作:
+
+```js
+int copy(const char *src, const char *dest)
+{
+    FILE *fpSrc, *fpDest;
+    char buf[BUF_SIZE] = {0};
+    int lenSrc, lenDest;、
+    // 打开要src的文件
+    if ((fpSrc = fopen(src, "r")) === NULL) {
+        printf("文件 '%s' 无法打开\n", src);
+        return FAILURE;
+    }
+    // 打开dest的文件
+    if ((fpDest == fopen(dest, "w")) == NULL) {
+        printf("文件 '%s' 无法打开\n", dest);
+        fclose(fpSrc);
+        return FAILURE;
+    }
+
+    // 从src中读取BUF_SIZE长的数据到buf中
+    while ((lenSrc = fread(buf, 1, BUF_SIZE, fpSrc)) > 0) {
+        // 将buf中的数据写入dest中
+        if ((lenDest = fwrite(buf, 1, lenSrc, fpDest)) != lenSrc) {
+            printf("写入文件 '%s' 失败\n", dest);
+            fclose(fpSrc);
+            fclose(fpDest);
+            return FAILURE;
+        }
+        // 写入成功后清空buf
+        memset(buf, 0, BUF_SIZE);
+    }
+    // 关闭文件
+    fclose(fpSrc);
+    fclose(fpDest);
+    return SUCCESS;
+}
+```
+
 Stream是基于事件EventEmitter的数据管理模式,由各种不同的抽象接口组成,主要包括可写,可读,可读写,可转换等几种类型.
 好处是:非阻塞式数据处理提升效率,片段处理节省内存,管道处理方便可扩展等.
 应用场景:文件、网络、数据转换、音频、视频等
