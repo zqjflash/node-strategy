@@ -88,6 +88,20 @@ function writeOneMillionTimes(writer, data, encoding, callback) {
 Stream的.pipe()是将一个可写流附到可读流上,同时将可写流切换到流模式,并把所有数据推给可写流.在pipe传递数据的过程中,objectMode是传递引用,非objectMode则是拷贝一份数据传递下去.
 pipe方法最主要的目的就是将数据的流动缓冲到一个可接受的水平,不让不同速度的数据源之间的差异导致内存被占满.
 
+* 通过pipe实现一个导流的示例
+
+```js
+'use strict'
+import {createReadStream, createWriteStream} from 'fs';
+createReadStream('/path/to/a/big/file').pipe(createWriteStream('/path/to/the/dest'))
+```
+
+* 功能分解:
+
+  * 不断从来源可读流中获得一个指定长度的数据;
+  * 将获取到的数据写入目标可写流;
+  * 平衡读取和写入速度,防止读取速度大大超过写入速度时,出现大量滞留数据.
+
 ## No.8 Buffer一般用于处理什么数据?其长度能否动态变化?
 
 Buffer是Node.js中用于处理二进制数据的类,其中与IO相关的操作(网络/文件等)均基于Buffer.Buffer类的实例非常类似整数数组,但其大小是固定不变的,并且其内存在V8堆栈外分配原始内存空间.Buffer类的实例创建之后,其所占用的内存大小就不能再进行调整.
