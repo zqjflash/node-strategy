@@ -21,8 +21,8 @@ Stream是基于事件EventEmitter的数据管理模式,由各种不同的抽象�
 
 |    类    |   使用场景   |    重写方法    |
 | ------ | ------ | ------ |
-| Readable | 只读,为可被读流,在作为输入数据源时使用 | 重写_read方法 |
-| Writable | 只写,为可被写流,在作为输出源时使用 | 重写_write方法 |
+| Readable | 只读,为可被读流,在作为输入数据源时使用,比如process.stdin | 重写_read方法 |
+| Writable | 只写,为可被写流,在作为输出源时使用,比如process.stdout或process.stderr | 重写_write方法 |
 | Duplex   | 读写,为可读写流,它作为输出源接受被写入,同时又作为输入源被后面的流读出. | 重写_read和_write |
 | Transform | 与Duplex相似,操作被写入数据, 然后读出结果 | 重新_transform和_flush |
 
@@ -209,3 +209,7 @@ rl.on('line', (line) => {
 实现上,readline在读取TTY的数据时,是通过input.on('keypress', onkeypress)时发现用户按下了回车键来判断是新的line的,而读取一般的stream时,则是通过缓存数据然后用正则.test来判断是否为new line的.
 
 如果在编写脚本时,不习惯异步获取输入,而是要同步获取用户的输入可以使用scanf模块.
+
+## 附录
+
+* [Node.js中流操作实践](https://zhuanlan.zhihu.com/p/44120527)

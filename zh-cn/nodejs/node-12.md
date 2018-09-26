@@ -34,6 +34,8 @@ fs模块主要由下面几部分组成:
 function (req, res) {
     const filename = req.url.slice(1);
     const filestream = fs.createReadStream(filename, {encoding: 'utf-8'});
+    // 当我们创建某个可读流时,其还并未开始进行数据流动;添加了data的事件监听器,才会变成流动态的.
+    // 在这之后,就会读取一小块数据,然后传到我们的回调函数里面.
     filestream.on('data', chunk => {
         res.write(chunk); // 响应体实现可写流
     });
