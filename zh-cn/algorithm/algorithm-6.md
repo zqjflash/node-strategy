@@ -31,6 +31,34 @@ let arrSorted = bubbleSort(arr);
 console.log(arrSorted); // [1, 2, 3, 4, 5, 6, 7, 8, 9]
 ```
 
+## No.2 选择排序
+
+首先在未排序序列中找到最小(大)元素, 存放到排序序列的起始位置,然后再从剩余未排序元素中继续寻找最小(大)元素,放到已排序序列的末位.以此类推,直到所有元素均排序完毕.
+
+```js
+let sortArr = [8, 94, 15, 88, 55, 76, 21, 39];
+function selectSort(arr) {
+    let len = arr.length;
+    let minIndex;
+    let temp;
+    console.time('选择排序耗时');
+    for (let i = 0; i < len - 1; i++) {
+        minIndex = i;
+        for (let j = i + 1; j < len; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        temp = arr[i];
+        arr[i] = arr[minIndex];
+        arr[minIndex] = temp;
+    }
+    console.timeEnd('选择排序耗时');
+    return arr;
+}
+selectSort(sortArr); // [8, 15, 21, 39, 55, 76, 88, 94]
+```
+
 ## No.4 堆排序
 
 在实际应用场景中,比如百万数据取top1000的数,使用堆排序,可以在不需要完整排序完再取出前top1000,可以利用大顶堆依次取出堆顶最大数达到1000个即可.
