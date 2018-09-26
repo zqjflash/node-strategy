@@ -33,6 +33,11 @@ node --prof app.js
 ```
 
 程序运行之后会生成一个isolate-0xnnnnnnnn-v8.log在当前运行目录.
+同时使用--prof-process查看报告.
+
+```js
+node --prof-process isolate-0xnnnnnnnn-v8.log
+```
 
 
 ## No.2 如何监控内存?

@@ -306,6 +306,24 @@ x2[0] = 2;
 x1[0] // 2
 ```
 
+## No.20 getOwnPropertyDescriptor作用是什么?
+
+该方法会返回某个对象属性的描述对象(descriptor). ES7引入getOwnPropertyDescriptors方法,返回指定对象所有自身属性(非继承属性)的描述对象.
+
+```js
+const obj = {
+    foo: 123,
+    get bar() {return 'abc'}
+};
+Object.getOwnPropertyDescriptor(obj, 'bar');
+
+// configurable: true
+// enumerable: true
+// get: ƒ bar()
+// set: undefined
+// __proto__: Object
+```
+
 # 参考
 
 ### [ECMAScript 6入门 阮一峰](http://es6.ruanyifeng.com/)
