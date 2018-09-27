@@ -30,6 +30,8 @@
 
 ### [第七篇: Node.js建设运营活动体系](/zh-cn/lighting-talk/lesson7.md)
 
+### [第八篇: 谷歌开发者大会观后感](/zh-cn/lighting-talk/lesson8.md)
+
 ## 第一章 JS 基础
 
 > 与前端 JS 不同, 后端是直面服务器的, 更加偏向内存方面.
