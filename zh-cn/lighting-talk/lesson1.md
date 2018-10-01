@@ -112,6 +112,10 @@
   * 提升开发效率:快速迭代,快速上线,小步快跑
   * 体验性能:核心业务指标
 
+## No.4 Node技术成长模型
+
+![person-grow-up](/assets/person-grow-up.png)
+
 # 参考
 
 ## [一个程序员的成长之路](https://mp.weixin.qq.com/s/zWPjfHiYxx0HH9lE99Yijw)
