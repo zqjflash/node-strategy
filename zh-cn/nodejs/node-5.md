@@ -59,13 +59,19 @@ new Promise(function executor(resolve) {
     for (var i = 0; i < 10000; i++) {
         i == 9999 && resolve();
     }
-    console.log(3);
-}).then(function() {
     console.log(4);
+}).then(function() {
+    console.log(5);
 });
-console.log(5);
+console.log(6);
 ```
-执行结果:2->3->5->4->1
+执行结果:2->4->6->5->1
+
+主要有两个点:
+
+* Promise属于microtask,而setTimeout回调属于task,对于JS引擎而言,event loop的优先级是不同的,所以Promise resolve会先于setTimeout的回调输出;
+
+* Promise的构造函数参数是同步调用的,故2和4会先于6输出.
 
 ## No.5 什么是EventEmitter?
 
