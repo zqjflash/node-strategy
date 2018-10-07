@@ -289,6 +289,38 @@ function countSort(array) {
 countSort([8, 94, 15, 88, 55, 76, 21, 39]);
 ```
 
+## No.9 基数排序
+
+基数排序属于分配式排序,又称“桶子法”,通过键值的每位数字,将要排序的元素分配至某些“桶”中,借以达到排序的作用,基数排序是属于稳定性的排序.
+
+```js
+let counter = [];
+function radixSort(arr, maxDigit) {
+    let mod = 10;
+    let dev = 1;
+    for (let i = 0; i < maxDigit; i++, dev *= 10, mod *= 10) {
+        for (let j = 0; j < arr.length; j++) {
+            let bucket = parseInt((arr[j] % mod) / dev);
+            if (counter[bucket] == null) {
+                counter[bucket] = [];
+            }
+            counter[bucket].push(arr[j]);
+        }
+        let pos = 0;
+        for (let j = 0; j < counter.length; j++) {
+            let value = null;
+            if (counter[j] != null) {
+                while ((value = counter[j].shift()) != null) {
+                    arr[pos++] = value;
+                }
+            }
+        }
+    }
+    return arr;
+}
+radixSort([8, 94, 15, 88, 55, 76, 21, 39], 55);
+```
+
 # 附录
 
 * [JS的十大经典算法排序](https://www.cnblogs.com/dushao/p/6004883.html)
