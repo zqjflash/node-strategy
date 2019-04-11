@@ -578,6 +578,95 @@ readFile setImmediate callback
 readFile setTimeout with 0ms delay
 ```
 
+## No.13 javascript中数组对象求交集、并集、补集
+
+```js
+const a = [
+        {
+        'categoryId': 1,
+        'categoryIdLevelOne': 750611334,
+        'categoryIdLevelThree': 750611336,
+        'categoryIdLevelTwo': 750611335,
+        'id': 2697,
+        'level': 3,
+        'shopId': 12430,
+        'skipLayoutFlag': false,
+        'status': 1
+    },
+    {
+        'categoryId': 2,
+        'categoryIdLevelOne': 750611472,
+        'categoryIdLevelTwo': 750611473,
+        'id': 2701,
+        'level': 2,
+        'shopId': 12430,
+        'skipLayoutFlag': false,
+        'status': 2
+    },
+    {
+        'categoryId': 3,
+        'categoryIdLevelOne': 750611487,
+        'categoryIdLevelTwo': 750611488,
+        'id': 2702,
+        'level': 2,
+        'shopId': 12430,
+        'skipLayoutFlag': false,
+        'status': 1
+    }
+];
+const b = [
+    {
+        'categoryId': 2,
+        'categoryIdLevelOne': 750611334,
+        'categoryIdLevelThree': 750611336,
+        'categoryIdLevelTwo': 750611335,
+        'id': 2697,
+        'level': 3,
+        'shopId': 12430,
+        'skipLayoutFlag': false,
+        'status': 1
+    },
+    {
+        'categoryId': 3,
+        'categoryIdLevelOne': 750611472,
+        'categoryIdLevelTwo': 750611473,
+        'id': 2701,
+        'level': 2,
+        'shopId': 12430,
+        'skipLayoutFlag': false,
+        'status': 2
+    },
+    {
+        'categoryId': 4,
+        'categoryIdLevelOne': 750611487,
+        'categoryIdLevelTwo': 750611488,
+        'id': 2702,
+        'level': 2,
+        'shopId': 12430,
+        'skipLayoutFlag': false,
+        'status': 1
+    }
+];
+```
+
+* 交集：
+
+```js
+const c = a.filter( a => b.some(b => b.categoryId  === a.categoryId));
+```
+
+* 补集（差集）
+
+```js
+const d = a.filter(x => b.every(y => y.categoryId !== x.categoryId));
+```
+
+* 并集
+
+```js
+const e = b.filter(y => a.every(x => x.categoryId !== y.categoryId)).concat(a);
+```
+
 # 参考
 
 ### [js浮点运算](https://blog.csdn.net/u013347241/article/details/79210840)
