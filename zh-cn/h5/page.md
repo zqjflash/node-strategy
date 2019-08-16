@@ -195,5 +195,28 @@ BFC中文就是块级作用域,一个HTML元素要创建BFC,需要满足下列�
 * 使用中转页面传递;
 * 使用隐藏的表单post方式.
 
+## No.7 css如何实现立方体？
+
+方案：考虑所有的侧面，通过具有preserve-3d值的transform-style属性使它转变成一个3d对象
+
+```js
+<style type="text/css">
+.cube { position: relative; transform-style: preserve-3d;}
+.side { position: absolute;}
+.back { transform: translateZ(-100px); }
+.left { transform: translateX(-100px) rotateY(90deg); }
+// ...以此类推
+</style>
+<div class="scene">
+  <div class="cube">
+    <div class="side back"></div>
+    <div class="side left"></div>
+    <div class="side right"></div>
+    <div class="side top"></div>
+    <div class="side bottom"></div>
+    <div class="side front"></div>
+  </div>
+</div>
+```
 
 
