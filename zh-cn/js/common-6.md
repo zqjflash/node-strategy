@@ -28,7 +28,7 @@ obj.c = null;
 
 ### readonly和const有什么区别？
 
-const效率高，但readonly更灵活。
+最简单判断该用readonly还是const的方法是看要把它作为变量使用还是作为一个属性。作为变量使用const，作为属性使用readonly。
 
 具体区别如下：
 * const是一个编译期常量，readonly是一个运行时常量；

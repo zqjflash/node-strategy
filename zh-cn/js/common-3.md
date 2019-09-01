@@ -667,6 +667,170 @@ const d = a.filter(x => b.every(y => y.categoryId !== x.categoryId));
 const e = b.filter(y => a.every(x => x.categoryId !== y.categoryId)).concat(a);
 ```
 
+## 14. 下面代码输出什么？
+
+```js
+const box = {x: 10, y: 20};
+Object.freeze(box);
+const shape = box;
+shape.x = 100;
+console.log(shape); // {x: 10, y: 20}
+```
+
+Object.freeze使得无法添加、删除或修改对象的属性（除非属性的值是另一个对象）。
+
+当我们创建变量shape并将其设置为等于冻结对象box时，shape指向的也是冻结对象。你可以使用Object.isFrozen检查一个对象是否被冻结，上述情况，Object.isFrozen(shape)将返回true。
+
+由于shape被冻结，并且x的值不是对象，所以我们不能修改属性x。x仍然等于10，{x: 10, y: 20}被打印。
+
+注意，上述例子我们对属性x进行修改，可能会导致抛出TypeError异常（最常见但不仅限于严格模式下时）。
+
+## 15. 下面代码输出什么？
+
+```js
+const { name: myName } = { name: "Lydia" };
+console.log(name); // ReferenceError
+```
+
+当我们从右侧的对象解构属性name时，我们将其值Lydia分配给名未myName的变量。
+使用{name: myName}, 我们是在告诉JavaScript要创建一个名为myName的新变量，并且其值是右侧对象的name属性的值。
+
+当我们尝试打印name，一个未定义的变量时，就会引发ReferenceError。
+
+## 16. 以下是个纯函数么？
+
+```js
+function sum(a, b) {
+    return a + b;
+}
+```
+
+是一个纯函数，纯函数一种若输入参数相同，则永远会得到相同输出的函数。
+sum函数总是返回相同的结果。如果我们传递1和2，它将总是返回3而没有副作用。如果我们传递5和10，它将总是返回15，依次类推，这是纯函数的定义。
+
+## 17. 下面代码输出什么？
+
+```js
+const add = () => {
+    const cache = {};
+    return num => {
+        if (num in cache) {
+            return `From cache! ${cache[num]}`;
+        } else {
+            const result = num + 10;
+            cache[num] = result;
+            return `Calculated! ${result}`;
+        }
+    };
+}
+const addFunction = add();
+console.log(addFunction(10));
+console.log(addFunction(10));
+console.log(addFunction(5*2));
+```
+
+add函数是一个记忆函数。通过记忆化，我们可以缓存函数的结果，以加快其执行速度。上述情况，我们创建一个cache对象，用于存储先前返回过的值。
+
+如果我们使用相同的参数多次调用addFunction函数，它首先检查缓存中是否已有该值，如果有，则返回缓存值，这将节省执行时间。如果没有，那么它将计算该值，并存储在缓存中。
+
+我们用相同的值三次调用了addFunction函数：
+
+在第一次调用，num等于10时函数的值尚未缓存，if语句numincache返回false，else块的代码被执行；Calculated!20，并且其结果被添加到缓存对象，Cache现在看起来像{10: 20}.
+
+第二次，cache对象包含10的返回值。if语句numincache返回true，Fromcache!20被打印。
+
+第三次，我们将5*2(值为10)传递给函数。cache对象包含10的返回值。if语句numincache返回true，Fromcache!20被打印。
+
+## 18. 下面代码输出什么？
+
+```js
+const myLifeSummedUp = ["a", "b", "c", "d"];
+for (let item in myLifeSummedUp) {
+    console.log(item); // 0 1 2 3
+}
+for (let item of myLifeSummedUp) {
+    console.log(item); // "a" "b" "c" "d"
+}
+```
+
+通过for-in循环，我们可以遍历一个对象自有的、继承的、可枚举的、非Symbol的属性。在数组中，可枚举属性是数组的“键”，即它们的索引。类似于下面这个对象：
+
+```js
+{0: "a", 1: "b", 2: "c", 3: "d"}
+```
+其中键则是可枚举属性，因此0，1，2，3被记录。
+通过for-of循环，我们可以迭代可迭代对象（包括Array，Map，Set，String, arguments等）。当我们迭代数组时，在每次迭代中，不同属性的值将被分配给变量item，因此"a", "b", "c", "d"被打印。
+
+## 19. 下面代码输出什么？
+
+```js
+const list = [1 + 2, 1 * 2, 1 / 2];
+console.log(list); // 3, 2, 0.5
+```
+
+数组元素可以包含任何值。数字，字符串，布尔值，对象，数组，null, undefined，以及其他表达式，如日期，函数和计算。
+
+元素将等于返回的值。1+2返回3，1*2返回2，1/2返回0.5.
+
+## 20. 下面代码输出什么？
+
+```js
+function sayHi(name) {
+    return `Hi there, ${name}`;
+}
+console.log(sayHi()); // Hi there, undefined
+```
+
+默认情况下，如果不给函数传参，参数的值为undefined。上述情况，我们没有给参数name传值。name等于undefined，并被打印。
+
+在ES6中，我们可以使用默认参数覆盖此默认的undefined值。例如：
+
+```js
+function sayHi(name = "Lydia") {...}
+```
+在这种情况下，如果我们没有传递值或者如果我们传递undefined，name总是等于字符串Lydia。
+
+## 21. 下面代码输出什么？
+
+```js
+var status = "a";
+setTimeout(() => {
+    const status = "b";
+    const data = {
+        status: "c",
+        getStatus() {
+            return this.status
+        }
+    }
+    console.log(data.getStatus()); // c
+    console.log(data.getStatus.call(this)); // a
+}, 0);
+```
+
+this关键字的指向取决于使用它的位置。在函数中，比如getStatus，this指向的是调用它的对象，上述例子中data对象调用了getStatus，因此this指向的就是data对象。当我们打印this.status时，data对象的status属性被打印，即"c"。
+
+使用call方法，可以更改this指向的对象。data.getStatus.call(this)是将this的指向由data对象更改为全剧对象。在全局对象上，有一个名为status的变量，其值为"a"，因此打印this.status时，会打印"a"。
+
+## 22. 下面代码输出什么？
+
+```js
+const person = {
+    name: "Lydia",
+    age: 21
+}
+let city = person.city;
+city = "Amsterdam";
+console.log(person); // {name: "Lydia", age: 21}
+```
+
+我们将变量city设置为等于person对象上名为city的属性值。这个对象上没有名为city的属性，因此变量city的值为undefined。
+
+请注意，我们没有引用person对象本身，只是将变量city设置为等于person对象上city属性的当前值。
+
+然后，我们将city设置为等于字符串"Amsterdam"。这不会更改person对象，没有对该对象的引用。
+
+因此打印person对象时，会返回未修改的对象。
+
 # 参考
 
 ### [js浮点运算](https://blog.csdn.net/u013347241/article/details/79210840)
