@@ -831,6 +831,48 @@ console.log(person); // {name: "Lydia", age: 21}
 
 因此打印person对象时，会返回未修改的对象。
 
+## 23. 下面代码输出什么？
+
+```js
+function checkAge(age) {
+    if (age < 18) {
+        const message = "xxx";
+    } else {
+        const message = "yyy";
+    }
+    return message;
+}
+console.log(checkAge(21)); // undefined
+```
+
+const和let声明的变量是具有块级作用域的，块是大括号({})之间的任何东西，即上述情况if/else语句的花括号。由于块级作用域，我们无法在声明的块之外引用变量，因此抛出ReferenceError。
+
+## 24. 什么样的信息将被打印？
+
+```js
+fetch('https://www.website.com/api/user/1')
+  .then(res => res.json()) // 第一个.then()中回调方法返回的结果
+  .then(res => console.log(res))
+```
+第二个.then中res的值等于前一个.then中的回调函数返回的值。你可以像这样继续链接.then，将值传递给下一个处理程序。
+
+## 25. 哪个选项是将hasName设置为true的方法，前提是不能将true作为参数传递？
+
+```js
+function getName(name) {
+    const hasName = //
+}
+```
+A: !!name B: name C: newBoolean(name) D: name.length
+
+使用逻辑非运算符!，将返回一个布尔值，使用!!name，我们可以确定name的值是真的还是假的。如果name是真实的，那么!name返回false，!falase返回为true。
+
+通过将hasName设置为name，可以将hasName设置为等于传递给getName函数的值，而不是布尔值true。
+
+newBoolean(true)返回一个对象包装器，而不是布尔值本身。
+
+name.length返回传递的参数的长度，而不是布尔值true。
+
 # 参考
 
 ### [js浮点运算](https://blog.csdn.net/u013347241/article/details/79210840)
