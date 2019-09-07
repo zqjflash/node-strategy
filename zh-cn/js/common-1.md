@@ -350,12 +350,12 @@ function throttle(fn, threshhold) {
         var curr = new Date() - 0; // 时间触发结束点
         clearTimeout(timeout); // 总是干掉事件回调
         if (curr - start >= threshhold) {
-            fn.apply(context, argus); // 只执行一部分方法,这些方法是在某个时间段内执行一次.
+            fn.apply(context, args); // 只执行一部分方法,这些方法是在某个时间段内执行一次.
             start = curr; // 以当次结束点作为下次的开始点
         } else {
             timeout = setTimeout(function() {
                 fn.apply(context, args);
-            }, threshold);
+            }, threshhold);
         }
     }
 }
