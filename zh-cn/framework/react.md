@@ -464,6 +464,157 @@ wrapWithLoadData高阶组件挂载的时候会先去localStorage加载数据,渲
 
 * className->class.
 
+## No.21 异步加载渲染数据的React组件
+
+* 顶部一个搜索框，下面一个列表数据，搜索框输入时实时查询并渲染新的数据。组件不限制Class Component或者Function Component+Hooks，熟悉Hooks推荐使用Hooks。
+（基本功能、loading+请求异常状态、搜索防抖、Hooks实现-正确理解使用useEffect，通过依赖变更触发effect，而不是手动触发fetchData、Class实现)
+
+```js
+import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
+
+let timer;
+
+function App() {
+  const [inputValue, setInputValue] = useState("");
+  const [searchValue, setSearchValue] = useState(inputValue);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // 模拟 fetch
+        const data = await new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve([{ name: "a" }, { name: "b" }]);
+          }, 0.5 * 1000);
+        });
+        setData(data);
+      } catch (err) {
+        setError(err);
+      }
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [searchValue]);
+
+  function handleInputValueChange(e) {
+    const value = e.target.value;
+    setInputValue(value);
+
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(() => {
+      setSearchValue(value);
+    }, 0.3 * 1000);
+  }
+
+  return (
+    <div>
+      <div>
+        <input
+          placeholder="关键词"
+          value={inputValue}
+          onChange={handleInputValueChange}
+        />
+        当前搜索词：{searchValue}
+      </div>
+      <div>
+        {error && <div>{error.message}</div>}
+        {loading ? (
+          <div>loading....</div>
+        ) : (
+          data.map(item => {
+            return <div>{item.name}</div>;
+          })
+        )}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById("root"));
+```
+
+## No.22 实现一个normalize函数，能将输入的特定字符串转化为特定的结构化数据。
+
+字符串仅由小写字母和[,]组成，且字符串不会包含多余的空格。
+示例一：'abc' --> {value: 'abc'}
+示例二：'[abc[bcd[def]]]' -> {value: 'abc', children: {value: 'bcd', children: {value: 'def'}}}
+
+```js
+function normalize(str) {
+    // your code here
+    return obj;
+}
+```
+
+实现代码：
+
+```js
+function normalize(str) {
+    const pattern = /\[(\w+)\]/g;
+    let matched, pop = [];
+    while (matched = str.match(pattern)) {
+        str = str.replace(pattern, function(m, s) {
+            pop.unshift(s);
+            return '';
+        });
+    }
+    if (str) {
+        return {
+            value: str
+        }
+    }
+    let o;
+    pop.reduce((obj, currentValue) => {
+        if (!o) {
+            o = obj;
+        }
+        obj.value = currentValue;
+        obj.children = {};
+        return obj.children;
+    }, {});
+    return o;
+}
+normalize('[abc[bcd[def]]]');
+```
+
+## No.23 实现一个金额展示格式化的函数formatAmount,金额展示规则为整数部分每三位用逗号分隔，小数部分展示两位。输入数据不是数字时返回"-"。
+
+举例：
+```js
+formatAmount(2688) => "2,688.00"
+formatAmount("2e6") => "2,000,000.00"
+formatAmount(-2.33333333) => "-2.33"
+formatAmount("Alibaba") => "-"
+```
+
+```js
+function formatAmount(num) {
+    let amount = +num;
+    if (num === null || amount !== amount) {
+        return '-';
+    }
+    const isNagative = (amount < 0);
+    if (isNagative) {
+        amount = -amount;
+    }
+    const str = amount.toFixed(2);
+    let [integer, fraction] = str.split('.');
+    let slicedInteger = [];
+    while (integer.length) {
+        slicedInteger.unshift(integer.slice(-3));
+        integer = integer.slice(0, Math.max(integer.length - 3, 0));
+    }
+    return `${isNagative ? '-' : ''}${slicedInteger.join(',')}.${fraction}`;
+}
+```
 
 # 参考
 

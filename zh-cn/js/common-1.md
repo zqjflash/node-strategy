@@ -339,6 +339,8 @@ function debounce(func, delay) {
 }
 ```
 
+setInterval(debounce(function() {console.log('xxxx',new Date())}, 100), 2000);
+
 节流实现思路:控制单位时间内执行的次数,每次需要保存上次执行的时间点与定时器.
 ```js
 function throttle(fn, threshhold) {
