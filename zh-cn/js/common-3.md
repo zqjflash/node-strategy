@@ -928,6 +928,57 @@ Event.prototype.once = function(type, handler) {
 }
 ```
 
+## 27. 实现一个deepEqual函数，判断两个输入参数是否相等（对于对象或者array需要深度比对）
+
+```js
+function deepEqual(x, y) {
+    if (x === y) {
+        return true;
+    }
+    if (typeof x !== 'object' || x === null || typeof y !== 'object' || y === null) {
+        return false;
+    }
+    if (Object.keys(x).length !== Object.keys(y).length) {
+        return false;
+    }
+    for (let prop in x) {
+        if (y.hasOwnProperty(prop)) {
+            if (!deepEqual(x[prop], y[prop])) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    return true;
+}
+```
+
+## 28. 实现一个parseUrl函数，解析输入url字符串的所有参数
+
+```js
+function parseUrl(url) {
+    const res = {};
+    if (typeof url !== 'string') {
+        return res;
+    }
+    const a = document.createElement('a');
+    a.href = url;
+    const search = a.search.replace(/^\?/, '');
+    if (!search) {
+        return res;
+    }
+    const paramStrArr = search.split('&');
+    for (let i = 0; i < paramStrArr.length; i++) {
+        const tempRes = paramStrArr[i].split('=');
+        if (tempRes[0] && tempRes[1]) {
+            res[tempRes[0]] = decodeURIComponent(tempRes[1]);
+        }
+    }
+    return res;
+}
+```
+
 # 参考
 
 ### [js浮点运算](https://blog.csdn.net/u013347241/article/details/79210840)
