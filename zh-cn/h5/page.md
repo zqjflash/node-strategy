@@ -225,3 +225,7 @@ BFC中文就是块级作用域,一个HTML元素要创建BFC,需要满足下列�
 * 存放数据大小：cookie 4k左右；localStorage和sessionStorage一般在5MB
 * 与服务器端通信：cookie每次都会携带在HTTP头中，如果使用cookie保存过多数据会带来性能问题；localStorage和sessionStorage仅在客户端（即浏览器）中保存，不参与和服务器的通信
 * 易用性：cookie需要程序员自己封装，原生的cookie接口不友好；localStorage和sessionStorage原生接口可以接受，也可再次封装来对Object和Array有更好的支持；
+
+## No.9 * { box-sizing: border-box; } 是用来干什么的？有什么优点？
+加了box-sizing:border-box属性，padding和border的值就不会在影响元素的宽高，相当于把padding和border的值都算在content里
+盒子模型会自动根据padding和border的值来调整content的值，就不需要手动调整
