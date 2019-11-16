@@ -873,6 +873,61 @@ newBoolean(true)返回一个对象包装器，而不是布尔值本身。
 
 name.length返回传递的参数的长度，而不是布尔值true。
 
+## 26. 实现一个事件收发器Event类，继承自此类的对象拥有on,off,once和trigger方法
+
+```js
+const event = new Event();
+function log(val) { console.log(val);};
+event.on('foo_event', log);
+event.trigger('foo_event', 'abc'); // 打印出abc
+event.off('foo_event', log);
+event.trigger('foo_event', 'abc'); // 打印出undefined
+```
+
+实现代码
+
+```js
+function Event() {
+    if (!(this instanceof Event)) {
+        return new Event();
+    }
+    this._callbacks = {};
+}
+Event.prototype.on = function(type, handler) {
+    this._callbacks = this._callbacks || {};
+    this._callbacks[type] = this._callbacks[type] || [];
+    this._callbacks[type].push(handler);
+    return this;
+};
+Event.prototype.off = function(type, handler) {
+    let list = this._callbacks[type];
+    if (list) {
+        for (let i = list.length; i >= 0; --i) {
+            if (list[i] === handler) {
+                list.splice(i, 1);
+            }
+        }
+    }
+};
+Event.prototype.trigger = function(type, data) {
+    let list = this._callbacks[type];
+    if (list) {
+        for (let i = 0, len = list.length; i < len; ++i) {
+            list[i].call(this, data);
+        }
+    }
+};
+Event.prototype.once = function(type, handler) {
+    let self = this;
+    function wrapper() {
+        handler.apply(self, arguments);
+        self.off(type, wrapper);
+    }
+    this.on(type, wrapper);
+    return this;
+}
+```
+
 # 参考
 
 ### [js浮点运算](https://blog.csdn.net/u013347241/article/details/79210840)
