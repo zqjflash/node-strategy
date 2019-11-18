@@ -229,3 +229,17 @@ BFC中文就是块级作用域,一个HTML元素要创建BFC,需要满足下列�
 ## No.9 * { box-sizing: border-box; } 是用来干什么的？有什么优点？
 加了box-sizing:border-box属性，padding和border的值就不会在影响元素的宽高，相当于把padding和border的值都算在content里
 盒子模型会自动根据padding和border的值来调整content的值，就不需要手动调整
+
+## No.10 描述一下<script><script async><script defer>的区别?
+
+* 没有defer或async，浏览器会立即加载并执行指定的脚本；
+* 有async，加载和渲染后续文档元素的过程将和script.js的加载与执行并行进行;
+* 有defer，加载后续文档元素的过程和script.js的加载并行进行（异步），但是script.js的执行要在所有元素解析完成之后，DOMContentLoaded事件触发之前完成。
+
+## No.11 为什么说css放在<head></head>里，而js放在<body>里是一种比较好的实践？有特殊情况吗？
+
+css放在`<head></head>`里，因为放在body里，档DOM树构建完成，渲染树才构建，那么当渲染树构建完成，浏览器不得不再重新渲染整个页面，这样造成资源的浪费，效率也不高，放在head之间，浏览器边构建边渲染，效率要高的多。
+
+js放在body里，因为放在所有body中的标签后面就不会出现网页加载时出现空白的情况，可以持续的给用户提供视觉反馈，同时在有些情况下，会降低错误的发生。
+
+采用非阻塞加载的方案例外。
