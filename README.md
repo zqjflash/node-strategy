@@ -14,8 +14,7 @@
 
 ## 技术架构
 
-### [我眼中的前端技术架构]
-(/zh-cn/architecture/lesson1.md)
+### [我眼中的前端技术架构](/zh-cn/architecture/lesson1.md)
 
 ## 鸡汤软文
 
