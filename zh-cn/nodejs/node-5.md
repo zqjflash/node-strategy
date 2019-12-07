@@ -1,6 +1,32 @@
 # 第五节 事件/异步
 
+## 1. promise专栏
+
+Promise是异步编程的常用方案，解决ajax请求数据中的地域回调问题。Promise是一个对象，有2个特点：
+
+* 对象状态不受外界影响；
+* 状态改变后不会再变，会一直保持这个结果；
+
+Promise基本用法：是一个构造函数，new Promise返回一个promise的实例对象；
+Promise的静态方法：
+* Promise.all()：用于将多个Promise实例包装成一个新的Promise实例，通常用于处理多个并行异步操作；
+* Promise.race()：跟Promise.all()不同的是，Promise实例数组中只要有一个实例率先改变状态，新的Promise实例的回调就会返回那个率先改变的Promise实例的返回值。
+* Promise.resolve()：返回一个fulfilled状态的promise对象；
+* Promise.reject()：返回一个rejected状态的promise对象；
+
+Promise原型上的方法：
+* Promise.prototype.then(onFulfilled, onRejected)，onFulfilled：是用来接收promise成功的值；onRejected是用来接收promise失败的原因
+* Promise.prototype.catch(onRejected)：用于指定发生错误时的回调函数。
+* Promise.prototype.finally(onFinally)：finally方法用于指定不管Promise对象最后状态如何，都会执行的操作。
+
+优点：将异步操作以同步操作的流程表达出来，更好地解决了层层嵌套的回调地域；
+缺点：
+1. 无法取消Promise，Promise一旦新建即立即执行，无法中途取消；
+2. 如果不设置回调函数，Promise内部抛出的错误，不会反映到外部；
+3. 当处于pending状态，无法得知目前进展到哪一个阶段（刚刚开始还是即将完成）；
+
 ## No.1 promise中.then的第二个参数与.catch有什么区别?
+
 
 promise.then()的第一个参数是状态从pendding转为resolve时的回调函数,第二个参数是状态从pendding转为reject的回调函数,只是一种状态处理;
 而.catch是用于promise流程的异常处理.

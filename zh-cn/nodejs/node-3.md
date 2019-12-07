@@ -28,7 +28,10 @@ module.export = {b: 2};
 
 分析原因: 模块A导出的只是var module = {exports: {}}, 启动moduleA.js时,还没执行完exports就是{},所以在moduleB开头拿到的就是{}.
 
-注: exports只是module.exports的一个引用.
+注: 
+* exports只是module.exports的一个引用；
+* exports返回的是模块函数，module.exports返回的是模块对象本身，返回的是一个类；
+* 一个模块文件中可以有多个exports输出，但只能有一个module.exports输出。
 
 ## No.2 如果a.js require b.js,那么在b中定义的全局变量b='xxx'能否在a中直接打印出来?
 
