@@ -61,21 +61,21 @@ console.log(someOne.name); // xxx
 
 ## No.5 ES6数组的新方法(map/reduce, forEach, filter)
 
-* map:创建一个新数组,其结果是该数组中的每个元素都调用一个提供的函数后返回的结果
+* map: 让数组通过某种计算产生一个新数组
 ```js
 var array1 = [1, 4, 9, 16];
 const map1 = array1.map((x) => x * 2);
 console.log(map1); // [2, 8, 18, 32]
 ```
 
-* reduce:累加器和数组中的每个元素(从左到右)应用一个函数,将其减少为单个值.
+* reduce: 让数组中的前项和后项做某种计算，并累积最终值
 ```js
 const array1 = [1, 2, 3, 4];
 const reducer = (accumulator, currentValue) => accumulator + currentValue;
 console.log(array1.reduce(reducer)); // 1 + 2 + 3 + 4
 ```
 
-* forEach:对数组的每个元素执行一次提供的函数
+* forEach:让数组中的每一项做一件事，没有返回值
 
 ```js
 const array1 = ['a', 'b', 'c'];
@@ -84,11 +84,27 @@ array1.forEach((element) => {
 });
 ```
 
-* filter:创建一个新数组,其包含通过所提供函数过滤条件之后的结果元素
+* filter: 筛选出数组中符合条件的项，组成新数组
 ```js
 const words = ['spray', 'limit' ,'elite', 'exuberant', 'destruction', 'present'];
 const result = words.filter(word => word.length > 6);
 console.log(result);
+```
+
+* every：检测数组中的每一项是否符合条件；全部符合才为true
+
+```js
+const result = arr.every((item, index) => {
+    return item > 0;
+})
+```
+
+* some：检测数组中是否有某些项符合条件，只要满足一个即为true
+
+```js
+const result = arr.some((item, index) => {
+    return item > 1;
+})
 ```
 
 ## No.6 如何用ES6实现一个js类?
