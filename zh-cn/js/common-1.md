@@ -570,6 +570,10 @@ let arr = [1,1, 'true', 'true', true, true, 15, 15, {}, {}, undefined, undefined
 console.log(arr.unique());
 ```
 
+## No.21 事件委托(event delagation)
+
+事件委托是利用事件的冒泡原理来实现，事件冒泡就是事件从最深的节点开始，然后逐步向上传播事件，通过父节点的事件绑定，实现子节点动态替换依然保留事件能力。
+
 # 参考
 
 ### [函数防抖与节流](https://mp.weixin.qq.com/s/xMCna_VtoOev0K5uK1J0aQ)
