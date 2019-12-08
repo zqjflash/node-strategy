@@ -6,8 +6,19 @@
 
 ## 一、预备基础知识
 
-1. IPC通信方式
+1. Node.js进程中通信方式有哪些？
 
+* 通过stdin/stdout传递
+
+示例代码：
+
+```js
+spawn('ls', ['-l'], {
+  stdio: 'inherit'
+});
+```
+
+* IPC通信方式
 IPC通信的方式有: 管道、socket、信号量、共享内存、消息队列、domain socket等;
 Node.js中实现IPC通道的是管道(pipe)技术.在Node中管道是个抽象层面的称呼,具体细节实现由libuv提供,在Windows下由命名管道(named pipe)实现,*nix系统则采用Unix Domain Socket实现.表现在应用层上的进程间通信只有简单的message事件和send()方法.
 
@@ -16,6 +27,16 @@ Node.js中实现IPC通道的是管道(pipe)技术.在Node中管道是个抽象�
 Unix Domain Socket也提供面向流和面向数据包两种API接口,类似于TCP和UDP,但是面向消息的Unix Domain Socket也是可靠的,消息既不会丢失也不会顺序错乱.在Node.js中,IPC通道被抽象成stream对象,在调用send()时发送数据,接收到消息会通过message事件触发给应用层.在linux系统中,UDS是通过内核直接将信息拷贝到另一个进程的内存空间中.如下图:
 
 ![unix-domain-socket](/assets/unix-domain-socket.png)
+
+示例代码：
+
+```js
+const cp = require('child_process');
+```
+
+* 通过网络Sockets
+
+借助网络完成进程通信，不仅能跨进程还能跨机器
 
 2. Node.js的事件驱动+多进程模型
 
