@@ -221,6 +221,25 @@ class App extends Component {
 
 * 完整生命周期过程:
 
+在React16之前：生命周期其实主要分为四个阶段：组件初始化、组件挂载、组件更新、组件卸载；
+  * 组件初始化：constructor
+  * 组件挂载：componentWillMount -> render -> componentDidMount
+  * 组件更新：
+    * props属性更新：componentWillReceiveProps -> shouldComponentUpdate -> componentWillUpdate -> render -> componentDidUpdate
+    * states状态更新：shouldComponentUpdate -> componentWillUpdate -> render -> componentDidUpdate
+  * 组件卸载：componentWillUnmount
+
+在React16及以后：生命周期变为三个阶段：组件挂载、组件更新、组件卸载
+  * 组件挂载：constructor -> getDerivedStateFromProps -> render -> 更新DOM和refs -> componentDidMount
+  * 组件更新：(new props,setState,forceUpdate) -> getDerivedStateFromProps -> shouldComponentUpdate -> render -> getSnapshotBeforeUpdate -> 更新DOM和refs -> componentDidUpdate
+  * 组件卸载：componentWillUnmount
+
+引入Hook之后对应的生命周期的关系：
+  * 组件挂载：useState <=> constructor
+  * 组件更新：useEffect <=> componentDidMount,componentDidUpdate,componentWillUnmount;
+  * dom更新：useRef <=> 更新DOM和refs
+  * forceUpdate <=> useState|useReducer
+
 1. 可选的static方法;
 
 2. constructor构造函数;
@@ -252,6 +271,8 @@ componentWillMount() {
 5. componentDidMount模块渲染后;作用:有些组件的启动工作是依赖DOM的,例如动画的启动.
 6. componentWillReceiveProps组件从父组件接收新的props之前;
 7. shouldComponentUpdate判断模块需不需要重新渲染;
+使用场景：用来阻止重新渲染，也可以使用componentWillReceiveProps根据props更新state触发重新渲染但不会触发额外render。
+
 8. componentWillUpdate组件开始重新渲染之前调用;
 9. componentDidUpdate模块渲染结束;
 10. componentWillUnmount 组件从页面销毁的时候,做一些清理任务,比如删除定时器等;
