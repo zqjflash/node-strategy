@@ -372,7 +372,17 @@ Vue2.x数据流: Parent-(Props)->child-(v-modle)->DOM
 在Redux中,我们每个组件都需要显示的用connect把需要的props和dispatch连接起来,Redux只能进行dispatch,并不能直接调用reducer进行修改.
 Vuex既可以dispatch action也可以commit updates
 
-Redux的原理：
+Redux的原理：（reducer -> (store/state) -> provider-> (state/props) ->(view/UI组件）-> action -> dispatch -> action{type...} -> reducer）
+
+* 通过改变View的props达到界面发生变化；
+* View的props内容由应用中全局唯一store中的state提供，所有的状态，保存在一个对象里面，通过key区分。
+* store通过createStore(reducer)创建，reducer返回的正好是变化后的state对象；
+* action与reducer绑定是通过store.dispatch(action)内部处理的，
+* 并不需要写出显示调用store.dispatch，这个是依赖React-redux中的connect和Provider的能力。
+* reducer函数执行之后，通过reducer(state,action)调用来更新state；
+
+
+
 
 Redux带来的好处：
 
