@@ -117,3 +117,10 @@ gulp.src("./js/*.js")
   * 解析: 将代码字符串解析成抽象语法树;
   * 变换: 对抽象语法树进行变换操作;
   * 再建: 根据变换后的抽象语法树再生成代码字符串.
+
+  ## No.11 Webpack使用babel的知识点
+
+  * webpack使用babel时，需安装babel-core编译库核心包；
+  * 使用babel-loader来使用babel；
+  * 在babel编译之前，需要指到你的编译规则，以什么样的规范去编译，按es6标准编译安装babel-preset-es2015，按es6编译安装babel-preset-es2016，一般你想用最新的规范做编译，直接安装babel-preset-env；
+

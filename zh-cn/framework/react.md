@@ -372,6 +372,12 @@ Vue2.x数据流: Parent-(Props)->child-(v-modle)->DOM
 在Redux中,我们每个组件都需要显示的用connect把需要的props和dispatch连接起来,Redux只能进行dispatch,并不能直接调用reducer进行修改.
 Vuex既可以dispatch action也可以commit updates
 
+Redux的原理：
+
+Redux带来的好处：
+
+Redux不好的地方：
+
 ## No.17 dangerouslySetHTML和style属性的作用是什么?
 
 出于安全考虑的原因(XSS攻击),在React.js当中所有的表达式插入的内容都会被自动转移.如果在页面中要把一个富文本的标签结构渲染在页面,就需要使用dangerouslySetHTML属性,示例代码如下:
