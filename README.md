@@ -134,6 +134,8 @@
 
 ### [第三节 Preact源码分析](/zh-cn/framework/preact.md)
 
+### [第四节 redux原理](/zh-cn/framework/redux.md)
+
 ## 第十一章 安全
 
 ### [第一节 安全](/zh-cn/security/security.md)
