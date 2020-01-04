@@ -151,3 +151,7 @@
 ### [第二节 系统资源监控](/zh-cn/monitor/resourceMonitor.md)
 
 ### [第三节 用户行为监控](/zh-cn/monitor/profile.md)
+
+## 第十四章 项目实战
+
+### [第一节 淘宝秒杀](/zh-cn/practice/README.md)
