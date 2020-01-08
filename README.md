@@ -122,6 +122,8 @@
 
 ### [第一节 服务器常见配置](/zh-cn/server/server.md)
 
+### [第二节 高并发相关](/zh-cn/server/concurrency.md)
+
 ## 第九章 H5前端
 
 ### [第一节 页面布局相关](/zh-cn/h5/page.md)
