@@ -102,6 +102,8 @@
 
 ### [第六节 排序](/zh-cn/algorithm/algorithm-6.md)
 
+### [第七节 常见算法题](/zh-cn/algorithm/algorithm-7.md)
+
 ## 第五章 错误处理/调试
 
 ### [第一节 错误处理/调试](/zh-cn/error/error.md)
