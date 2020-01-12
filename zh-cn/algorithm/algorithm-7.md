@@ -104,3 +104,24 @@ function getMaxDiff(arr) {
 }
 
 ```
+
+## No.3 二分查找（原数组必须有序，否则不行）
+
+```js
+function binarySearch(arr, target) {
+    const a = arr.slice().sort((a, b) => a - b);
+    let low = 0;
+    let high = arr.length - 1;
+    while (low <= high) {
+        const mid = ~~((high + low) / 2);
+        if (target == arr[mid]) {
+            return mid;
+        } else if (target > arr[mid]) {
+            low = mid + 1;
+        } else if (target < arr[mid]) {
+            high = mid - 1;
+        }
+    }
+    return -1;
+}
+```
