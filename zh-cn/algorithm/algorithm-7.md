@@ -67,3 +67,40 @@ function findNum2(arr, target) {
     }
 }
 ```
+
+## No.2 数组中最大差值
+
+```js
+function getMaxDiff(arr) {
+    let min = arr[0];
+    let max = arr[0];
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] < min) {
+            min = arr[i];
+        }
+        if (arr[i] > max) {
+            max = arr[i];
+        }
+        return max - min;
+    }
+}
+
+function getMaxDiff(arr) {
+    let min = arr[0];
+    let max = arr[0];
+    arr.forEach(value => {
+        if (value < min) {
+            min = value;
+        }
+        if (value > max) {
+            max = value;
+        }
+    });
+    return max - min;
+}
+
+function getMaxDiff(arr) {
+    return Math.max(...arr) - Math.min(...arr);
+}
+
+```
