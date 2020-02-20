@@ -110,6 +110,8 @@
 
 ### [第二节 JS常见错误及如何避免](/zh-cn/error/js-error.md)
 
+### [第三节 页面白屏-分析-治理](/zh-cn/error/page-handle.md)
+
 ## 第六章 测试
 
 ### [第一节 测试相关法则](/zh-cn/test/test.md)
