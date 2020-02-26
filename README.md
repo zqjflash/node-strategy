@@ -104,6 +104,8 @@
 
 ### [第七节 常见算法题](/zh-cn/algorithm/algorithm-7.md)
 
+### [第八节 动态规划](/zh-cn/algorithm/algorithm-8.md)
+
 ## 第五章 错误处理/调试
 
 ### [第一节 错误处理/调试](/zh-cn/error/error.md)

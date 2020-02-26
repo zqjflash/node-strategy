@@ -46,3 +46,9 @@
 ![js-error3](/assets/js-error3.png)
 ![js-error-elements](/assets/js-error-elements.png)
 
+## V8引擎的bug导致的业务白屏
+
+在这个案例中，我们也是先看到某个JS异常在白屏事件里占了大头的比例。
+先确认下这个JS异常是不是导致白屏的直接原因。
+
+
