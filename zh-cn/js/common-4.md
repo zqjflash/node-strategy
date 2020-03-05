@@ -403,6 +403,28 @@ eventBus.$emit("receive", "test"); // 打印出test
 
 * 七、注释和文档的可读性
 
+* 八、常见的案例题
+
+  1. 如何通过js判断进入可视区，使用场景图片懒加载的时候需要用到
+
+  ```js
+  window.addEventListener("scroll", () => {
+      // 获取的是浏览器可见区域高度（网页的可视区域的高度）不滚动的情况下
+      let documentClientHeight = document.documentElement.clientHeight || window.innerHeight;
+      /**
+       * 元素顶端到可见区域（网页）顶端的距离
+       * 获取指定元素距离网页左上角(0, 0)的纵向偏移距离
+       * 该值会随着滚动条的变化而变化；scrollTop变大，该值变小；scrollTop变小，该值变大
+       */
+      let htmlElementClientTop = document.getElementById("#id").getBoundingClientRect().top;
+      // 网页指定元素进入可视区域
+      if (documentClientHeight >= htmlElementClientTop) {
+          // TODO 执行你要做的操作
+      }
+  })
+  ```
+
+
 # 参考
 
 ### [JavaScript函数柯里化](https://zhuanlan.zhihu.com/p/31271179)
