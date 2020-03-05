@@ -424,6 +424,39 @@ eventBus.$emit("receive", "test"); // 打印出test
   })
   ```
 
+  2. 实现一个normalize函数，能将输入的特定的字符串转化为特定的结构化数据
+  * 字符串仅由小写字母和[,]组成，且字符串不会包含多余的空格。
+  * 示例一：_'abc' --> {value: 'abc'}_
+  * 示例二：_'[abc[bcd[def]]]' -> {value: 'abc', children: {value: 'bcd', children: {value: 'def'}}}_
+
+```js
+function normalize(str) {
+    const pattern = /\[(\w+)\]/g;
+    let matched, pop = [];
+    while (matched = str.match(pattern)) {
+        str = str.replace(pattern, function(m, s) {
+            pop.unshift(s);
+            return '';
+        });
+    }
+    if (str) {
+        return {
+            value: str
+        }
+    }
+    let o;
+    pop.reduce(function(obj, currentValue) {
+        if (!o) {
+            o = obj;
+        }
+        obj.value = currentValue;
+        obj.children = {};
+        return obj.children;
+    }, {});
+    return o;
+}
+```
+
 
 # 参考
 
