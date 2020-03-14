@@ -165,3 +165,5 @@
 ### [第一节 淘宝秒杀](/zh-cn/practice/README.md)
 
 ### [第二节 前端做搭建](/zh-cn/project/build.md)
+
+### [第三节 搭建之模块](/zh-cn/project/build-module.md)
