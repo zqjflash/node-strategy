@@ -163,3 +163,5 @@
 ## 第十四章 项目实战
 
 ### [第一节 淘宝秒杀](/zh-cn/practice/README.md)
+
+### [第二节 前端做搭建](/zh-cn/project/build.md)
