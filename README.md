@@ -167,3 +167,5 @@
 ### [第二节 前端做搭建](/zh-cn/project/build.md)
 
 ### [第三节 搭建之模块](/zh-cn/project/build-module.md)
+
+### [第四节 搭建之渲染](/zh-cn/project/build-render.md)
