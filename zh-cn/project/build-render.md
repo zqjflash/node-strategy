@@ -4,7 +4,7 @@
 
 ## 一、部署结构
  
- ![site-render.png](/assets/module-product.png)
+ ![site-render.png](/assets/site-render.png)
 
 ### 1.3 请求的核心流程
 
