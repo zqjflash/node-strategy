@@ -160,6 +160,8 @@
 
 ### [第三节 用户行为监控](/zh-cn/monitor/profile.md)
 
+### [第四节 前端A/B实验设计](/zh-cn/monitor/experiment.md)
+
 ## 第十四章 项目实战
 
 ### [第一节 淘宝秒杀](/zh-cn/practice/README.md)
@@ -169,3 +171,5 @@
 ### [第三节 搭建之模块](/zh-cn/project/build-module.md)
 
 ### [第四节 搭建之渲染](/zh-cn/project/build-render.md)
+
+### [第五节 搭建体系对接](/zh-cn/project/build-system.md)
