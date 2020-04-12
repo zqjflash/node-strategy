@@ -19,7 +19,7 @@
 
 ![build-system-sequence.png](/assets/build-system-sequence.png)
 
-## 三、对接搭建前独特的问题
+## 三、对接搭建之后解决了如下的问题
 
 1. PC使用react体系开发，无线使用vue，修改技术体系带来的工作量和风险过大；
 2. PC页面仍然有比较大的访问量，页面性能要求高，需要支持SSR；
