@@ -42,3 +42,20 @@ const curry = (fn, arr = []) => {
   }
 }
 ```
+
+### 3. 偏函数
+
+偏函数是固定一个函数的一个或者多个参数，也就是将一个n元函数转换成一个n-x元函数
+
+```js
+AddBySeven = Partial(Add, 7);
+AddBySeven(5, 10);
+```
+
+柯里化是将一个多参数函数转换成多个单参数函数，也就是将一个n元函数转换成n个一元函数
+f(a, b, c)转化为f(a)(b)(c)
+```js
+curryAdd = Curry(Add);
+AddBySeven = curryAdd(7);
+AddBySeven(5)(10);
+```
