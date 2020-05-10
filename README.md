@@ -130,6 +130,8 @@
 
 ### [第二节 高并发相关](/zh-cn/server/concurrency.md)
 
+### [第三节 服务器端相关常识](/zh-cn/server/serverInfo.md)
+
 ## 第九章 H5前端
 
 ### [第一节 页面布局相关](/zh-cn/h5/page.md)

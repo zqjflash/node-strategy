@@ -2,7 +2,11 @@
 
 ## 类型判断
 
-判断JS中数据类型的几种方法: typeof、instanceof、constructor、prototype、比较运算符等;
+判断JS中数据类型的几种方法: typeof、instanceof、Object.toString.call、constructor、prototype、比较运算符等;
+* typeof检测类型值：
+ * es5：string, boolean, number, function, object, undefined;
+ * es6: symbol, bigint.
+
 
 ## No.1 JS基本类型的语法比较
 
