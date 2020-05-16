@@ -1,5 +1,19 @@
 # 第二节 ES6有哪些新特性
 
+* 基本类型的扩展：
+ * 数值扩展：多进制表示、是否有穷、是不是NaN、是不是整数、数字的上限和下限、是否是安全数、返回小数的整数部分、判断数字是正数、负数、0；立方根的计算、三角方法、对数方法。
+ * 函数扩展：参数默认值、rest参数、扩展运算符（...arg）、箭头函数、this绑定、尾调用
+ * 箭头函数：
+* Proxy:
+ * 拦截和监视外部对象的访问；最常见的就是get(读取)、set(修改)对象属性、has、deleteProperty、getOwnPropertyDescriptor、defineProperty、apply、construct、getPrototypeOf、setPrototypeOf、isExtensible、preventExtensions、ownKeys
+ * 降低函数或类的复杂度；
+ * 在复杂操作前对操作进行校验或对所需资源进行管理；如在set方法里增加类型的判断
+* Reflect:
+* Promise:
+* class:
+* 生成器函数：
+* async/await：
+
 ## No.1 const定义的Array中的元素能否被修改?如果可以,那const修饰对象的意义是?
 
 其中的值可以被修改,const只是定义了变量在内存中占用的地址不能修改,而Array中的元素存在于堆上.
