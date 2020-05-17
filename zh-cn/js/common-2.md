@@ -192,10 +192,21 @@ for (let [key, value] of map) {
 
 ```
 
-## No.12 generator、Promise和async/await的之间的关系。
+## No.12 JS实现异步的方式
 
-* promise最基础的使用方法解决了回调的层层嵌套的问题；
-* generator函数执行后返回的是迭代器对象，迭代器对象必须通过调用next()方法执行函数的第一个yield函数处，根据返回值的done属性决定是否继续迭代器是否迭代完毕；
+* callback：回调函数是异步操作最基本的方法。
+```js
+ajax(url, () => {
+    // 处理逻辑
+})
+```
+* 发布订阅模式：publish/subscribe
+```js
+subscribe('done', f2);
+publish('done');
+```
+* 生成器函数generator：
+迭代器对象必须通过调用next()方法执行函数的第一个yield函数处，根据返回值的done属性决定是否继续迭代器是否迭代完毕；
 generator构造的函数是一个状态机,封装了多个内部状态
 示例:
 ```js
@@ -207,9 +218,8 @@ let g = a(); // -->迭代器对象
 g.next(); // --> {value: 'hello harden', done: false}
 g.next(); // --> {value: 'hello world', done: true}
 ```
-
+* Promise：最基础的使用方法解决了回调的层层嵌套的问题；
 * async返回的是promise对象。generator需要手动调用next方法获取值，而async函数自动开启迭代，使得异步过程的写法和同步过程写法保持一致，co和thunk模块可以自动开启生成器的迭代。
-
 
 ## No.13 Map/Set的作用
 
