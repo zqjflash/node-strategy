@@ -181,3 +181,4 @@
 ## 第十五章 业务思考
 
 [直播带货](/zh-cn/business-reflection/business1.md)
+[养生消费](/zh-cn/business-reflection/business2.md)

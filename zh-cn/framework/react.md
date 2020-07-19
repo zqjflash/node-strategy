@@ -294,6 +294,26 @@ React.js的state就是用来存储组件可变化的显示形态;
 setState方法由父类Component所提供,当我们调用这个函数的时候,React.js会更新组件的状态state,并且重新调用render方法.
 setState不会马上修改state,而是采用合并消息以后再统一重新渲染组件.
 
+* setState的更新机制：每次在执行setState的时候，都是调用classComponentUpdater上的equeueSetState方法。
+
+执行顺序如下：
+1. 获取调用setState的时候所在的react组件对应的fiber，并存储在const fiber上；
+2. 调用requestCurrentTime获取一个到期时间，并存储在变量currentTime上：有可能是批量处理的setState，有可能是事件处理函数触发的setState，有可能是在生命周期函数中调用setState;
+3. 调用computeExpirationForFiber，根据currentTime为fiber计算得到一个到期时间，并存储到变量expirationTime上；
+4. 调用createUpdate，创建一个更新任务，将setState的第一个参数存储到更新任务的payload属性上，将第二个参数存储到更新任务的callback属性上：
+
+```js
+const update = createUpdate(expirationTime);
+update.payload = payload;
+update.callback = callback;
+```
+
+5. 刷新副作用；
+6. 将新创建的更新任务添加到fiber的更新队列上：enqueueUpdate(fiber, update)；
+7. 调用scheduleWork(fiber, expirationTime)开始调度更新
+8. 开始对fiber树更新任务进行调度。
+
+
 ## No.12 组件的props作用是什么?
 
 props作用是让React.js组件具有一定的"可配置"性,每个组件都可以接受一个props参数,它是一个对象,包含了所有你对这个组件的配置.
