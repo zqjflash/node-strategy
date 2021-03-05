@@ -347,19 +347,19 @@ setInterval(debounce(function() {console.log('xxxx',new Date())}, 100), 2000);
 
 节流实现思路:控制单位时间内执行的次数,每次需要保存上次执行的时间点与定时器.
 ```js
-function throttle(fn, threshhold) {
-    var timeout;
-    var start = new Date; // 事件触发时间点
-    var threshhold = threshhold || 160; // 控制单位时间
+export function throttle(fn: (...args: any[]) => any, threshhold = 250) {
+    let timeout: any;
+    let start = 0;
+    start = Date.now();
     return function() {
-        var context = this.args = arguments;
-        var curr = new Date() - 0; // 时间触发结束点
+        let context: any = this.args = arguments;
+        let curr = Date.now() - 0; // 时间触发结束点
         clearTimeout(timeout); // 总是干掉事件回调
         if (curr - start >= threshhold) {
-            fn.apply(context, args); // 只执行一部分方法,这些方法是在某个时间段内执行一次.
+            fn.apply(context, args); // 只执行一部分方法，这些方法是在某个时间段内执行一次。
             start = curr; // 以当次结束点作为下次的开始点
         } else {
-            timeout = setTimeout(function() {
+            timeout = setTimeout(() => {
                 fn.apply(context, args);
             }, threshhold);
         }
