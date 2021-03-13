@@ -518,6 +518,24 @@ function getMaxOfArray(arr) {
 dispatch(5, 4);
 ```
 
+## No.19 超大数相加
+
+```js
+// 实现两个超大数相加（超大数指超过语言支持的数字的最大表示范围）
+// num1, num2为字符串
+const add = (num1, num2) => {
+	let res = "";
+	let temp = 0;
+	num1 = num1.split("");
+	num2 = num2.split("");
+	while (num1.length || num2.length || temp) {
+		temp += ~~num1.pop() + ~~num2.pop();
+		res = (temp % 10) + res;
+		temp = temp > 9;
+	}
+	return res.replace(/^0+/, '');
+}
+```
 
 # 参考
 
